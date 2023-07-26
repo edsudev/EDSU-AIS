@@ -80,7 +80,7 @@ namespace EDSU_SYSTEM.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string email, string password, Applicant applicant)
+        public async Task<IActionResult> Login(string email, string password, Jupeb applicant)
         {
             var user = (from s in _context.JupebApplicants where s.Email == email && s.Password == password select s).FirstOrDefault();
             
@@ -125,7 +125,7 @@ namespace EDSU_SYSTEM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(Applicant applicant, string pword, string cpword)
+        public async Task<IActionResult> Register(Jupeb applicant, string pword, string cpword)
         {
 
             if (pword != cpword || (pword == null))
@@ -138,7 +138,7 @@ namespace EDSU_SYSTEM.Controllers
             var id = applicant.ApplicantId;
             _context.Add(applicant);
             await _context.SaveChangesAsync();
-            return RedirectToAction("step1", "admissions", new { id });
+            return RedirectToAction("step1", "jupebadmission", new { id });
 
             ViewData["LGAId"] = new SelectList(_context.Lgas, "Id", "Id", applicant.LGAId);
             ViewData["NationalityId"] = new SelectList(_context.Countries, "Id", "Id", applicant.NationalityId);
@@ -166,7 +166,7 @@ namespace EDSU_SYSTEM.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Step1(string id, Applicant applicant)
+        public async Task<IActionResult> Step1(string id, Jupeb applicant)
         {
             if (id == null)
             {
@@ -211,7 +211,7 @@ namespace EDSU_SYSTEM.Controllers
                         "see your system administrator.");
                 }
 
-                return RedirectToAction("Step2", "admissions", new { id });
+                return RedirectToAction("Step2", "jupebadmission", new { id });
             
         }
        
@@ -281,7 +281,7 @@ namespace EDSU_SYSTEM.Controllers
                             "Try again, and if the problem persists, " +
                             "see your system administrator.");
                     }
-                    return RedirectToAction("step4", "admissions", new { id });
+                    return RedirectToAction("step4", "jupebadmission", new { id });
                 }
 
 
@@ -346,7 +346,7 @@ namespace EDSU_SYSTEM.Controllers
                             "Try again, and if the problem persists, " +
                             "see your system administrator.");
                     }
-                    return RedirectToAction("step5", "admissions", new { id });
+                    return RedirectToAction("step5", "jupebadmission", new { id });
                 }
 
                 //Context.Update(applicant);
@@ -489,7 +489,7 @@ namespace EDSU_SYSTEM.Controllers
                 ex.ToString();
             }
             //  return View();
-            return RedirectToAction("step5", "admissions", new { ApplicantId });
+            return RedirectToAction("step5", "jupebadmission", new { ApplicantId });
 
         }
 
@@ -567,7 +567,7 @@ namespace EDSU_SYSTEM.Controllers
                 {
                     applicants.Status = MainStatus.Declined;
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Index", "admissions");
+                    return RedirectToAction("Index", "jupebadmission");
                 }
             }
             catch (Exception ex)
@@ -575,7 +575,7 @@ namespace EDSU_SYSTEM.Controllers
                 ex.ToString();
 
             }
-            return RedirectToAction("Index", "admissions");
+            return RedirectToAction("Index", "jupebadmission");
 
         }
         [Authorize(Roles = "staff, superAdmin, jupebAdmission")]
@@ -636,7 +636,7 @@ namespace EDSU_SYSTEM.Controllers
                             "see your system administrator.");
                     }
 
-                    return RedirectToAction("Index", "admissions", new { id });
+                    return RedirectToAction("Index", "jupebadmission", new { id });
                 }
             }
             catch (Exception ex)
@@ -718,7 +718,7 @@ namespace EDSU_SYSTEM.Controllers
                 };
                 var r = await userManager.CreateAsync(user, "Password@1");
 
-                return RedirectToAction("index", "admissions");
+                return RedirectToAction("index", "jupebadmission");
             }
             catch (Exception)
             {

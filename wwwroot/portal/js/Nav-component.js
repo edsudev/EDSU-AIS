@@ -60,10 +60,10 @@ class Navigatione extends HTMLElement {
 
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink7">
 
-                            <a class="dropdown-item" href="/admissions/undergraduate">Undergraduate</a>
+                            <a class="dropdown-item" href="http://old.edouniversity.edu.ng/admissions/register">Undergraduate</a>
                             <a class="dropdown-item" href="/pgadmissions/postgraduate">Post Graduate</a>
                             <a class="dropdown-item" href="/conversionadmissions/conversion">Conversion</a>
-                            <a class="dropdown-item" href="/jupebadmission/jupeb">JUPEB</a>
+                            <a class="dropdown-item" href="http://old.edouniversity.edu.ng/jupeb/register">JUPEB</a>
                         </div>
                     </div>
                 </li>
@@ -202,10 +202,10 @@ class Navigatione extends HTMLElement {
 
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink7">
 
-                            <a class="dropdown-item" href="/admissions/undergraduate">Undergraduate</a>
+                            <a class="dropdown-item" href="http://old.edouniversity.edu.ng/admissions/register">Undergraduate</a>
                             <a class="dropdown-item" href="/pgadmissions/postgraduate">Post Graduate</a>
                             <a class="dropdown-item" href="/conversionadmissions/conversion">Conversion</a>
-                            <a class="dropdown-item" href="/jupebadmission/jupeb">JUPEB</a>
+                            <a class="dropdown-item" href="http://old.edouniversity.edu.ng/jupeb/register">JUPEB</a>
                         </div>
                     </div>
                 </li>
