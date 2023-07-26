@@ -1,0 +1,121 @@
+﻿@model StudentDashboardVM
+@{
+    ViewData["Title"] = "Index";
+}
+<!-- BEGIN LOADER -->
+<!--  END LOADER -->
+<div class="main-container" id="container">
+
+    <partial name="_StaffDashboardPartial" />
+    <!--  BEGIN CONTENT AREA  -->
+    <div id="content" class="main-content">
+        <div class="layout-px-spacing">
+            <div class="row layout-top-spacing">
+                <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                    @if (!string.IsNullOrEmpty(ViewBag.Results))
+                    {
+                        <div class="col-xl-4 col-lg-4 col-sm-4 mx-autoalert alert-danger border-0 mb-4" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="alert"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                            <strong> @ViewBag.Results</strong>
+                        </div>
+                    }
+                    <div class="widget widget-chart-one">
+                        <h5 class="">Staff Evaluation</h5>
+                        @*********************************************************************@
+                        @*Scroll down to the buttom to see this chart's script*@
+                        @*********************************************************************@
+                        <div id="chart"></div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                    <div class="widget widget-chart-one">
+                        <h5>Notifications</h5>
+                        <div class="widget-content">
+                            <div>
+                                Pending Works' Request <span class="badge badge-danger ml-2">@ViewBag.worksPending</span><br/>
+                                Works in progress <span class="badge badge-warning ml-2">@ViewBag.worksInProgress</span>
+                            </div>
+                            <div>
+                                Pending Exeats (Chief Portal) <span class="badge badge-danger ml-2">@ViewBag.portalPending</span><br/>
+                                Pending Exeats (Dean/HM)<span class="badge badge-danger ml-2">@ViewBag.HMPending</span>
+                            </div>
+                            <div>
+                                Pending Requests <span class="badge badge-danger ml-2">@ViewBag.ictPending</span><br/ >
+                                Requests in progress<span class="badge badge-danger ml-2">@ViewBag.ictInProgress</span>
+                            </div>
+                            <div>
+                                Unread Mails <span class="badge badge-danger ml-2">@ViewBag.exeat</span>
+                            </div>
+                            <div>
+                                Pending Course Reg. <span class="badge badge-danger ml-2">@ViewBag.pendingCourseReg</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  END CONTENT AREA  -->
+
+<!-- END MAIN CONTAINER -->
+
+<script>
+    var options = {
+        chart: {
+            height: 350,
+            type: 'bar',
+            toolbar: {
+                show: true,
+            }
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '55%',
+                endingShape: 'rounded'
+            },
+        },
+        // colors: ['#888ea8', '#4361ee'],
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        series: [{
+            name: 'Evaluation Score',
+            data: @Html.Raw(ViewBag.Percentage)
+                    },
+            //{
+            //name: 'Attendance',
+            //data: @Html.Raw(ViewBag.grade)
+            //    }
+        ],
+        xaxis: {
+            categories: @Html.Raw(ViewBag.courses)
+                    },
+        yaxis: {
+            title: {
+                text: 'Percentage(%)'
+            },
+            min: 0,
+            max: 100
+        },
+        fill: {
+            opacity: 1
+
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return val + "%"
+                }
+            }
+        }
+    }
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+</script>

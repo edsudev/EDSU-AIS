@@ -1,0 +1,61 @@
+﻿@model IEnumerable<EDSU_SYSTEM.Models.CreditUnit>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div id="PlaceHolderHere"></div>
+<div class="main-container" id="container">
+    <partial name="_StaffDashboardPartial" />
+    <!--  BEGIN CONTENT AREA  -->
+    <div id="content" class="main-content">
+        <div class="layout-px-spacing">
+            <div class="row layout-spacing">
+                <!-- Content -->
+                <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 mx-auto layout-top-spacing">
+                    <a asp-action="create" class="btn btn-dark mb-1">Create New</a>
+                    <div class="widget-content widget-content-area br-6">
+                        <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Department</th>
+                                    <th>Level</th>
+                                    <th>Max</th>
+                                    <th>Min</th>
+                                    <th>Semester</th>
+                                    <th>Session</th>
+                                    <th class="dt-no-sorting">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.Departments.Name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Levels.Name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Max)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Min)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Semesters.Name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Sessions.Name)</td>
+                                    
+                                    <td>
+                                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                                            <a class="" data-toggle="ajax-modal" data-url="@Url.Action($"Delete/{item.Id}")">
+                                                Delete
+                                            </a>
+                                    </td>
+                                </tr>
+                               }
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <!--  END CONTENT AREA  -->
+</div>
+<!-- END MAIN CONTAINER -->
+

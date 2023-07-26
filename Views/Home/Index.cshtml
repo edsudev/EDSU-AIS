@@ -1,0 +1,179 @@
+﻿
+@model IEnumerable<EDSU_SYSTEM.Models.Slider>
+
+    <div class="nav">
+        <app-navigaton class="col-md-11"></app-navigaton>
+        <partial name="_LoginPartial" class="col-md-1"/>
+    </div>
+
+    <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel" style="margin-top:20px;">
+       
+        <div class="carousel-inner">        
+             @{
+            var first = true;
+        }
+        @foreach (var item in ViewBag.Slider)
+        {
+            <div class="carousel-item @(first?Html.Raw("active"):Html.Raw(""))">
+                <img class="d-block w-100" style="max-height:85vh" src="~/portal/images/index/@item.Image" alt="slide">
+            </div>
+            first = false;
+        }
+           
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+
+
+
+
+    <section class="why-choose-us">
+        <h1>
+            Why Choose Edo State University Uzairue
+        </h1>
+
+        <div class="container">
+            <div class="card">
+                <div class="header">
+                    <div class="header-icon"></div>
+                    <h3>
+                        E-Library
+                    </h3>
+                </div>
+                <p>
+                Edo State University library provide a dedicated professional and responsive library across the campus. 
+                Our informational resources of print and online/offline resources support the teaching and research activities of the institution. 
+                @*Our printed collections consist of around 10,000.00 books with unlimited online book and journals in our libraries.*@
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="header">
+                    <div class="header-icon"></div>
+                    <h3>
+                        Serene Environment
+                    </h3>
+                </div>
+                <p>
+                    The library is the heart and lifeline of any citadel of learning. We also have an E-library where resources are made available at the comfort of your hostels.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="header">
+                    <div class="header-icon"></div>
+                    <h3>
+                        Canvas LMS
+                    </h3>
+                </div>
+                <p>
+                Edo State University Uzairue is the first University in Nigeria and West-Africa to adopt CANVAS
+                as its Learning Management System to deliver a full digital learning experience as obtainable
+                in the Ivy League universities around the world. 
+                EDSU LMS is a robust and sophisticated digital platform where 
+                learners and eductors can interact on real-time, 24/7 basis.
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="widget-one upcoming-activity p-3">
+        <div class="upcoming-activity-details row">
+            <div class="col-md-10 col-12">
+                <h2>Upcoming Activity</h2>
+                <p>
+                    Below are two most anticipated upcoming activities (For more, click the Load more 👉)
+                </p>
+            </div>
+
+            <div class="activity-button col-md-2 col-12">
+                <a asp-action="activities" asp-controller="home" target="_blank">
+                    Load More
+                </a>
+            </div>
+        </div>
+
+        <div class="upcoming-activity-card">
+        @foreach (var item in ViewBag.Activities)
+        {
+                <div class="activity-card">
+                <img src="~/files/activities/@item.Image" alt="Image" style="width:200px"; height="200px">
+                    <div class="activity-card-text">
+                    <h3>@item.Text</h3>
+                    <p>
+                        @item.Body
+                    </p>
+                    <p class="font-weight-bold text-primary">
+                        Date: @item.Month  @item.Day,  @item.Year
+                    </p>
+                    </div>
+                </div>
+             }
+            
+
+            
+        </div>
+    </div>
+
+    <div class="tour">
+        <div class="tour-text">
+            <h2>Take a Tour</h2>
+        </div>
+
+        <div class="tour-video">
+            <iframe src="https://www.youtube.com/embed/8hRMz-CXL28"
+                    title="Aerial Tour of Campus 1 Edo State University Uzairue."
+                    frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media;
+            gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+        </div>
+    </div>
+
+    <section class="news widget-one p-3">
+        <div class="upcoming-activity-details row">
+            <div class="col-md-10 col-12">
+                <h2>Latest News</h2>
+                <p>
+                Below are the top three latest news about EDSU  (For more, click the Load more 👉)
+                </p>
+            </div>
+
+            <div class="activity-button col-md-2 col-12">
+            <a asp-action ="news" asp-controller="home" target="_blank">
+                    Load More
+                </a>
+            </div>
+        </div>
+        <div class="latest-news-card">
+        @foreach (var item in ViewBag.News)
+        {
+            <div class="latest-news-card-body">
+                @*<img src="~/files/activities/@item." alt="">*@
+                <p class="tag">Date Posted: @item.CreatedAt.ToLongDateString()</p>
+                <h3 class="text-heading">@item.Title.ToUpper()</h3>
+                <p class="text-details">
+                    @item.Body
+                </p>
+            </div>
+        }
+            
+
+            
+        </div>
+    </section>
+
+
+
+
+    <app-newsletter></app-newsletter>
+
+
+
+<partial name="_Footer" />

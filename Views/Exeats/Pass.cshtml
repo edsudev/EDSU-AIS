@@ -1,0 +1,32 @@
+﻿
+<partial name="_StudentDashboardPartial" />
+<div id="PlaceHolderHere"></div>
+<!--  BEGIN CONTENT AREA  -->
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row layout-spacing">
+            <!-- Content -->
+            <div class="col-xl-12 col-lg-12 col-md-12 col-12 layout-spacing">
+                <div class="widget-content-area br-4">
+                    <div class="widget-one p-3">
+                        @if (ViewBag.QRCodeImage != null)
+                        {
+                            <h3>Your Exeat Token is @ViewBag.BookingId</h3>
+                            <img src="@ViewBag.QRCodeImage" alt="QW CODE" style="height:400px; width:400px" />
+                        }
+                        else
+                        {
+                            <div class="alert alert-danger">Sorry, something is wrong!😒😒<br /> Exeat was probably not approved.</div>
+                            <div class="alert alert-danger">Contact the ICT Unit for Support!</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+<!--  END CONTENT AREA  -->
+</div>
+<!-- END MAIN CONTAINER -->
