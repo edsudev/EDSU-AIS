@@ -34,12 +34,13 @@ services.AddSession(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
     options.IdleTimeout = TimeSpan.FromMinutes(30);
 });
-
+string baseDomainUrl = "https://edouniversity.edu.ng";
 services.AddAuthentication()
         .AddGoogle(options =>
         {
             options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID");
             options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET");
+            options.CallbackPath = "/signin-google";
         });
 
 // Add Razor Runtime Compilation for development environment
