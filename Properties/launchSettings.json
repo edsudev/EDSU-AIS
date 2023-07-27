@@ -12,7 +12,7 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "https://edouniversity.edu.ng",
+      "applicationUrl": "https://edouniversity.edu.ng:443",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       }
