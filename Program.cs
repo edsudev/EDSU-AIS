@@ -49,11 +49,11 @@ services.AddAuthentication()
 
 services.AddMvc();
 var app = builder.Build();
-
+app.UseHttpsRedirection();
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseDeveloperExceptionPage();
+app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
 //}
 //else
@@ -64,7 +64,7 @@ var app = builder.Build();
 //}
 
 
-app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
