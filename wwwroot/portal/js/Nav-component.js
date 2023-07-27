@@ -59,7 +59,6 @@ class Navigatione extends HTMLElement {
                         </a>
 
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink7">
-
                             <a class="dropdown-item" href="https://old.edouniversity.edu.ng/admissions/register">Undergraduate</a>
                             <a class="dropdown-item" href="https://old.edouniversity.edu.ng/postgraduate/register">Post Graduate</a>
                             <a class="dropdown-item" href="https://old.edouniversity.edu.ng/cprogramme/register">Conversion</a>
@@ -111,6 +110,13 @@ class Navigatione extends HTMLElement {
                             <a class="dropdown-item" href="/oerstudentprojects/index">Students Projects</a>
                             <a class="dropdown-item" href="/oertextbooks/index">Textbooks</a>
                         </div>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="dropdown nav-link ">
+                        <a class="dropdown-toggle" href="https://old.edouniversity.edu.ng" role="button">
+                            Portal
+                        </a>
                     </div>
                 </li>
                  <li class="nav-item">
@@ -255,7 +261,13 @@ class Navigatione extends HTMLElement {
                         </div>
                     </div>
                 </li>
-                
+                <li class="nav-item">
+                    <div class="dropdown nav-link ">
+                        <a class="dropdown-toggle" href="https://old.edouniversity.edu.ng" role="button">
+                            Portal
+                        </a>
+                    </div>
+                </li>
                 <li class="nav-item">
                     <div class="dropdown nav-link ">
                         <a class="dropdown-toggle" href="https://odl.edouniversity.edu.ng" role="button">
