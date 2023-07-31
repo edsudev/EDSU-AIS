@@ -21,9 +21,24 @@ services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 services.AddDatabaseDeveloperPageExceptionFilter();
 
-services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+services.AddDefaultIdentity<ApplicationUser>(options =>
+{
+    // Password settings
+    options.Password.RequireDigit = false;        // Remove the requirement for a digit
+    options.Password.RequireLowercase = false;    // Remove the requirement for a lowercase letter
+    options.Password.RequireUppercase = false;    // Remove the requirement for an uppercase letter
+    options.Password.RequireNonAlphanumeric = false; // Remove the requirement for a non-alphanumeric character
+    options.Password.RequiredLength = 6;         // Set your desired minimum password length
+
+    // Other configurations for Default Identity (if needed)
+    //options.SignIn.RequireConfirmedAccount = true; // Set to true if you require account confirmation via email
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+
+
 
 services.AddControllersWithViews()
         .AddNewtonsoftJson();

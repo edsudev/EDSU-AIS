@@ -86,6 +86,7 @@ namespace EDSU_SYSTEM.Controllers
                 ViewBag.mat = student.MatNumber;
                 ViewBag.department = student.Departments.Name;
                 ViewBag.email = student.SchoolEmailAddress;
+                ViewBag.currentStatus = (from c in _context.BursaryClearedStudents where c.StudentId == student.Id select c.Remark).FirstOrDefault();
                 var clearances = (from c in _context.BursaryClearances where c.Students.SchoolEmailAddress == id select c).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ToList();
 
                 if (clearances == null)
@@ -103,12 +104,25 @@ namespace EDSU_SYSTEM.Controllers
            
         }
         [HttpPost]
-        public async Task<IActionResult> Clearance(ClearanceRemark status, string email)
+        public async Task<IActionResult> Clearance(ClearanceRemark status, string email, BursaryClearedStudents bs)
         {
             var student = (from v in _context.BursaryClearances where v.Students.SchoolEmailAddress == email select v).FirstOrDefault();
-
-           // student.rem = status;
-            await _context.SaveChangesAsync();
+            var studentExist = (from s in _context.BursaryClearedStudents where s.StudentId == student.StudentId && s.SessionId == student.SessionId select s).FirstOrDefault();
+            if (studentExist == null)
+            {
+                bs.StudentId = student.StudentId;
+                bs.SessionId = student.SessionId;
+                bs.Remark = status;
+                bs.CreatedAt = DateTime.Now;
+                 _context.Add(bs);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                studentExist.Remark = status;
+                await _context.SaveChangesAsync();
+            }
+            
 
             return RedirectToAction(nameof(Index));
         }

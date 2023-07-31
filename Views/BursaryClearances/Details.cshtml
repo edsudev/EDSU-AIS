@@ -14,6 +14,7 @@
                 <!-- Content -->
                 <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 mx-auto layout-top-spacing">
                     <div class="col-xl-10 col-lg-10 col-sm-10 mx-auto alert alert-arrow-right alert-icon-right alert-light-info mb-4" role="alert">
+
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12" y2="16"></line></svg>
                         
                         <strong>@ViewBag.name</strong><br/>
@@ -21,18 +22,24 @@
                         <strong>@ViewBag.email</strong><br/>
                         <strong>@ViewBag.department</strong>
                     </div>
-                    <form action="clearance" method="post">
-                        <div class="col-md-4 mb-4">
-                            <div class="form-group">
-                                <input id="email" value="@ViewBag.email" hidden/>
-                                <select id="status" class="form-control" asp-items="Html.GetEnumSelectList<ClearanceRemark>()">
-                                    <option value="">Clearance Staus</option>
-                                </select>
+                    <div class="row">
+                        <form asp-action="Clearance" method="post" class="col-xl-6 col-lg-6 col-sm-10">
+                            <div class="col-md-8 mb-4">
+                                <div class="form-group">
+                                    <input name="email" value="@ViewBag.email" hidden />
+                                    <select name="status" class="form-control" asp-items="Html.GetEnumSelectList<ClearanceRemark>()">
+                                        <option value="">Clearance Staus</option>
+                                    </select>
+                                </div>
+                                <input class="btn btn-primary" type="submit" value="Submit" />
                             </div>
-                            <button class="btn btn-primary"clas>Submit</button>
+                        </form>
+                        <div class="col-xl-6 col-lg-6 col-sm-10">
+                            <h3>Current Status:</h3>
+                            <strong>@ViewBag.currentStatus</strong>
                         </div>
-                       
-                    </form>
+                    </div>
+                    
                     <div class="widget-content widget-content-area br-6">
                         <table id="html5-extension" class="table table-hover non-hover">
                             <thead>

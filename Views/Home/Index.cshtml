@@ -33,6 +33,38 @@
 
 
 
+<!-- Modal -->
+<div class="modal fade transparent-modal center-modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">On-going admission processes!!!</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-primary btn-block">Button 1</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-secondary btn-block">Button 2</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-success btn-block">Button 3</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-danger btn-block">Button 4</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
     <section class="why-choose-us">
         <h1>
@@ -177,3 +209,10 @@
 
 
 <partial name="_Footer" />
+<script>
+  // This function will show the modal on page load
+  $(document).ready(function() {
+    $('#myModal').modal('show');
+  });
+</script>
+

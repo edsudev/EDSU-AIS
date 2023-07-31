@@ -24,7 +24,7 @@ namespace EDSU_SYSTEM.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, 
+        public LoginModel(SignInManager<ApplicationUser> signInManager,
             ILogger<LoginModel> logger,
             UserManager<ApplicationUser> userManager)
         {
@@ -76,21 +76,21 @@ namespace EDSU_SYSTEM.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl1 = null, string remoteError = null)
         {
-           
+
             returnUrl1 ??= Url.Content("~/");
 
-           ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             //if (ModelState.IsValid)
             //{
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-            var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
-            {
-                ModelState.AddModelError(string.Empty, "Error loading external login information");
-                return Page();
-            }
+            //var info = await _signInManager.GetExternalLoginInfoAsync();
+            //if (info == null)
+            //{
+            //    ModelState.AddModelError(string.Empty, "Error loading external login information");
+            //    return Page();
+            //}
             //var externalSignInResult = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider,
             //    info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             //if (externalSignInResult.Succeeded)
@@ -102,20 +102,20 @@ namespace EDSU_SYSTEM.Areas.Identity.Pages.Account
             {
                 return LocalRedirect(returnUrl1);
             }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl1, RememberMe = Input.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+            if (result.RequiresTwoFactor)
+            {
+                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl1, RememberMe = Input.RememberMe });
+            }
+            if (result.IsLockedOut)
+            {
+                _logger.LogWarning("User account locked out.");
+                return RedirectToPage("./Lockout");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return Page();
+            }
             //}
 
             // If we got this far, something failed, redisplay form

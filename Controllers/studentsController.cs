@@ -38,8 +38,8 @@ namespace EDSU_SYSTEM.Controllers
         {
             try
             {
-                var id = "3970d7df-4069-40ee-a778-57a181a8e2c5";
-                var users = _userManager.Users.Where(x => x.Type == 4).ToList();
+                var id = "c35a60d0-0ff8-46f3-afbc-9ba7eced4c5b";
+                var users = _userManager.Users.Where(x => x.Type == 2).ToList();
                 var role = await _roleManager.FindByIdAsync(id);
                 foreach (var item in users)
                 {
@@ -57,30 +57,22 @@ namespace EDSU_SYSTEM.Controllers
         {
             try
             {
-                var users = (from s in _context.Staffs where s.SchoolEmail == "dev.edostateuniversity@gmail.com" select s).FirstOrDefault();
+                var users = (from s in _context.ConversionStudents select s).ToList();
                
-                    try
+                    foreach (var item in users)
                     {
-                    
                         var user = new ApplicationUser
                         {
-                            Email = users.SchoolEmail,
-                            UserName = users.SchoolEmail,
-                            StaffId = users.Id,
-                            PhoneNumber = users.Phone,
+                            Email = item.SchoolEmailAddress,
+                            UserName = item.SchoolEmailAddress,
+                            ConversionStudent = item.Id,
+                            PhoneNumber = item.Phone,
                             PhoneNumberConfirmed = true,
-                            Type = 2,
+                            Type = 4,
                             EmailConfirmed = true
                         };
-                        var r = await _userManager.CreateAsync(user, "Password@1");
+                        var r = await _userManager.CreateAsync(user, item.Phone);
                     }
-                    catch (Exception)
-                    {
-
-                        throw;
-                    }
-
-                
             }
             catch (Exception)
             {
@@ -89,7 +81,7 @@ namespace EDSU_SYSTEM.Controllers
             }
 
 
-            return View();
+            return RedirectToAction(nameof(Index));
         }
         public async Task<IActionResult> WalletMigrate(ConversionMainWallet mainWallet)
         {

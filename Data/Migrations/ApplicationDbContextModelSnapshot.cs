@@ -2593,7 +2593,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("YearOfAdmission");
 
-                    b.ToTable("JupepApplication");
+                    b.ToTable("JupebApplicants");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.JupebStudent", b =>

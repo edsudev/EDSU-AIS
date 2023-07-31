@@ -10,13 +10,16 @@
         <div class="form-form-wrap">
             <div class="form-container">
                 <div class="form-content">
-                    <img src="https://www.edouniversity.edu.ng/uploads/settings/logo.png" style="height:100px" alt="logo" />
-                    <h4 class="">Edo State University Uzairue</h4>
-                    <p class="">Use the google button below to login.</p>
+                    <img src="https://edouniversity.edu.ng/logo.png" style="height:100px" alt="logo" />
+                    <h4 class="">Edo State University Uzairue</h4><br/>
+                    @*<p class="">Use the google button below to login.</p>
                     <p class="">Make sure to have a session of your EDSU email loggedIn on your browser</p>
-                    <p class="">(e.g rick23.morty@edouniversity.edu.ng)</p>
-                   @* <form class="text-left" id="account" method="post">
-
+                    <p class="">(e.g rick23.morty@edouniversity.edu.ng)</p>*@
+                    
+                    @*<p class="">ExampleEmail: rick23.morty@edouniversity.edu.ng<br />Password: 8012345678</p>*@
+                   
+                    <form class="text-left" id="account" method="post">
+                        <p class="">Use your university email and phone number to login below. 👇</p>
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form">
 
@@ -29,10 +32,10 @@
                             <div id="password-field" class="field-wrapper input mb-2">
                                 <div class="d-flex justify-content-between">
                                     <label for="password">PASSWORD</label>
-                                    <a href="forgotpassword" class="forgot-pass-link">Forgot Password?</a>
+                                    @*<a href="forgotpassword" class="forgot-pass-link">Forgot Password?</a>*@
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                                <input asp-for="Input.Password" id="password" type="password" class="form-control" placeholder="xxxxxxxx">
+                                <input asp-for="Input.Password" id="password" type="password" class="form-control" placeholder="8012345678">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="toggle-password" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                             </div>
                             <div>
@@ -56,7 +59,7 @@
                     <div class="division">
                         <span>OR</span>
                     </div>
-                    *@
+                    
                     <section>
 
                         <hr />

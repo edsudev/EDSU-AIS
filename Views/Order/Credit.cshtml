@@ -3,7 +3,11 @@
 @{
     ViewData["Title"] = "Create";
 }
-<partial name="_Nav" />
+
+<div class="nav">
+    <app-navigaton class="col-md-11"></app-navigaton>
+    <partial name="_LoginPartial" class="col-md-1" />
+</div>
 <div class="main-container" id="container">
     <!--  BEGIN CONTENT AREA  -->
     <div id="content" class="main-content">
@@ -24,9 +28,7 @@
                 </div>
 
             }
-            <a asp-action="studentRole" asp-controller="students" class="btn btn-primary">add to their role</a>
-            <a asp-action="UsersMigrate" asp-controller="students" class="btn btn-primary">migrate student</a>
-            <a asp-action="ActivateWallet" asp-controller="students" class="btn btn-primary">Activate Wallets</a>
+            <a asp-action="studentRole" asp-controller="students" class="btn btn-primary">Role</a>
             <div class="row layout-top-spacing">
                 <div class="col-6 mt-3 mx-auto">
                     <img src="~/images/wallet.svg" style="height:60vh; width:100%" />
