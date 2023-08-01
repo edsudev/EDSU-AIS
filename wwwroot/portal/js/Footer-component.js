@@ -51,9 +51,7 @@ class Footer extends HTMLElement{
                         <a href="">
                             Tuition
                         </a>
-                        <a href="">
-                            Fees
-                        </a>
+                        
                     </div>
 
                     <div class="list-links">
@@ -124,9 +122,7 @@ class Footer extends HTMLElement{
                             <a href="">
                                 Tuition
                             </a>
-                            <a href="">
-                                Fees
-                            </a>
+                           
                         </div>
 
                         <div class="list-link">

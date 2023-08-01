@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
 using MySqlConnector;
 using System;
 
@@ -20,6 +21,12 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 services.AddDatabaseDeveloperPageExceptionFilter();
+
+////////////////////
+///
+
+
+//////////////////////////
 
 services.AddDefaultIdentity<ApplicationUser>(options =>
 {
@@ -77,6 +84,8 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios.
     app.UseHsts();
 }
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

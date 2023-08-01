@@ -17,7 +17,7 @@ class Navigatione extends HTMLElement {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             About
                             <i data-feather="chevron-down"></i>
@@ -32,7 +32,7 @@ class Navigatione extends HTMLElement {
                 </li>
 
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             Academics
                             <i data-feather="chevron-down"></i>
@@ -52,7 +52,7 @@ class Navigatione extends HTMLElement {
                 </li>
 
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             Admissions
                             <i data-feather="chevron-down"></i>
@@ -67,7 +67,7 @@ class Navigatione extends HTMLElement {
                     </div>
                 </li>
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             Vacancies
                             <i data-feather="chevron-down"></i>
@@ -81,7 +81,7 @@ class Navigatione extends HTMLElement {
                     </div>
                 </li>
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             Media
                             <i data-feather="chevron-down"></i>
@@ -97,7 +97,7 @@ class Navigatione extends HTMLElement {
                     </div>
                 </li>
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             OER
                             <i data-feather="chevron-down"></i>
@@ -113,7 +113,7 @@ class Navigatione extends HTMLElement {
                     </div>
                 </li>
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="https://old.edouniversity.edu.ng" role="button">
                             Portal
                         </a>
@@ -165,7 +165,7 @@ class Navigatione extends HTMLElement {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             About
                             <i data-feather="chevron-down"></i>
@@ -180,7 +180,7 @@ class Navigatione extends HTMLElement {
                 </li>
 
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             Academics
                             <i data-feather="chevron-down"></i>
@@ -200,7 +200,7 @@ class Navigatione extends HTMLElement {
                 </li>
 
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             Admissions
                             <i data-feather="chevron-down"></i>
@@ -216,7 +216,7 @@ class Navigatione extends HTMLElement {
                     </div>
                 </li>
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             Vacancies
                             <i data-feather="chevron-down"></i>
@@ -230,7 +230,7 @@ class Navigatione extends HTMLElement {
                     </div>
                 </li>
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             Media
                             <i data-feather="chevron-down"></i>
@@ -262,21 +262,21 @@ class Navigatione extends HTMLElement {
                     </div>
                 </li>
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="https://old.edouniversity.edu.ng" role="button">
                             Portal
                         </a>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="https://odl.edouniversity.edu.ng" role="button">
                             ODL
                         </a>
                     </div>
                 </li>
 <li class="nav-item">
-                    <div class="dropdown nav-link ">
+                    <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="https://edsuth.edouniversity.edu.ng" >
                             EDSUTH
                         </a>

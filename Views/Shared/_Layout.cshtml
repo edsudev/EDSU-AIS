@@ -7,6 +7,7 @@
     <title>@ViewData["Title"] Edo State University Uzairue</title>
     <link rel="icon" type="image/x-icon" href="~/logo.png" />
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500,600,700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,9 +62,10 @@
     <link rel="stylesheet" href="~/portal/css/news.css">
     <link rel="stylesheet" href="~/portal/css/activitiy.css" type="text/css" />
     <!-- Add these in the head section -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    @* <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>*@
 </head>
 <style>
     .transparent-modal .modal-content {
@@ -80,6 +82,23 @@
       left: 30%;
       transform: translate(-50%, -50%);
        width: 60%;
+    }
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+    }
+
+    .col-sm-6 {
+        padding: 5px; /* Optional: You can adjust the padding value as needed */
+    }
+    
+    a{
+        text-decoration: none;
+        
+    }
+     a:hover {
+        text-decoration: none; /* Add underline on hover if desired */
     }
 </style>
 <body>
@@ -104,7 +123,6 @@
     <script src="~/assets/js/custom.js"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     
-
     <script src="~/plugins/fullcalendar/moment.min.js"></script>
     <script src="~/plugins/flatpickr/flatpickr.js"></script>
     <script src="~/plugins/fullcalendar/fullcalendar.min.js"></script>

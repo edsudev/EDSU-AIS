@@ -2,7 +2,10 @@
 @model EDSU_SYSTEM.Models.Applicant
 
 
-<partial name="_Nav" />
+<div class="nav">
+    <app-navigaton class="col-md-11"></app-navigaton>
+    <partial name="_LoginPartial" class="col-md-1" />
+</div>
 <div class="col-md-10 mx-auto">
     <div class="table-responsive">
         <table class="table table-condensed table-bordered table-hover">

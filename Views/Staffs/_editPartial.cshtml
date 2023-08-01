@@ -45,9 +45,21 @@
                         </div>
                         <div class="col-md-3">
                             <label asp-for="Sex" class="control-label"></label>
-                            <input asp-for="Sex" class="form-control" />
+                            <select asp-for="Sex" class="form-control">
+                                <option>--Select--</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
                             <span asp-validation-for="Sex" class="text-danger"></span>
                         </div>
+                        <label asp-for="MaritalStatus" class="control-label">Marital Status</label>
+                        <select asp-for="MaritalStatus" class="form-control">
+                                <option>--Select--</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                            <option value="Divorced">Divorced</option>
+                            </select>
+                        <span asp-validation-for="MaritalStatus" class="text-danger"></span>
                         <div class="col-md-3">
                             <label asp-for="Phone" class="control-label"></label>
                             <input asp-for="Phone" class="form-control" />
@@ -86,11 +98,11 @@
                     </div>
                     <h5>EMPLOYMENT INFORMATION:</h5>
                     <div class="form-row">
-                        <div class="col-md-4">
+                        @*<div class="col-md-4">
                             <label asp-for="Type" class="control-label"></label>
-                            <input asp-for="Type" class="form-control" />
+                            <input asp-for="Type" disabled class="form-control" />
                             <span asp-validation-for="Type" class="text-danger"></span>
-                        </div>
+                        </div>*@
                         <div class="col-md-4">
                             <label asp-for="FacultyId" class="control-label">Faculty</label>
                             <select asp-for="FacultyId" class="form-control" asp-items="@ViewBag.FacultyId"></select>
@@ -121,9 +133,13 @@
                             <span asp-validation-for="AreaOfSpecialization" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
-                            <label asp-for="WorkedInHigherInstuition" class="control-label"></label>
-                            <input asp-for="AreaOfSpecialization" class="form-control" />
-                            <span asp-validation-for="AreaOfSpecialization" class="text-danger"></span>
+                            <label asp-for="WorkedInHigherInstuition" class="control-label">Worked In Higher Instuition</label>
+                            <select asp-for="WorkedInHigherInstuition" class="form-control">
+                                <option>--Select--</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                            <span asp-validation-for="WorkedInHigherInstuition" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
                             <label asp-for="CurrentPlaceOfWork" class="control-label">Current Place of work</label>
@@ -178,6 +194,11 @@
                             <label asp-for="Mendeley" class="control-label"></label>
                             <input asp-for="Mendeley" class="form-control" />
                             <span asp-validation-for="Mendeley" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Scopus" class="control-label"></label>
+                            <input asp-for="Scopus" class="form-control" />
+                            <span asp-validation-for="Scopus" class="text-danger"></span>
                         </div>
 
                     </div>
