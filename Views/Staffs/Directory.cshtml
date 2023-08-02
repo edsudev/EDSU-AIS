@@ -22,23 +22,68 @@
     <div >
         <div class="col-xl-12 col-lg-12 col-md-12 col-12 mx-auto layout-spacing">
             <div class="widget-content-area br-4 p-3">
-                    <div class="row">
-                        <div class="col-md-3">
+                <div class="row">
+                    <div class="col-md-3">
                         <span style="font-weight:bold">Surname:</span>  @Model.Surname
-                        </div>
-                        <div class="col-md-3">
-                            <span style="font-weight:bold">Firstname:</span> @Model.FirstName
-                        </div>
-                        <div class="col-md-3">
-                            <span style="font-weight:bold">Othername(s):</span> @Model.MiddleName
-                        </div>
-                        <div class="col-md-3">
-                        <span style="font-weight:bold">Phone:</span> @Model.Phone
-                        </div>
                     </div>
-                    <hr />
-                    <div class="row">
-                        <div class="col-md-3">
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">Firstname:</span> @Model.FirstName
+                    </div>
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">Othername(s):</span> @Model.MiddleName
+                    </div>
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">Phone:</span> @Model.Phone
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">Sex:</span> @Model.Sex
+                    </div>
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">Religion:</span> @Model.Religion
+                    </div>
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">Marital Status:</span> @Model.MaritalStatus
+                    </div>
+                     <div class="col-md-3">
+                        <span style="font-weight:bold">Nationality:</span> 
+                        @if (Model.Nationalities != null)
+                        {
+                            @Model.Nationalities.Name
+                        }
+                        else
+                        {
+                            @("N/A")
+                        }
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">State:</span>
+                        @if (Model.States != null)
+                        {
+                            @Model.States.Name
+                        }
+                        else
+                        {
+                            @("N/A")
+                        }
+                    </div>
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">LGA:</span> 
+                        @if (Model.LGAs != null)
+                        {
+                            @Model.LGAs.Name
+                        }
+                        else
+                        {
+                            @("N/A")
+                        }
+                    </div>
+                    <div class="col-md-3">
                         <span style="font-weight:bold">Type:</span> 
                         @if (Model.Types != null)
                         {
@@ -48,9 +93,9 @@
                         {
                             @("N/A")
                         }
-                        </div>
-                        <div class="col-md-3">
-                            <span style="font-weight:bold">Position:</span>
+                    </div>
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">Position:</span>
                         @if (Model.Positions != null)
                         {
                             @Model.Positions.Name
@@ -59,17 +104,17 @@
                         {
                             @("N/A")
                         }
-                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    
                     <div class="col-md-3">
-                        <span style="font-weight:bold">Email:</span> @Model.Email
+                        <span style="font-weight:bold">Email:</span><br/> @Model.Email
                     </div>
                     <div class="col-md-3">
-                        <span style="font-weight:bold">EDSU-Email:</span> @Model.SchoolEmail
+                        <span style="font-weight:bold">EDSU-Email:</span><br/> @Model.SchoolEmail
                     </div>
-                        
-                    </div>
-                    <hr />
-                    <div class="row">
                     <div class="col-md-3">
                         <span style="font-weight:bold">Department:</span>
                         @if (Model.Departments != null)
@@ -81,60 +126,53 @@
                             @("N/A")
                         }
                     </div>
-                    <div class="col-md-3">
-                        <span style="font-weight:bold">Contact Address:</span> @Model.ContactAddress
-                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    
                     <div class="col-md-3">
                         <span style="font-weight:bold">Highest Degree:</span> @Model.HighestQualification
                     </div>
                     <div class="col-md-3">
-                        <span style="font-weight:bold">Fied Of Study:</span> @Model.FieldOfStudy
+                        <span style="font-weight:bold">Field Of Study:</span> @Model.FieldOfStudy
                     </div>
-                    </div>
-                    <hr />
-                    <div class="row">
-                       
-                        
-                        <div class="col-md-3">
+                    <div class="col-md-3">
                         <span style="font-weight:bold">AOS:</span> @Model.AreaOfSpecialization
-                        </div>
-                        <div class="col-md-3">
-                        <span style="font-weight:bold">Current Place of Work:</span> @Model.CurrentPlaceOfWork
-                        </div>
                     </div>
-                    <hr />
-                    <div class="row">
-                        <div class="col-md-3">
-                        <span style="font-weight:bold">ORCID:</span> @Model.ORCID
-                        </div>
-                        <div class="col-md-3">
-                        <span style="font-weight:bold">Research ID:</span> @Model.ResearcherId
-                        </div>
-                        <div class="col-md-3">
-                        <span style="font-weight:bold">Google Scholar:</span> @Model.GoogleScholar
-                        </div>
-                        <div class="col-md-3">
-                        <span style="font-weight:bold">ResearchGate:</span> @Model.ResearchGate
-                        </div>
-                    </div>
-                    <hr />
-                    <div class="row">
-                        <div class="col-md-3">
-                            <span style="font-weight:bold">Academia:</span> @Model.Academia
-                        </div>
-                        <div class="col-md-3">
-                        <span style="font-weight:bold">LinkedIn:</span> @Model.LinkedIn
-                        </div>
-                        <div class="col-md-3">
-                        <span style="font-weight:bold">Mendeley:</span> @Model.Mendeley
-                        </div>
-                        <div class="col-md-3">
-                        <span style="font-weight:bold">Scopus:</span> @Model.Scopus
-                        </div>
-                    </div>
-                    <hr />
-                 
+                </div>
                 <hr />
+                    
+                <div class="row">
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">ORCID:</span><br/> @Model.ORCID
+                    </div>
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">Research ID:</span><br/> @Model.ResearcherId
+                    </div>
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">Google Scholar:</span><br/> @Model.GoogleScholar
+                    </div>
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">ResearchGate:</span><br/> @Model.ResearchGate
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">Academia:</span><br/> @Model.Academia
+                    </div>
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">LinkedIn:</span><br/> @Model.LinkedIn
+                    </div>
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">Mendeley:</span><br/> @Model.Mendeley
+                    </div>
+                    <div class="col-md-3">
+                        <span style="font-weight:bold">Scopus:</span><br /> @Model.Scopus
+                    </div>
+                </div>
+                    
+            <hr />
                         
             </div>
         </div>

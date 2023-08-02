@@ -3,18 +3,29 @@
 @{
     ViewData["Title"] = "Applicants";
 }
-<p>
-    <a asp-action="Create">Apply Now</a>
-</p>
-
 <div id="PlaceHolderHere"></div>
-<div class="main-container" id="container">
+<div class="main-container mt-5" id="container">
     <partial name="_StaffDashboardPartial" />
     <!--  BEGIN CONTENT AREA  -->
     <div id="content" class="main-content">
         <div class="d-flex">
+            
             <!-- Content -->
             <div class="mx-auto">
+                <div class="mx-auto">
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupVerticalDrop1" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i data-feather="chevron-down"></i><span class="icon-name"> Applicants per Session</span>
+                        </button>
+                        <div class="dropdown-menu mx-auto" aria-labelledby="btnGroupVerticalDrop1">
+                            @foreach (var item in ViewBag.sessions)
+                            {
+                                <a asp-action="list" asp-route-id="@item.Name">@item.Name</a>
+                                <br />
+                            }
+                        </div>
+                    </div>
+                </div>
                 List of Applicants for @ViewBag.currentSession
                 <div class="widget-content widget-content-area br-6">
                     <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
@@ -91,20 +102,7 @@
                     </table>
                 </div>
             </div>
-            <div class="mx-auto">
-                <div class="btn-group" role="group">
-                    <button id="btnGroupVerticalDrop1" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i data-feather="chevron-down"></i><span class="icon-name"> Applicants per Session</span>
-                    </button>
-                    <div class="dropdown-menu mx-auto" aria-labelledby="btnGroupVerticalDrop1">
-                        @foreach (var item in ViewBag.sessions)
-                        {
-                            <a asp-action="list" asp-route-id="@item.Name" >@item.Name</a>
-                            <br />
-                        }
-                    </div>
-                </div>
-            </div>
+            
         </div>
     </div>
     <!--  END CONTENT AREA  -->

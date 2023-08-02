@@ -171,7 +171,14 @@ namespace EDSU_SYSTEM.Controllers
         // Staff Directory/Details
         public IActionResult Directory(string id)
         {
-            var staff = _context.Staffs.Include(x => x.Positions).FirstOrDefault(x => x.SchoolEmail == id);
+            var staff = _context.Staffs
+                .Include(x => x.Departments)
+                .Include(x => x.Positions)
+                .Include(x => x.Types)
+                .Include(x => x.Nationalities)
+                .Include(x => x.States)
+                .Include(x => x.LGAs)
+                .FirstOrDefault(x => x.SchoolEmail == id);
             return View(staff);
         }
         // GET: staffs/Create
@@ -219,6 +226,8 @@ namespace EDSU_SYSTEM.Controllers
             {
                 return NotFound();
             }
+            var employer = (from s in _context.Staffs where s.StaffId == staff.EmployedBy select s).FirstOrDefault();
+            ViewBag.employer = employer.FirstName + " " + employer.Surname;
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", staff.DepartmentId);
             ViewData["FacultyId"] = new SelectList(_context.Faculties, "Id", "Name", staff.FacultyId);
             ViewData["LGAId"] = new SelectList(_context.Lgas, "Id", "Name", staff.LGAId);
@@ -235,19 +244,19 @@ namespace EDSU_SYSTEM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Staff staff)
         {
-            var applicants = await _context.Staffs.FindAsync(id);
+            var staffs = await _context.Staffs.FindAsync(id);
             try
             {
-                if (await TryUpdateModelAsync<Staff>(applicants, "", 
-                    c => c.Picture, c => c.Surname, c => c.FirstName, c => c.MiddleName, c => c.DOB, c => c.Sex, 
-                    c => c.Phone, c => c.Email, c => c.SchoolEmail,
-                    c => c.ContactAddress, c => c.NationalityId, c => c.StateId, 
+                if (await TryUpdateModelAsync<Staff>(staffs, "", 
+                    c => c.Surname, c => c.FirstName, c => c.MiddleName, c => c.DOB, c => c.Sex,
+                    c => c.Religion, c => c.MaritalStatus, c => c.Bio,c => c.Phone, c => c.Email, 
+                    c => c.SchoolEmail,c => c.ContactAddress, c => c.NationalityId, c => c.StateId, 
                     c => c.LGAId,c => c.Type, c => c.FacultyId, c => c.DepartmentId, 
                     c => c.HighestQualification, c => c.FieldOfStudy, c => c.AreaOfSpecialization,
                     c => c.WorkedInHigherInstuition, c => c.CurrentPlaceOfWork, 
                     c => c.PositionAtCurrentPlaceOfWork, c => c.YearsOfExperience, c => c.ORCID,
                     c => c.ResearcherId, c => c.GoogleScholar, c => c.ResearchGate, c => c.Academia, c => c.LinkedIn,
-                    c => c.Mendeley))
+                    c => c.Mendeley, c => c.Scopus))
                    
                     {
                     try
