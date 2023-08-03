@@ -84,10 +84,24 @@ namespace EDSU_SYSTEM.Controllers
                 totalGradesList.Add((int)result);
             }
             var json2 = JsonConvert.SerializeObject(totalGradesList);
-            Console.WriteLine(json2);
             ViewBag.Percentage = json2;
 
+            //This part of the code is for getting the project students of this staff!
+            var ugProjectStudents = (from s in _context.UgProgresses where s.SupervisorId == userId select s).ToList();
+            var conversionProjectStudents = (from s in _context.ConversionProjectProgresses where s.SupervisorId == userId select s).ToList();
+            var pgProjectStudents = (from s in _context.PgProgresses where s.SupervisorId == userId select s).ToList();
+            //var timetable = (from c in _context.TimeTables
+            //                 where c.DepartmetId == sta.Department && c.LevelId ==
+            //                 student.Level
+            //                 select c).Include(c => c.Courses).ThenInclude(s => s.Courses).ToList();
 
+            var model = new StaffDashboardVM
+            {
+                UgProjectStudents = ugProjectStudents,
+                ConversionProjectStudents = conversionProjectStudents,
+                PgProjectStudents = pgProjectStudents,
+              //  TimeTables = timetable
+            };
             //Results not found!....
             ViewBag.Results = TempData["NoCourses"];
             return View();

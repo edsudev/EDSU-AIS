@@ -1,4 +1,7 @@
 ﻿@model Staff
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @using static EDSU_SYSTEM.Models.Enum
 <div class="modal fade" id="addCourseware">
     <div class="modal-dialog  modal-xl">
@@ -110,71 +113,75 @@
                             <span asp-validation-for="Bio" class="text-danger"></span>
                         </div>
                     </div>
-                    
-                   @* <h5>EMPLOYMENT INFORMATION:</h5>
-                    <div class="form-row mb-2">
-                        <div class="col-md-4 mb-2">
-                            <label asp-for="Type" class="control-label"></label>
-                            <input asp-for="Type" disabled class="form-control" />
-                            <span asp-validation-for="Type" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label asp-for="FacultyId" class="control-label">Faculty</label>
-                            <select asp-for="FacultyId" class="form-control" asp-items="@ViewBag.FacultyId"></select>
-                            <span asp-validation-for="FacultyId" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label asp-for="DepartmentId" class="control-label">Department</label>
-                            <select asp-for="DepartmentId" class="form-control" asp-items="@ViewBag.DepartmentId"></select>
-                            <span asp-validation-for="DepartmentId" class="text-danger"></span>
-                        </div>
-                        
-                    </div>
-                    
-                    <h5>Qualifications:</h5>
-                    <div class="form-row">
-                        <div class="col-md-4 mb-2">
-                            <label asp-for="HighestQualification" class="control-label">High Qualification</label>
-                            <input asp-for="HighestQualification" class="form-control" />
-                            <span asp-validation-for="HighestQualification" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label asp-for="FieldOfStudy" class="control-label">Field Of Study</label>
-                            <input asp-for="FieldOfStudy" class="form-control" />
-                            <span asp-validation-for="FieldOfStudy" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label asp-for="AreaOfSpecialization" class="control-label">Area of Specialization</label>
-                            <input asp-for="AreaOfSpecialization" class="form-control" />
-                            <span asp-validation-for="AreaOfSpecialization" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label asp-for="WorkedInHigherInstuition" class="control-label">Worked In Higher Instuition</label>
-                            <select asp-for="WorkedInHigherInstuition" class="form-control">
-                                <option>--Select--</option>
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                            </select>
-                            <span asp-validation-for="WorkedInHigherInstuition" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label asp-for="CurrentPlaceOfWork" class="control-label">Current Place of work</label>
-                            <input asp-for="CurrentPlaceOfWork" class="form-control" />
-                            <span asp-validation-for="CurrentPlaceOfWork" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label asp-for="PositionAtCurrentPlaceOfWork" class="control-label">Current Position</label>
-                            <input asp-for="PositionAtCurrentPlaceOfWork" class="form-control" />
-                            <span asp-validation-for="PositionAtCurrentPlaceOfWork" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4 mb-2">
-                            <label asp-for="YearsOfExperience" class="control-label">Years of Experience</label>
-                            <input asp-for="YearsOfExperience" class="form-control" />
-                            <span asp-validation-for="YearsOfExperience" class="text-danger"></span>
-                        </div>
+                     @if (SignInManager.IsSignedIn(User))
+                    {
+                        @if (User.IsInRole("admin") || User.IsInRole("superAdmin"))
+                        {
+                            <h5>EMPLOYMENT INFORMATION:</h5>
+                            <div class="form-row mb-2">
+                                <div class="col-md-4 mb-2">
+                                    <label asp-for="Type" class="control-label"></label>
+                                    <input asp-for="Type" class="form-control" />
+                                    <span asp-validation-for="Type" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label asp-for="FacultyId" class="control-label">Faculty</label>
+                                    <select asp-for="FacultyId" class="form-control" asp-items="@ViewBag.FacultyId"></select>
+                                    <span asp-validation-for="FacultyId" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label asp-for="DepartmentId" class="control-label">Department</label>
+                                    <select asp-for="DepartmentId" class="form-control" asp-items="@ViewBag.DepartmentId"></select>
+                                    <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                                </div>
 
-                    </div>
-                    *@
+                            </div>
+
+                            <h5>Qualifications:</h5>
+                            <div class="form-row">
+                                <div class="col-md-4 mb-2">
+                                    <label asp-for="HighestQualification" class="control-label">High Qualification</label>
+                                    <input asp-for="HighestQualification" class="form-control" />
+                                    <span asp-validation-for="HighestQualification" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label asp-for="FieldOfStudy" class="control-label">Field Of Study</label>
+                                    <input asp-for="FieldOfStudy" class="form-control" />
+                                    <span asp-validation-for="FieldOfStudy" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label asp-for="AreaOfSpecialization" class="control-label">Area of Specialization</label>
+                                    <input asp-for="AreaOfSpecialization" class="form-control" />
+                                    <span asp-validation-for="AreaOfSpecialization" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label asp-for="WorkedInHigherInstuition" class="control-label">Worked In Higher Instuition</label>
+                                    <select asp-for="WorkedInHigherInstuition" class="form-control">
+                                        <option>--Select--</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                    <span asp-validation-for="WorkedInHigherInstuition" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label asp-for="CurrentPlaceOfWork" class="control-label">Current Place of work</label>
+                                    <input asp-for="CurrentPlaceOfWork" class="form-control" />
+                                    <span asp-validation-for="CurrentPlaceOfWork" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label asp-for="PositionAtCurrentPlaceOfWork" class="control-label">Current Position</label>
+                                    <input asp-for="PositionAtCurrentPlaceOfWork" class="form-control" />
+                                    <span asp-validation-for="PositionAtCurrentPlaceOfWork" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4 mb-2">
+                                    <label asp-for="YearsOfExperience" class="control-label">Years of Experience</label>
+                                    <input asp-for="YearsOfExperience" class="form-control" />
+                                    <span asp-validation-for="YearsOfExperience" class="text-danger"></span>
+                                </div>
+
+                            </div>
+                        }
+                    }
                     <h5>Research Profiles:</h5>
                     <div class="form-row">
                         <div class="col-md-4 mb-2">

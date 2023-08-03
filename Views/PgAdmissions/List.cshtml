@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<EDSU_SYSTEM.Models.PgApplicant>
 
 @{
-    ViewData["Title"] = "Applicants";
+    ViewData["Title"] = "";
 }
 <p>
     <a asp-action="Create">Apply Now</a>
@@ -15,6 +15,20 @@
         <div class="d-flex">
             <!-- Content -->
             <div class="mx-auto">
+                <div class="mx-auto">
+                    <div class="btn-group" role="group">
+                        <button id="btnGroupVerticalDrop1" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i data-feather="chevron-down"></i><span class="icon-name"> Applicants per Session</span>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
+                            @foreach (var item in ViewBag.sessions)
+                            {
+                                <a asp-action="list" asp-route-id="@item.Name" asp-controller="pgadmissions" class="mx-auto">@item.Name</a>
+                                <br />
+                            }
+                        </div>
+                    </div>
+                </div>
                 List of PG Applicants for @ViewBag.currentSession
                 <div class="widget-content widget-content-area br-6">
                     <table id="html5-extension" class="table table-hover non-hover" style="width:100%">
@@ -73,20 +87,7 @@
                     </table>
                 </div>
             </div>
-            <div class="mx-auto">
-                <div class="btn-group" role="group">
-                    <button id="btnGroupVerticalDrop1" type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i data-feather="chevron-down"></i><span class="icon-name"> Applicants per Session</span>
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="btnGroupVerticalDrop1">
-                        @foreach (var item in ViewBag.sessions)
-                        {
-                            <a asp-action="list" asp-route-id="@item.Name" asp-controller="pgadmissions" class="mx-auto">@item.Name</a>
-                            <br />
-                        }
-                    </div>
-                </div>
-            </div>
+            
         </div>
     </div>
     <!--  END CONTENT AREA  -->

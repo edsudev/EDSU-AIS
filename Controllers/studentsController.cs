@@ -204,7 +204,7 @@ namespace EDSU_SYSTEM.Controllers
         public async Task<IActionResult> Allstudents()
         {
             ViewBag.err = TempData["err"];
-            var applicationDbContext = _context.Students.Include(s => s.Departments)
+            var applicationDbContext = _context.Students.Where(x => x.StudentStatus == 1).Include(s => s.Departments)
                 .Include(s => s.Levels);
             return View(await applicationDbContext.ToListAsync());
            
@@ -358,7 +358,8 @@ namespace EDSU_SYSTEM.Controllers
                 graduate.StudentStatus = 2;
                 _context.Students.Update(graduate);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("allstudents", "students");
+                ViewBag.success = "Student has been graduated successfully";
+                return RedirectToAction("details", "students", new {id});
 
             }
             catch (Exception)

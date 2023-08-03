@@ -61,7 +61,7 @@ namespace EDSU_SYSTEM.Controllers
             return View(await applicationDbContext.ToListAsync());
          
         } 
-        public async Task<IActionResult> Undergraduate()
+        public async Task<IActionResult> Undergraduate1()
         {
             ViewBag.err = TempData["err"];
             return View();
@@ -146,13 +146,13 @@ namespace EDSU_SYSTEM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(Applicant applicant, string pword, string cpword)
+        public async Task<IActionResult> Register1(Applicant applicant, string pword, string cpword)
         {
 
             if (pword != cpword || (pword == null))
             {
                 TempData["err"] = "Something went wrong, make sure you provide data as required!";
-                return RedirectToAction(nameof(Undergraduate));
+                return RedirectToAction(nameof(Undergraduate1));
             }
             applicant.Password = pword;
             applicant.ApplicantId =Guid.NewGuid().ToString() + DateTime.Now.Millisecond;

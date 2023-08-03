@@ -1,6 +1,6 @@
-﻿@model StudentDashboardVM
+﻿
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "";
 }
 <!-- BEGIN LOADER -->
 <!--  END LOADER -->
@@ -10,6 +10,57 @@
     <!--  BEGIN CONTENT AREA  -->
     <div id="content" class="main-content">
         <div class="layout-px-spacing">
+            <div class="row layout-top-spacing">
+                <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                    <div class="widget widget-chart-one">
+                        <h5 class="">Time Table</h5>
+                       
+                        <div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+                    <div class="widget widget-chart-one">
+                        <h5>Notifications</h5>
+                        <div class="widget-content">
+                            <div class="row mb-3">
+                                <div class="col-8">Pending Works' Request</div>
+                                <div class="col-4"><span class="badge badge-danger">@ViewBag.worksPending</span></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-8">Works in progress</div>
+                                <div class="col-4"><span class="badge badge-warning">@ViewBag.worksInProgress</span></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-8">Pending Exeats (Chief Portal)</div>
+                                <div class="col-4"><span class="badge badge-danger">@ViewBag.portalPending</span></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-8">Pending Exeats (Dean/HM)</div>
+                                <div class="col-4"><span class="badge badge-danger">@ViewBag.HMPending</span></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-8">Pending Requests</div>
+                                <div class="col-4"><span class="badge badge-danger">@ViewBag.ictPending</span></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-8">Requests in progress</div>
+                                <div class="col-4"><span class="badge badge-danger">@ViewBag.ictInProgress</span></div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-8">Unread Mails</div>
+                                <div class="col-4"><span class="badge badge-danger">@ViewBag.exeat</span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">Pending Course Reg.</div>
+                                <div class="col-4"><span class="badge badge-danger">@ViewBag.pendingCourseReg</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
             <div class="row layout-top-spacing">
                 <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
                     @if (!string.IsNullOrEmpty(ViewBag.Results))
@@ -29,29 +80,13 @@
                 </div>
                 <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
                     <div class="widget widget-chart-one">
-                        <h5>Notifications</h5>
+                        <h5>Project Students</h5>
                         <div class="widget-content">
-                            <div>
-                                Pending Works' Request <span class="badge badge-danger ml-2">@ViewBag.worksPending</span><br/>
-                                Works in progress <span class="badge badge-warning ml-2">@ViewBag.worksInProgress</span>
-                            </div>
-                            <div>
-                                Pending Exeats (Chief Portal) <span class="badge badge-danger ml-2">@ViewBag.portalPending</span><br/>
-                                Pending Exeats (Dean/HM)<span class="badge badge-danger ml-2">@ViewBag.HMPending</span>
-                            </div>
-                            <div>
-                                Pending Requests <span class="badge badge-danger ml-2">@ViewBag.ictPending</span><br/ >
-                                Requests in progress<span class="badge badge-danger ml-2">@ViewBag.ictInProgress</span>
-                            </div>
-                            <div>
-                                Unread Mails <span class="badge badge-danger ml-2">@ViewBag.exeat</span>
-                            </div>
-                            <div>
-                                Pending Course Reg. <span class="badge badge-danger ml-2">@ViewBag.pendingCourseReg</span>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

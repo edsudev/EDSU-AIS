@@ -43,7 +43,7 @@ namespace EDSU_SYSTEM.Controllers
 
 
         // GET: pgStudents/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string? id)
         {
             if (id == null || _context.PostGraduateStudents == null)
             {
@@ -59,7 +59,7 @@ namespace EDSU_SYSTEM.Controllers
                 .Include(p => p.Sessions)
                 .Include(p => p.Staffs)
                 .Include(p => p.States)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.SchoolEmailAddress == id);
             if (pgStudent == null)
             {
                 return NotFound();
