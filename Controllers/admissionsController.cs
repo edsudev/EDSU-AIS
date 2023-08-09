@@ -60,7 +60,23 @@ namespace EDSU_SYSTEM.Controllers
             var applicationDbContext = _context.UgApplicants;
             return View(await applicationDbContext.ToListAsync());
          
-        } 
+        }
+       // [Authorize(Roles = "ugApplicant, superAdmin")]
+        public async Task<IActionResult> Debts(string utme)
+        {
+            //var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            //var user = loggedInUser.StudentsId;
+            var applicantUTME = (from ap in _context.UgApplicants where ap.UTMENumber == utme select ap.UTMENumber).FirstOrDefault();
+            var wallet = (from s in _context.UgSubWallets where s.WalletId == applicantUTME select s).Include(c => c.Sessions).ToList();
+
+            if (wallet == null)
+            {
+                return RedirectToAction("pagenotfound", "error");
+            }
+
+            return View(wallet);
+
+        }
         public async Task<IActionResult> Undergraduate1()
         {
             ViewBag.err = TempData["err"];
@@ -138,7 +154,8 @@ namespace EDSU_SYSTEM.Controllers
         // GET: admissions/Create
         public IActionResult Register()
         {
-            return View();
+            string externalUrl = "https://old.edouniversity.edu.ng/admissions/instructions";
+            return Redirect(externalUrl);
         }
 
         // POST: admissions/Create
@@ -1011,18 +1028,18 @@ namespace EDSU_SYSTEM.Controllers
             };
             return View(model);
         }
-        public async Task<IActionResult> Debts(string id)
-        {
-            var wallet = (from s in _context.UgSubWallets where s.WalletId == id select s).Include(c => c.Sessions).ToList();
+        //public async Task<IActionResult> Debts(string id)
+        //{
+        //    var wallet = (from s in _context.UgSubWallets where s.WalletId == id select s).Include(c => c.Sessions).ToList();
 
-            if (wallet == null)
-            {
-                return RedirectToAction("pagenotfound", "error");
-            }
+        //    if (wallet == null)
+        //    {
+        //        return RedirectToAction("pagenotfound", "error");
+        //    }
 
-            return View(wallet);
+        //    return View(wallet);
 
-        }
+        //}
         public IActionResult Hostelreq(string id)
         {
             if (id == null)

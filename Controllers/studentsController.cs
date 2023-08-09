@@ -15,6 +15,7 @@ using OfficeOpenXml.Style;
 using Microsoft.AspNetCore.Authorization;
 using System.Drawing;
 using CanvasApi.Client.Users.Models;
+using Enum = EDSU_SYSTEM.Models.Enum;
 
 namespace EDSU_SYSTEM.Controllers
 {
@@ -83,34 +84,65 @@ namespace EDSU_SYSTEM.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> WalletMigrate(ConversionMainWallet mainWallet)
+        public async Task<IActionResult> populateWallet(UgSubWallet subWallet, UgMainWallet ugmain)
         {
-            var students = (from s in _context.ConversionStudents select s).ToList();
-            foreach (var item in students)
+            var students = (from s in _context.UgApplicants where s.Status == (Enum.MainStatus)1 || s.Status == (Enum.MainStatus)2 select s).ToList();
+
+            foreach (var st in students)
             {
                 try
                 {
-                    mainWallet.Id = item.Id;
-                    //mainWallet.UTME = item.UTMENumber;
-                    mainWallet.Name = item.Fullname;
-                    mainWallet.CreditBalance = 0;
-                    mainWallet.BulkDebitBalanace = 0;
-                    mainWallet.Status = true;
-                    mainWallet.WalletId = item.UTMENumber;
-                    mainWallet.DateCreated = DateTime.Now;
-                    _context.ConversionMainWallets.Add(mainWallet);
+                    var tuition = (from tu in _context.Fees where tu.DepartmentId == st.AdmittedInto select tu).FirstOrDefault();
+                    Random r = new();
+                    string a = st.Id.ToString() + r.Next(10000);
+
+                    // Create a new instance of UgSubWallet for each student
+                    var newSubWallet = new UgSubWallet();
+                    newSubWallet.WalletId = st.UTMENumber;
+                    newSubWallet.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
+                    newSubWallet.RegNo = st.UTMENumber;
+                    newSubWallet.CreditBalance = 0;
+                    newSubWallet.Status = true;
+                    newSubWallet.DateCreated = DateTime.Now;
+                    newSubWallet.Tuition = tuition.Level1;
+                    if (st.ModeOfEntry == "Transfer" && (st.AdmittedInto == 38 || st.AdmittedInto == 24 || st.AdmittedInto == 1))
+                    {
+                        newSubWallet.Tuition2 = tuition.Level1;
+                    }
+                    else
+                    {
+                        newSubWallet.Tuition2 = 0;
+                    }
+
+                    newSubWallet.FortyPercent = newSubWallet.Tuition * 40 / 100;
+                    newSubWallet.SixtyPercent = newSubWallet.Tuition * 60 / 100;
+                    newSubWallet.LMS = 30000;
+                    newSubWallet.AcceptanceFee = 70000;
+                    newSubWallet.SRC = 2000;
+                    newSubWallet.EDHIS = 25000;
+                    newSubWallet.SessionId = 8;
+                    newSubWallet.Debit = newSubWallet.Tuition + newSubWallet.Tuition2 + newSubWallet.LMS
+                                        + newSubWallet.EDHIS + newSubWallet.SRC + newSubWallet.AcceptanceFee;
+                    newSubWallet.Level = st.LevelAdmittedTo;
+                    newSubWallet.Department = st.AdmittedInto;
+
+                    _context.UgSubWallets.Add(newSubWallet);
+                    await _context.SaveChangesAsync();
+
+                    var main = (from m in _context.UgMainWallets where m.WalletId == newSubWallet.WalletId select m).FirstOrDefault();
+                    main.BulkDebitBalanace = newSubWallet.Debit;
                     await _context.SaveChangesAsync();
                 }
                 catch (Exception)
                 {
-
+                    // Handle exceptions appropriately
                     throw;
                 }
-
             }
 
             return View();
         }
+
         //For migrated Students
         public async Task<IActionResult> ActivateWallet(string? id, UgSubWallet myWallet)
         {

@@ -27,12 +27,31 @@
                                 <span asp-validation-for="Type" class="text-danger"></span>
                             </div>
                             <div class="form-group">
+                                <label asp-for="Gender" class="control-label"></label>
+                                <select asp-for="Gender" class="form-control">
+                                    <option>-- Select --</option>
+                                    <option value="M">Male</option>
+                                    <option value="F">Female</option>
+                                </select>
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
                                 <label asp-for="Amount" class="control-label"></label>
                                 <input asp-for="Amount" class="form-control" />
                                 <span asp-validation-for="Amount" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="SessionId" class="control-label"></label>
+                                <label asp-for="NoOfRooms" class="control-label">No Of Rooms</label>
+                                <input asp-for="NoOfRooms" type="number" class="form-control" />
+                                <span asp-validation-for="NoOfRooms" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="BedspacesCount" class="control-label">Bed spaces Count</label>
+                                <input asp-for="BedspacesCount" type="number" class="form-control" />
+                                <span asp-validation-for="BedspacesCount" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="SessionId" class="control-label">Session</label>
                                 <select asp-for="SessionId" class="form-control" asp-items="ViewBag.SessionId"></select>
                             </div>
                             <div class="form-group">

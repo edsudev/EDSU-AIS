@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace EDSU_SYSTEM.Controllers
 {
     public class HostelsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public HostelsController(ApplicationDbContext context)
+        public HostelsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Hostels
@@ -25,7 +28,148 @@ namespace EDSU_SYSTEM.Controllers
             var applicationDbContext = _context.Hostels.Include(h => h.Sessions);
             return View(await applicationDbContext.ToListAsync());
         }
+        public async Task<IActionResult> Choice()
+        {
+            ViewData["HostelId"] = new SelectList(_context.Hostels, "Id", "Name");
+            ViewBag.err = TempData["err"];
+            string err = (string)TempData["err"];
+            ViewBag.ErrorMessage = err;
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Choice(int hostel)
+        {
+            try
+            {
+                //Gets the logged in user (Student)
+                var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+                var ugStudent = loggedInUser.StudentsId;
 
+                var student = (from st in _context.Students where st.Id == ugStudent select st).FirstOrDefault();
+
+                //Checks if this hostel exists
+                var hostelIsAvailable = (from s in _context.Hostels where s.Id == hostel select s).FirstOrDefault();
+                if (hostelIsAvailable == null)
+                {
+                    TempData["err"] = "Hostel does not exist. Kindly make another choice.";
+                    return Redirect(Request.Headers["Referer"].ToString());
+                }
+                //Checks if the hostel is for the gender of the logged in user
+                var isForMyGender = (from f in _context.Hostels where f.Id == hostel select f.Gender).FirstOrDefault();
+                if (isForMyGender != student.Sex)
+                {
+                    TempData["err"] = "You picked a hostel for the opposite gender😔. Kindly make another choice.";
+                    return Redirect(Request.Headers["Referer"].ToString());
+                }
+
+                //checks if there's a room in this hostel
+                if (hostelIsAvailable.BedspacesCount <= 0)
+                {
+                    TempData["err"] = "Unfortunately the hostel type you picked is not available at this time. Kindly make another choice.";
+                    return Redirect(Request.Headers["Referer"].ToString());
+                }
+                else if (hostelIsAvailable.BedspacesCount > 0)
+                {
+                    TempData["hostelType"] = hostelIsAvailable.Id;
+                    TempData["hostelAmount"] = hostelIsAvailable.Amount;
+                }
+                var id = hostelIsAvailable.Id;
+                return RedirectToAction("order", "hostels");
+            }
+            catch (Exception)
+            {
+                throw;
+
+            }
+
+        }
+
+        public async Task<IActionResult> Order(HostelPayment payment)
+        {
+            try
+            {
+                //Gets the logged in user (Student)
+                var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+                var ugStudent = loggedInUser.StudentsId;
+
+                var student = (from st in _context.Students where st.Id == ugStudent select st).FirstOrDefault();
+                // I did this because the walletId is same as the student UTME Number
+                var wallet = await _context.UgSubWallets
+                .FirstOrDefaultAsync(m => m.WalletId == student.UTMENumber);
+                if (wallet == null)
+                {
+                    TempData["err"] = "Student doesn't have a wallet, contact the bursary.";
+                    return Redirect(Request.Headers["Referer"].ToString());
+                }
+                Random r = new();
+                //ViewBag.hostel =
+                payment.SessionId = wallet.SessionId;
+                payment.WalletId = wallet.Id;
+                payment.Amount = (double)TempData["hostelAmount"];
+                payment.HostelType = (int)TempData["hostelType"];
+                payment.Status = "Pending";
+                payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+                payment.PaymentDate = DateTime.Now;
+                _context.HostelPayments.Add(payment);
+                await _context.SaveChangesAsync();
+                return View();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Order(string Ref)
+        {
+            try
+            {
+                var PaymentToUpdate = await _context.HostelPayments.FirstOrDefaultAsync(i => i.Ref == Ref);
+
+                if (await TryUpdateModelAsync<HostelPayment>(PaymentToUpdate, "", c => c.Email))
+                {
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                            "Try again, and if the problem persists, " +
+                            "see your system administrator.");
+                    }
+                    return RedirectToAction("OrderCheckout", "hostels", new { Ref });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+
+            }
+            return View();
+
+        }
+        public async Task<IActionResult> OrderCheckout(string Ref)
+        {
+
+            var paymentToUpdate = _context.HostelPayments.Where(i => i.Ref == Ref).Include(i => i.HostelFees).FirstOrDefault();
+
+            if (Ref == null || _context.HostelPayments == null)
+            {
+                return NotFound();
+            }
+            if (paymentToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            return View(paymentToUpdate);
+        }
         // GET: Hostels/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -57,14 +201,13 @@ namespace EDSU_SYSTEM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Type,Amount,SessionId")] Hostel hostel)
+        public async Task<IActionResult> Create(Hostel hostel)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(hostel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+
+            _context.Add(hostel);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
             ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Name", hostel.SessionId);
             return View(hostel);
         }
@@ -91,33 +234,32 @@ namespace EDSU_SYSTEM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Type,Amount,SessionId")] Hostel hostel)
+        public async Task<IActionResult> Edit(int id, Hostel hostel)
         {
             if (id != hostel.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+
+            try
             {
-                try
-                {
-                    _context.Update(hostel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!HostelExists(hostel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(hostel);
+                await _context.SaveChangesAsync();
             }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!HostelExists(hostel.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
+
             ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Name", hostel.SessionId);
             return View(hostel);
         }
@@ -155,14 +297,14 @@ namespace EDSU_SYSTEM.Controllers
             {
                 _context.Hostels.Remove(hostel);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool HostelExists(int? id)
         {
-          return _context.Hostels.Any(e => e.Id == id);
+            return _context.Hostels.Any(e => e.Id == id);
         }
     }
 }

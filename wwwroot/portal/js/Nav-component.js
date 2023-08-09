@@ -30,7 +30,7 @@ class Navigatione extends HTMLElement {
                         </div>
                     </div>
                 </li>
-
+              
                 <li class="nav-item">
                     <div class="dropdown nav-link">
                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">

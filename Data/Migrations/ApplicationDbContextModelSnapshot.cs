@@ -2197,6 +2197,9 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("NumberOfRooms")
+                        .HasColumnType("int");
+
                     b.Property<int?>("SessionId")
                         .HasColumnType("int");
 
@@ -2208,6 +2211,33 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasIndex("SessionId");
 
                     b.ToTable("Hostels");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.HostelAllocation", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("HostelId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RoomIdId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HostelId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("HostelAllocations");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.HostelPayment", b =>
@@ -2255,6 +2285,34 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasIndex("WalletId");
 
                     b.ToTable("HostelPayments");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.HostelRoomDetails", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BedSpaces")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BedSpacesCount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("HostelId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("RoomNo")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HostelId");
+
+                    b.ToTable("HostelRoomDetails");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.IctComplaint", b =>
@@ -6278,6 +6336,21 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Navigation("Sessions");
                 });
 
+            modelBuilder.Entity("EDSU_SYSTEM.Models.HostelAllocation", b =>
+                {
+                    b.HasOne("EDSU_SYSTEM.Models.Hostel", "Hostels")
+                        .WithMany()
+                        .HasForeignKey("HostelId");
+
+                    b.HasOne("EDSU_SYSTEM.Models.Student", "Students")
+                        .WithMany()
+                        .HasForeignKey("StudentId");
+
+                    b.Navigation("Hostels");
+
+                    b.Navigation("Students");
+                });
+
             modelBuilder.Entity("EDSU_SYSTEM.Models.HostelPayment", b =>
                 {
                     b.HasOne("EDSU_SYSTEM.Models.Hostel", "HostelFees")
@@ -6297,6 +6370,15 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Navigation("Sessions");
 
                     b.Navigation("Wallets");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.HostelRoomDetails", b =>
+                {
+                    b.HasOne("EDSU_SYSTEM.Models.Hostel", "Hostels")
+                        .WithMany()
+                        .HasForeignKey("HostelId");
+
+                    b.Navigation("Hostels");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Jupeb", b =>

@@ -7,13 +7,14 @@ namespace EDSU_SYSTEM.Models
     {
         public int? Id { get; set; }
         public string? Name { get; set; }
+        public int? NoOfRooms { get; set; }
         public string? Type { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal? Amount { get; set; }
         [ForeignKey("Sessions")]
         public int? SessionId { get; set; }
+        public string? Gender { get; set; }
+        public int? BedspacesCount { get; set; }
         public Session? Sessions { get; set; }
-
-
     }
 }

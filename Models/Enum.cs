@@ -8,6 +8,7 @@ namespace EDSU_SYSTEM.Models
         {
             Pending,
             Approved,
+            Partially_Admitted,
             Declined
         }
         public enum Title

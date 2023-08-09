@@ -16,7 +16,7 @@
       "applicationUrl": "https://localhost:2222",
       //"applicationUrl": "https://edouniversity.edu.ng",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "IIS Express": {
