@@ -1,0 +1,25 @@
+﻿@model EDSU_SYSTEM.Models.Staff
+
+@{
+    ViewData["Title"] = "Details";
+}
+<div id="PlaceHolderHere"></div>
+
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container" id="container">
+    <partial name="_StaffDashboardPartial" />
+
+    <!--  BEGIN CONTENT AREA  -->
+    <div id="content" class="main-content">
+        <div class="layout-px-spacing">
+            <div class="row layout-top-spacing">
+                <div class="col-xl-10 col-lg-10 col-md-10 col-10 mx-auto layout-spacing">
+                    <a asp-action="PopulateWallet" asp-controller="Students" class="btn btn-primary">Populate UG Applicant Sub Wallet</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--  END CONTENT AREA  -->
+</div>
+<!-- END MAIN CONTAINER -->

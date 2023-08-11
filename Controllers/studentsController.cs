@@ -19,7 +19,7 @@ using Enum = EDSU_SYSTEM.Models.Enum;
 
 namespace EDSU_SYSTEM.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class StudentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -84,7 +84,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> populateWallet(UgSubWallet subWallet, UgMainWallet ugmain)
+        public async Task<IActionResult> PopulateWallet(UgSubWallet subWallet, UgMainWallet ugmain)
         {
             var students = (from s in _context.UgApplicants where s.Status == (Enum.MainStatus)1 || s.Status == (Enum.MainStatus)2 select s).ToList();
 
@@ -93,6 +93,10 @@ namespace EDSU_SYSTEM.Controllers
                 try
                 {
                     var tuition = (from tu in _context.Fees where tu.DepartmentId == st.AdmittedInto select tu).FirstOrDefault();
+                    if (tuition == null)
+                    {
+                        tuition.Level1 = 0;
+                    }
                     Random r = new();
                     string a = st.Id.ToString() + r.Next(10000);
 
@@ -116,11 +120,11 @@ namespace EDSU_SYSTEM.Controllers
 
                     newSubWallet.FortyPercent = newSubWallet.Tuition * 40 / 100;
                     newSubWallet.SixtyPercent = newSubWallet.Tuition * 60 / 100;
-                    newSubWallet.LMS = 30000;
+                    newSubWallet.LMS = 40000;
                     newSubWallet.AcceptanceFee = 70000;
                     newSubWallet.SRC = 2000;
                     newSubWallet.EDHIS = 25000;
-                    newSubWallet.SessionId = 8;
+                    newSubWallet.SessionId = 9;
                     newSubWallet.Debit = newSubWallet.Tuition + newSubWallet.Tuition2 + newSubWallet.LMS
                                         + newSubWallet.EDHIS + newSubWallet.SRC + newSubWallet.AcceptanceFee;
                     newSubWallet.Level = st.LevelAdmittedTo;

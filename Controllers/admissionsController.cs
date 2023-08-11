@@ -30,24 +30,7 @@ namespace EDSU_SYSTEM.Controllers
             this.roleManager = roleManager;
             this.userManager = userManager;
         }
-        /// <summary>
-        /// ////////////////////////////////////
-        /// This is to create user profile the aspnet users table from the students table
-        /// To be deleted after migration
-        /// /////////////////////////////////////////
-        /// </summary>
-        /// <returns></returns>
-        /// 
-
-
-
-
-
-
-
-
-
-
+       
 
 
         [Authorize(Roles = "staff, superAdmin, ugAdmission")]
@@ -62,13 +45,15 @@ namespace EDSU_SYSTEM.Controllers
          
         }
        // [Authorize(Roles = "ugApplicant, superAdmin")]
-        public async Task<IActionResult> Debts(string utme)
+        public async Task<IActionResult> Debts(string id)
         {
             //var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             //var user = loggedInUser.StudentsId;
-            var applicantUTME = (from ap in _context.UgApplicants where ap.UTMENumber == utme select ap.UTMENumber).FirstOrDefault();
-            var wallet = (from s in _context.UgSubWallets where s.WalletId == applicantUTME select s).Include(c => c.Sessions).ToList();
-
+            var applicantUTME = (from ap in _context.UgApplicants where ap.UTMENumber == id select ap).FirstOrDefault();
+            ViewBag.name = applicantUTME.Surname + " " + applicantUTME.FirstName + " " + applicantUTME.OtherName;
+            ViewBag.department = applicantUTME.Departments.Name;
+            var wallet = (from s in _context.UgSubWallets where s.WalletId == applicantUTME.UTMENumber select s).Include(c => c.Sessions).ToList();
+            
             if (wallet == null)
             {
                 return RedirectToAction("pagenotfound", "error");
@@ -105,7 +90,8 @@ namespace EDSU_SYSTEM.Controllers
         } 
         public IActionResult Requirements()
         {
-            return View();
+            string externalUrl = "https://old.edouniversity.edu.ng/admissions/requirements";
+            return Redirect(externalUrl);
         }
         public IActionResult FeesDetails()
         {
@@ -113,7 +99,8 @@ namespace EDSU_SYSTEM.Controllers
         }
         public IActionResult Login()
         {
-            return View();
+            string externalUrl = "https://old.edouniversity.edu.ng/admissions/instructions";
+            return Redirect(externalUrl);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -1016,11 +1003,15 @@ namespace EDSU_SYSTEM.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-       
+        public async Task<IActionResult> Applicants()
+        {
+            return View();
+        }
         public async Task<IActionResult> Wallet(string id)
         {
-            var applicant = await _context.UgApplicants.Where(x => x.ApplicantId == id).FirstOrDefaultAsync();
+            var applicant = await _context.UgApplicants.Where(x => x.UTMENumber == id).FirstOrDefaultAsync();
             var wallet = await _context.UgMainWallets.Where(x => x.WalletId == id).FirstOrDefaultAsync();
+            ViewBag.utme = applicant.UTMENumber;
             var model = new AdmissionWalletVM
             {
                 MainWallet = wallet,
@@ -1088,6 +1079,301 @@ namespace EDSU_SYSTEM.Controllers
         private bool ApplicantExists(int? id)
         {
           return _context.UgApplicants.Any(e => e.Id == id);
+        }
+
+        //////////////////////////////////////////////////////////////
+        ////////////////////TRANSACTION MODULES//////////////////////
+        //Initiating Acceptance payment
+        public async Task<IActionResult> Acceptance(string id, Payment payment, Student student)
+        {
+            var wallet = await _context.UgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.AcceptanceFee;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Acceptance";
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.Payments
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        //Initiating Tuition payment
+        public async Task<IActionResult> TuitionTransfer(string id, Payment payment, Student student)
+        {
+            var wallet = await _context.UgSubWallets
+                .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.Tuition2;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Tuition(Transfer)";
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.Payments
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        //[Authorize(Roles = "student, superAdmin")]
+        //Initiating Tuition payment
+        public async Task<IActionResult> Tuition(string id, Payment payment, Student student)
+        {
+            var wallet = await _context.UgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.Tuition;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Tuition";
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.Payments
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        //Initiating Tuition 60 Percent payment
+        public async Task<IActionResult> Tuition60(string id, Payment payment, Student student)
+        {
+            var wallet = await _context.UgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.SixtyPercent;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Tuition(60%)";
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.Payments
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        //Initiating Tuition 40 Percent payment
+        public async Task<IActionResult> Tuition40(string id, Payment payment, Student student)
+        {
+            var wallet = await _context.UgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.FortyPercent;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Tuition(40%)";
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.Payments
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        
+        //Initiating LMS payment
+        public async Task<IActionResult> LMS(string id, Payment payment, Student student)
+        {
+            var wallet = await _context.UgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.LMS;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "LMS";
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.Payments
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        //Initiating SRC payment
+        public async Task<IActionResult> SRC(string id, Payment payment, Student student)
+        {
+            var wallet = await _context.UgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.SRC;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "SRC";
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.Payments
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        //Initiating EDHIS payment
+        public async Task<IActionResult> EDHIS(string id, Payment payment, Student student)
+        {
+            var wallet = await _context.UgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.EDHIS;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "EDHIS";
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.Payments
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveEmail(string? Ref)
+        {
+            try
+            {
+                //var order = (from x in _context.Payments where x.Ref == Ref select x.Wallets.WalletId).FirstOrDefault();
+
+                var PaymentToUpdate = await _context.Payments
+               .FirstOrDefaultAsync(c => c.Ref == Ref);
+                var orderid = Ref;
+                if (await TryUpdateModelAsync<Payment>(PaymentToUpdate, "", c => c.Email))
+                {
+
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                            "Try again, and if the problem persists, " +
+                            "see your system administrator.");
+                    }
+                    return RedirectToAction("checkout", "wallets", new { orderid });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+
+            }
+            return View();
+
+        }
+        public async Task<IActionResult> History(string id)
+        {
+            var applicationDbContext = (from f in _context.Payments where f.Wallets.WalletId == id select f).Include(i => i.Wallets).Include(i => i.Wallets.Levels).Include(i => i.Sessions);
+            return View(await applicationDbContext.ToListAsync());
         }
     }
 }

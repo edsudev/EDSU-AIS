@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EDSU_SYSTEM.Models;
 using EDSU_SYSTEM.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
+    [Authorize(Roles = "superAdmin, fees")]
     public class FeesController : Controller
     {
         private readonly ApplicationDbContext _context;

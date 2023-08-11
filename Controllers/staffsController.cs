@@ -25,6 +25,10 @@ namespace EDSU_SYSTEM.Controllers
             _userManager = userManager;
             _context = context;
         }
+        public async Task<IActionResult> Admin()
+        {
+            return View();
+        }
         [Authorize(Roles = "staff, superAdmin")]
         // GET: staffs
         public async Task<IActionResult> Index()
