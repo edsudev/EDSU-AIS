@@ -249,6 +249,7 @@ namespace EDSU_SYSTEM.Controllers
 
                     // Create a new instance of UgSubWallet for each student
                     var newSubWallet = new UgSubWallet();
+                   
                     newSubWallet.WalletId = st.UTMENumber;
                     newSubWallet.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
                     newSubWallet.RegNo = st.UTMENumber;

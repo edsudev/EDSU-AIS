@@ -25,7 +25,7 @@ namespace EDSU_SYSTEM.Controllers
         [HttpGet]
         public IActionResult GetPaymentKey()
         {
-            var paymentKey = Environment.GetEnvironmentVariable("PAYSTACK_TEST_KEY");
+            var paymentKey = Environment.GetEnvironmentVariable("PAYSTACK_LIVE_KEY");
             return Json(paymentKey);
         }
 
