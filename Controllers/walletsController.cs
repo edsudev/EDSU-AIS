@@ -810,62 +810,8 @@ namespace EDSU_SYSTEM.Controllers
             return View();
 
         }
-        [Authorize(Roles = "student, superAdmin")]
-        public async Task<IActionResult> HostelUpdate(string data, BursaryClearance bursaryClearance)
-        {
-            try
-            {
-                var hostelPaymentToUpdate = _context.HostelPayments.Where(x => x.Ref == data).Include(x => x.HostelFees).FirstOrDefault();
-                var session = (from s in _context.Sessions where s.Id == hostelPaymentToUpdate.SessionId select s).FirstOrDefault();
-                var wlt = (from e in _context.UgSubWallets where e.Id == hostelPaymentToUpdate.WalletId select e).FirstOrDefault();
-                var department = (from d in _context.Departments where d.Id == wlt.Department select d.Name).FirstOrDefault();
-
-                hostelPaymentToUpdate.Status = "Approved";
-                hostelPaymentToUpdate.ReceiptNo = "BSA-" + DateTime.Now.Year.ToString().Substring(2);
-                _context.SaveChangesAsync();
-
-
-                var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
-                if (loggedInUser != null)
-                {
-                    var user = loggedInUser.StudentsId;
-                    bursaryClearance.StudentId = user;
-                }
-                else
-                {
-                    //bursaryClearance.StudentId = ;
-                }
-                bursaryClearance.ClearanceId = Guid.NewGuid().ToString();
-                bursaryClearance.HostelId = hostelPaymentToUpdate.Id;
-                bursaryClearance.SessionId = session.Id;
-                bursaryClearance.CreatedAt = DateTime.Now;
-                _context.BursaryClearances.Add(bursaryClearance);
-                await _context.SaveChangesAsync();
-
-                TempData["PaymentSession"] = session.Name;
-                TempData["PaymentRef"] = hostelPaymentToUpdate.Ref;
-                TempData["ReceiptNo"] = hostelPaymentToUpdate.ReceiptNo;
-                TempData["PaymentDate"] = hostelPaymentToUpdate.PaymentDate;
-                TempData["PaymentDepartment"] = department;
-                TempData["PaymentUTME"] = wlt.RegNo;
-                TempData["PaymentName"] = wlt.Name;
-                TempData["PaymentEmail"] = hostelPaymentToUpdate.Email;
-                //Tempdata doesnt have the capability to accept objects or to serialize objects.
-                //As a result, you need to do this yourself
-                TempData["PaymentAmount"] = JsonConvert.SerializeObject(hostelPaymentToUpdate.Amount);
-                TempData["PaymentDescription"] = hostelPaymentToUpdate.HostelFees.Name;
-                TempData["PaymentWalletId"] = wlt.WalletId;
-                return RedirectToAction("Index", "Wallets");
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-
-        }
-      //  [Authorize(Roles = "student, superAdmin")]
+        
+         //  [Authorize(Roles = "student, superAdmin")]
         //Updating the payment record and creating tempdata for receipt
         public async Task<IActionResult> UpdatePayment(string data, BursaryClearance bursaryClearance)
         {

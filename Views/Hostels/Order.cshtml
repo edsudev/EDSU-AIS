@@ -19,9 +19,9 @@
                     - Provide a valid email address to enable you access your receipt
                 </div>
                 <div class="col-md-12 widget-content widget-content-area p-3">
-                    <form asp-action="Hostel">
+                    <form asp-action="Order" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <input type="hidden" asp-for="Ref" />
+                            <input value="@ViewBag.reference" type="hidden" name="reference" />
                         <div class="form-group">
                             <label class="control-label">Payer ID</label>
                             <input disabled value="@ViewBag.Name" class="form-control" />
@@ -32,9 +32,8 @@
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="HostelType" class="control-label">Payment Description</label>
-                                <input asp-for="HostelType" value="@ViewBag.hostel" disabled class="form-control" />
-                            <span asp-validation-for="HostelType" class="text-danger"></span>
+                            <label class="control-label">Payment Description</label>
+                            <input value="@ViewBag.hostel" disabled class="form-control" />
                         </div>
                         <div class="form-group">
                             <input type="submit" value="Continue" class="btn btn-primary form-control" />

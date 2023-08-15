@@ -836,7 +836,7 @@ namespace EDSU_SYSTEM.Controllers
         public async Task<IActionResult> ActivateWallet(string? id, UgSubWallet myWallet)
         {
             var applicant = await _context.UgApplicants
-                .FirstOrDefaultAsync(m => m.ApplicantId == id);
+                .FirstOrDefaultAsync(m => m.UTMENumber == id);
             if (applicant == null)
             {
                 return NotFound();

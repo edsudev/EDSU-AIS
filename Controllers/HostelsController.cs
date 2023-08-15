@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace EDSU_SYSTEM.Controllers
 {
@@ -72,6 +73,7 @@ namespace EDSU_SYSTEM.Controllers
                 else if (hostelIsAvailable.BedspacesCount > 0)
                 {
                     TempData["hostelType"] = hostelIsAvailable.Id;
+                    TempData["hostelName"] = hostelIsAvailable.Name;
                     TempData["hostelAmount"] = hostelIsAvailable.Amount;
                 }
                 var id = hostelIsAvailable.Id;
@@ -94,6 +96,7 @@ namespace EDSU_SYSTEM.Controllers
                 var ugStudent = loggedInUser.StudentsId;
 
                 var student = (from st in _context.Students where st.Id == ugStudent select st).FirstOrDefault();
+                ViewBag.Name = student.Fullname;
                 // I did this because the walletId is same as the student UTME Number
                 var wallet = await _context.UgSubWallets
                 .FirstOrDefaultAsync(m => m.WalletId == student.UTMENumber);
@@ -113,6 +116,10 @@ namespace EDSU_SYSTEM.Controllers
                 payment.PaymentDate = DateTime.Now;
                 _context.HostelPayments.Add(payment);
                 await _context.SaveChangesAsync();
+
+                ViewBag.reference = payment.Ref;
+                ViewBag.hostel = TempData["hostelName"];
+                Console.WriteLine(ViewBag.hostel);
                 return View();
             }
             catch (Exception)
@@ -124,11 +131,12 @@ namespace EDSU_SYSTEM.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Order(string Ref)
+        public async Task<IActionResult> Order(string? reference)
         {
+            Console.Write(reference);
             try
             {
-                var PaymentToUpdate = await _context.HostelPayments.FirstOrDefaultAsync(i => i.Ref == Ref);
+                var PaymentToUpdate = await _context.HostelPayments.FirstOrDefaultAsync(i => i.Ref == reference);
 
                 if (await TryUpdateModelAsync<HostelPayment>(PaymentToUpdate, "", c => c.Email))
                 {
@@ -142,7 +150,7 @@ namespace EDSU_SYSTEM.Controllers
                             "Try again, and if the problem persists, " +
                             "see your system administrator.");
                     }
-                    return RedirectToAction("OrderCheckout", "hostels", new { Ref });
+                    return RedirectToAction("OrderCheckout", "hostels", new { reference });
 
                 }
             }
@@ -151,15 +159,15 @@ namespace EDSU_SYSTEM.Controllers
                 ex.ToString();
 
             }
-            return View();
+            return RedirectToAction("OrderCheckout", "hostels", new { reference });
 
         }
-        public async Task<IActionResult> OrderCheckout(string Ref)
+        public async Task<IActionResult> OrderCheckout(string reference)
         {
 
-            var paymentToUpdate = _context.HostelPayments.Where(i => i.Ref == Ref).Include(i => i.HostelFees).FirstOrDefault();
+            var paymentToUpdate = _context.HostelPayments.Where(i => i.Ref == reference).Include(i => i.HostelFees).FirstOrDefault();
 
-            if (Ref == null || _context.HostelPayments == null)
+            if (reference == null || _context.HostelPayments == null)
             {
                 return NotFound();
             }
@@ -169,6 +177,76 @@ namespace EDSU_SYSTEM.Controllers
             }
 
             return View(paymentToUpdate);
+        }
+        public async Task<IActionResult> HostelUpdate(string data, BursaryClearance bursaryClearance)
+        {
+            try
+            {
+                var hostelPaymentToUpdate = _context.HostelPayments.Where(x => x.Ref == data).Include(x => x.HostelFees).FirstOrDefault();
+                var session = (from s in _context.Sessions where s.Id == hostelPaymentToUpdate.SessionId select s).FirstOrDefault();
+                var wlt = (from e in _context.UgSubWallets where e.Id == hostelPaymentToUpdate.WalletId select e).FirstOrDefault();
+                var department = (from d in _context.Departments where d.Id == wlt.Department select d.Name).FirstOrDefault();
+
+                hostelPaymentToUpdate.Status = "Approved";
+                hostelPaymentToUpdate.ReceiptNo = "BSA-" + DateTime.Now.Year.ToString().Substring(2);
+                _context.SaveChangesAsync();
+
+
+                //var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+                //if (loggedInUser != null)
+                //{
+                //    var user = loggedInUser.StudentsId;
+                //    bursaryClearance.StudentId = user;
+                //}
+                //else
+                //{
+                //    //bursaryClearance.StudentId = ;
+                //}
+                //bursaryClearance.ClearanceId = Guid.NewGuid().ToString();
+                //bursaryClearance.HostelId = hostelPaymentToUpdate.Id;
+                //bursaryClearance.SessionId = session.Id;
+                //bursaryClearance.CreatedAt = DateTime.Now;
+                //_context.BursaryClearances.Add(bursaryClearance);
+                //await _context.SaveChangesAsync();
+
+                TempData["PaymentSession"] = session.Name;
+                TempData["PaymentRef"] = hostelPaymentToUpdate.Ref;
+                TempData["ReceiptNo"] = hostelPaymentToUpdate.ReceiptNo;
+                TempData["PaymentDate"] = hostelPaymentToUpdate.PaymentDate;
+                TempData["PaymentDepartment"] = department;
+                TempData["PaymentUTME"] = wlt.RegNo;
+                TempData["PaymentName"] = wlt.Name;
+                TempData["PaymentEmail"] = hostelPaymentToUpdate.Email;
+                //Tempdata doesnt have the capability to accept objects or to serialize objects.
+                //As a result, you need to do this yourself
+                TempData["PaymentAmount"] = JsonConvert.SerializeObject(hostelPaymentToUpdate.Amount);
+                TempData["PaymentDescription"] = hostelPaymentToUpdate.HostelFees.Name;
+                TempData["PaymentWalletId"] = wlt.WalletId;
+                return RedirectToAction("Index", "Wallets");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        public IActionResult Receipt()
+        {
+            //var d = _context.HostelPayments.Where(x => x.Ref == Ref).FirstOrDefault();
+            ViewBag.PaymentRef = TempData["PaymentRef"];
+            ViewBag.ReceiptNo = TempData["ReceiptNo"];
+            ViewBag.Date = TempData["PaymentDate"];
+            ViewBag.Name = TempData["PaymentName"];
+            ViewBag.Email = TempData["PaymentEmail"];
+            ViewBag.UTME = TempData["PaymentUTME"];
+            ViewBag.Department = TempData["PaymentDepartment"];
+            ViewBag.Session = TempData["PaymentSession"];
+            ViewBag.Amount = TempData["PaymentAmount"];
+            ViewBag.Description = TempData["PaymentDescription"];
+            ViewBag.WalletId = TempData["PaymentWalletId"];
+
+            Console.WriteLine("update receipt with " + ViewBag.PaymentRef);
+            return View();
         }
         // GET: Hostels/Details/5
         public async Task<IActionResult> Details(int? id)

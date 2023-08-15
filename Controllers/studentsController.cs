@@ -84,7 +84,76 @@ namespace EDSU_SYSTEM.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> PopulateWallet(UgSubWallet subWallet, UgMainWallet ugmain)
+        //Set wallet fees for students
+        public async Task<IActionResult> Setwallet(string? id, UgSubWallet subWallet, UgMainWallet ugmain)
+        {
+            var student = (from st in _context.Students where st.SchoolEmailAddress == id select st).FirstOrDefault();
+            var hasMainWallet = (from main in _context.UgMainWallets where main.WalletId == id select main.WalletId).FirstOrDefault();
+            if(hasMainWallet == null)
+            {
+                ugmain.UTME = student.UTMENumber;
+                ugmain.WalletId = student.UTMENumber;
+                ugmain.Status = true;
+                ugmain.CreditBalance = 0;
+                ugmain.BulkDebitBalanace = 0;
+                ugmain.DateCreated = DateTime.Now;
+                ugmain.Name = student.Fullname;
+                _context.UgMainWallets.Add(ugmain);
+                await _context.SaveChangesAsync();
+            }
+            try
+                {
+                var tuition = (from tu in _context.Fees where tu.DepartmentId == student.Department select tu).FirstOrDefault();
+                if (tuition == null)
+                {
+                    tuition.Level1 = 0;
+                }
+                Random r = new();
+                // string a = st.Id.ToString() + r.Next(10000);
+
+                // Create a new instance of UgSubWallet for each student
+                var newSubWallet = new UgSubWallet();
+                newSubWallet.WalletId = student.UTMENumber;
+                newSubWallet.Name = student.Fullname;
+                newSubWallet.RegNo = student.UTMENumber;
+                newSubWallet.CreditBalance = 0;
+                newSubWallet.Status = true;
+                newSubWallet.DateCreated = DateTime.Now;
+                newSubWallet.Tuition = tuition.Level1;
+                   
+                newSubWallet.Tuition2 = 0;
+
+                newSubWallet.FortyPercent = newSubWallet.Tuition * 40 / 100;
+                newSubWallet.SixtyPercent = newSubWallet.Tuition * 60 / 100;
+                newSubWallet.LMS = 40000;
+                newSubWallet.AcceptanceFee = 70000;
+                newSubWallet.SRC = 2000;
+                newSubWallet.EDHIS = 25000;
+                newSubWallet.SessionId = 9;
+                newSubWallet.Debit = newSubWallet.Tuition + newSubWallet.Tuition2 + newSubWallet.LMS
+                                    + newSubWallet.EDHIS + newSubWallet.SRC + newSubWallet.AcceptanceFee;
+                newSubWallet.Level = student.Level;
+                newSubWallet.Department = student.Department;
+
+                _context.UgSubWallets.Add(newSubWallet);
+                await _context.SaveChangesAsync();
+
+                var main = (from m in _context.UgMainWallets where m.WalletId == newSubWallet.WalletId select m).FirstOrDefault();
+                main.BulkDebitBalanace = newSubWallet.Debit;
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                // Handle exceptions appropriately
+                throw;
+            }
+            
+
+            return View();
+        }
+
+        //Populate fees for applicants 23/34
+         public async Task<IActionResult> PopulateWallet(UgSubWallet subWallet, UgMainWallet ugmain)
         {
             var students = (from s in _context.UgApplicants where s.Status == (Enum.MainStatus)1 || s.Status == (Enum.MainStatus)2 select s).ToList();
 
@@ -146,7 +215,90 @@ namespace EDSU_SYSTEM.Controllers
 
             return View();
         }
+        //Create mainwallet for applicants
+        public async Task<IActionResult> CreateMainWalletUGA(UgSubWallet subWallet, UgMainWallet ugmain)
+        {
+            var students = (from s in _context.UgApplicants where s.Status == (Enum.MainStatus)1 || s.Status == (Enum.MainStatus)2 select s).ToList();
 
+            foreach (var st in students)
+            {
+                try
+                {
+                    var p = DateTime.Now.Millisecond.ToString() + st.Id.ToString();
+                   
+                    ugmain.ApplicantId = 1;
+                    ugmain.Id = int.Parse(p);
+                    ugmain.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
+                    ugmain.WalletId = st.UTMENumber;
+                    ugmain.UTME = st.UTMENumber;
+                    ugmain.BulkDebitBalanace = 0;
+                    ugmain.CreditBalance = 0;
+                    ugmain.Status = false;
+                    ugmain.DateCreated = DateTime.Now;
+                    _context.UgMainWallets.Add(ugmain);
+                    await _context.SaveChangesAsync();
+
+
+                    var tuition = (from tu in _context.Fees where tu.DepartmentId == st.AdmittedInto select tu).FirstOrDefault();
+                    if (tuition == null)
+                    {
+                        tuition.Level1 = 0;
+                    }
+                    Random r = new();
+                    string a = st.Id.ToString() + r.Next(10000);
+
+                    // Create a new instance of UgSubWallet for each student
+                    var newSubWallet = new UgSubWallet();
+                    newSubWallet.WalletId = st.UTMENumber;
+                    newSubWallet.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
+                    newSubWallet.RegNo = st.UTMENumber;
+                    newSubWallet.CreditBalance = 0;
+                    newSubWallet.Status = true;
+                    newSubWallet.DateCreated = DateTime.Now;
+                    newSubWallet.Tuition = tuition.Level1;
+                    if (st.ModeOfEntry == "Transfer" && (st.AdmittedInto == 38 || st.AdmittedInto == 24 || st.AdmittedInto == 1))
+                    {
+                        newSubWallet.Tuition2 = tuition.Level1;
+                    }
+                    else
+                    {
+                        newSubWallet.Tuition2 = 0;
+                    }
+
+                    newSubWallet.FortyPercent = newSubWallet.Tuition * 40 / 100;
+                    newSubWallet.SixtyPercent = newSubWallet.Tuition * 60 / 100;
+                    newSubWallet.LMS = 40000;
+                    newSubWallet.AcceptanceFee = 70000;
+                    newSubWallet.SRC = 2000;
+                    newSubWallet.EDHIS = 25000;
+                    newSubWallet.SessionId = 9;
+                    newSubWallet.Debit = newSubWallet.Tuition + newSubWallet.Tuition2 + newSubWallet.LMS
+                                        + newSubWallet.EDHIS + newSubWallet.SRC + newSubWallet.AcceptanceFee;
+                    newSubWallet.Level = st.LevelAdmittedTo;
+                    newSubWallet.Department = st.AdmittedInto;
+
+                    _context.UgSubWallets.Add(newSubWallet);
+                    await _context.SaveChangesAsync();
+
+                    var main = (from m in _context.UgMainWallets where m.WalletId == newSubWallet.WalletId select m).FirstOrDefault();
+                    main.BulkDebitBalanace = newSubWallet.Debit;
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+                    // Handle exceptions appropriately
+                    throw;
+                }
+            }
+
+            return View();
+        }
+        /// <summary>
+        /// //////////////////
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="myWallet"></param>
+        /// <returns></returns>
         //For migrated Students
         public async Task<IActionResult> ActivateWallet(string? id, UgSubWallet myWallet)
         {
