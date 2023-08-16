@@ -65,11 +65,6 @@ services.AddAuthentication()
             options.CallbackPath = "/signin-google";
         });
 
-// Add Razor Runtime Compilation for development environment
-#if DEBUG
-services.AddRazorPages().AddRazorRuntimeCompilation();
-#endif
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -390,6 +390,7 @@ namespace EDSU_SYSTEM.Controllers
             return View(model);
            
         }
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Allstudents()
         {
             ViewBag.err = TempData["err"];
@@ -398,6 +399,7 @@ namespace EDSU_SYSTEM.Controllers
             return View(await applicationDbContext.ToListAsync());
            
         }
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Graduated()
         {
             ViewBag.err = TempData["err"];
@@ -405,7 +407,8 @@ namespace EDSU_SYSTEM.Controllers
                 .Include(s => s.Levels);
             return View(await applicationDbContext.ToListAsync());
            
-        } 
+        }
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Expelled()
         {
             ViewBag.err = TempData["err"];
@@ -414,7 +417,7 @@ namespace EDSU_SYSTEM.Controllers
             return View(await applicationDbContext.ToListAsync());
            
         }
-
+        [Authorize(Roles = "hod, superAdmin")]
         public async Task<IActionResult> MyStudents()
         {
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
@@ -425,6 +428,7 @@ namespace EDSU_SYSTEM.Controllers
             return View(await applicationDbContext.ToListAsync());
 
         }
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> UpdateStudents()
         {
             return _context.Departments != null ?
@@ -433,7 +437,7 @@ namespace EDSU_SYSTEM.Controllers
         }
         //This module updates students session and level 
         //and it is done based on department
-
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> update(string id, UgSubWallet myWallet)
         {
             Console.WriteLine("This is the department" + id);
@@ -533,6 +537,7 @@ namespace EDSU_SYSTEM.Controllers
             }
             return View();
         }
+        [Authorize(Roles = "superAdmin")]
         //Graduate Student by changing their status
         public async Task<IActionResult> Graduate(string id, Student student)
         {
@@ -622,7 +627,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return View(student);
         }
-
+        [Authorize(Roles = "superAdmin")]
         // GET: students/Create
         public IActionResult Create()
         {
@@ -635,7 +640,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewData["StateOfOriginId"] = new SelectList(_context.States, "Id", "Id");
             return View();
         }
-
+        [Authorize(Roles = "superAdmin")]
         // POST: students/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -658,7 +663,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewData["StateOfOriginId"] = new SelectList(_context.States, "Id", "Id", student.StateOfOriginId);
             return View(student);
         }
-
+        [Authorize(Roles = "superAdmin")]
         // GET: students/Edit/5
         public IActionResult Edit(int? id)
         {
