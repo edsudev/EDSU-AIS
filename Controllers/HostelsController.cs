@@ -9,6 +9,7 @@ using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
@@ -22,7 +23,7 @@ namespace EDSU_SYSTEM.Controllers
             _context = context;
             _userManager = userManager;
         }
-
+        [Authorize(Roles = "superAdmin")]
         // GET: Hostels
         public async Task<IActionResult> Index()
         {
