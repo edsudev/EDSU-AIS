@@ -66,12 +66,12 @@ services.AddAuthentication()
         });
 
 var app = builder.Build();
-
+builder.Environment.EnvironmentName = Environments.Production;
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    //app.UseDeveloperExceptionPage();
-    //app.UseMigrationsEndPoint();
+//app.UseDeveloperExceptionPage();
+//app.UseMigrationsEndPoint();
 //}
 //else
 //{
