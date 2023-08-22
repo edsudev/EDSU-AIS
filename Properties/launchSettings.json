@@ -12,11 +12,11 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      
-      //"applicationUrl": "https://localhost:2222",
-      "applicationUrl": "https://edouniversity.edu.ng",
+      "applicationUrl": "https://localhost:2222;http://localhost:5105",
+      //"applicationUrl": "https://edouniversity.edu.ng",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "DOTNET_ENVIRONMENT": "Production"
       }
     },
     "IIS Express": {

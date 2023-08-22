@@ -87,8 +87,8 @@ namespace EDSU_SYSTEM.Controllers
             {
                 return NotFound();
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Id", fee.DepartmentId);
-            ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Id", fee.SessionId);
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", fee.DepartmentId);
+            ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Name", fee.SessionId);
             return View(fee);
         }
 

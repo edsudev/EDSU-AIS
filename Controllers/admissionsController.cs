@@ -49,12 +49,12 @@ namespace EDSU_SYSTEM.Controllers
         {
             //var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             //var user = loggedInUser.StudentsId;
-            var applicantUTME = (from ap in _context.UgApplicants where ap.UTMENumber == id select ap).FirstOrDefault();
-            ViewBag.name = applicantUTME.Surname + " " + applicantUTME.FirstName + " " + applicantUTME.OtherName;
-            ViewBag.department = applicantUTME.Departments.Name;
-            var wallet = (from s in _context.UgSubWallets where s.WalletId == applicantUTME.UTMENumber select s).Include(c => c.Sessions).ToList();
+            //var applicantUTME = (from ap in _context.UgApplicants where ap.UTMENumber == id select ap).FirstOrDefault();
+            //ViewBag.name = applicantUTME.Surname + " " + applicantUTME.FirstName + " " + applicantUTME.OtherName;
+            //ViewBag.department = applicantUTME.Departments.Name;
+            var wallet = (from s in _context.UgSubWallets where s.WalletId == id select s).Include(c => c.Sessions).ToList();
             
-            if (wallet == null)
+            if (!wallet.Any())
             {
                 return RedirectToAction("pagenotfound", "error");
             }
@@ -1009,15 +1009,17 @@ namespace EDSU_SYSTEM.Controllers
         }
         public async Task<IActionResult> Wallet(string id)
         {
-            var applicant = await _context.UgApplicants.Where(x => x.UTMENumber == id).FirstOrDefaultAsync();
+            Console.Write(id);
+            //var applicant = await _context.UgApplicants.Where(x => x.UTMENumber == id).FirstOrDefaultAsync();
             var wallet = await _context.UgMainWallets.Where(x => x.WalletId == id).FirstOrDefaultAsync();
-            ViewBag.utme = applicant.UTMENumber;
-            var model = new AdmissionWalletVM
-            {
-                MainWallet = wallet,
-                Applicant = applicant
-            };
-            return View(model);
+            
+            ViewBag.utme =id;
+            //var model = new AdmissionWalletVM
+            //{
+            //    MainWallet = wallet,
+            //    //Applicant = applicant
+            //};
+            return View(wallet);
         }
         //public async Task<IActionResult> Debts(string id)
         //{
@@ -1358,7 +1360,7 @@ namespace EDSU_SYSTEM.Controllers
                             "Try again, and if the problem persists, " +
                             "see your system administrator.");
                     }
-                    return RedirectToAction("checkout", "wallets", new { orderid });
+                    return RedirectToAction("checkout", "admissions", new { orderid });
 
                 }
             }
@@ -1370,6 +1372,97 @@ namespace EDSU_SYSTEM.Controllers
             return View();
 
         }
+        public async Task<IActionResult> Checkout(string? orderid)
+        {
+            var paymentToGet = await _context.Payments
+                .FirstOrDefaultAsync(x => x.Ref == orderid);
+            if (orderid == null || _context.Payments == null)
+            {
+                return NotFound();
+            }
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            return View(paymentToGet);
+        }
+        public async Task<IActionResult> Others(string id, Payment payment, Student student)
+        {
+            //Using Viewbag to display list of other fees and session from their respective tables table.
+            ViewData["otherFees"] = new SelectList(_context.OtherFees, "Id", "Name");
+
+            var wallet = await _context.UgSubWallets
+                .FirstOrDefaultAsync(m => m.WalletId == id);
+            Random r = new();
+            //Payment is created just before it returns the view
+
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint and the post method to update record
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["WalletId"] = wallet.Id;
+
+            return View(payment);
+        }
+        //Initiating Other Payments
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Others(string Ref)
+        {
+            try
+            {
+                var PaymentToUpdate = await _context.Payments.FirstOrDefaultAsync(x => x.Ref == Ref);
+                //var OtherRef = Ref;
+
+                if (await TryUpdateModelAsync<Payment>(PaymentToUpdate, "", c => c.Email, c => c.OtherFeesDesc))
+                {
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                        var othersText = (from o in _context.OtherFees where o.Id == PaymentToUpdate.OtherFeesDesc select o.Amount).Sum();
+                        PaymentToUpdate.Amount = (double?)othersText;
+                        await _context.SaveChangesAsync();
+
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                            "Try again, and if the problem persists, " +
+                            "see your system administrator.");
+                    }
+                    return RedirectToAction("otherscheckout", "admissions", new { Ref });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+
+            }
+            return View();
+
+        }
+        public async Task<IActionResult> OthersCheckout(string Ref)
+        {
+            var paymentToUpdate = _context.Payments.Where(i => i.Ref == Ref).FirstOrDefault();
+            if (Ref == null || _context.Payments == null)
+            {
+                return NotFound();
+            }
+            if (paymentToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            return View(paymentToUpdate);
+        }
+
         public async Task<IActionResult> History(string id)
         {
             var applicationDbContext = (from f in _context.Payments where f.Wallets.WalletId == id select f).Include(i => i.Wallets).Include(i => i.Wallets.Levels).Include(i => i.Sessions);

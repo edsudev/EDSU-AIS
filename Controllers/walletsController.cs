@@ -25,7 +25,7 @@ namespace EDSU_SYSTEM.Controllers
         [HttpGet]
         public IActionResult GetPaymentKey()
         {
-            var paymentKey = Environment.GetEnvironmentVariable("PAYSTACK_LIVE_KEY");
+            var paymentKey = Environment.GetEnvironmentVariable("PAYSTACK_TEST_KEY");
             return Json(paymentKey);
         }
 
@@ -813,7 +813,7 @@ namespace EDSU_SYSTEM.Controllers
         
          //  [Authorize(Roles = "student, superAdmin")]
         //Updating the payment record and creating tempdata for receipt
-        public async Task<IActionResult> UpdatePayment(string data, BursaryClearance bursaryClearance)
+        public async Task<IActionResult> UpdatePayment(string data, BursaryClearance bursaryClearance, BursaryClearanceFresher bcf)
         {
 
             var walletId = TempData["walletId"];
@@ -953,17 +953,24 @@ namespace EDSU_SYSTEM.Controllers
                 {
                     var user = loggedInUser.StudentsId;
                     bursaryClearance.StudentId = user;
+                    bursaryClearance.ClearanceId = Guid.NewGuid().ToString();
+                    bursaryClearance.PaymentId = payments.Id;
+                    bursaryClearance.SessionId = session.Id;
+                    bursaryClearance.CreatedAt = DateTime.Now;
+                    _context.BursaryClearances.Add(bursaryClearance);
+                    await _context.SaveChangesAsync();
                 }
                 else
                 {
-                    //bursaryClearance.StudentId = ;
+                    bcf.SessionId = session.Id;
+                    bcf.PaymentId = payments.Id;
+                    bcf.CreatedAt = DateTime.Now;
+                    bcf.ClearanceId = wlt.WalletId;
+                   // bcf.StudentId = wlt.WalletId;
+                    _context.BursaryClearancesFreshers.Add(bcf);
+                    await _context.SaveChangesAsync();
                 }
-                bursaryClearance.ClearanceId = Guid.NewGuid().ToString();
-                bursaryClearance.PaymentId = payments.Id;
-                bursaryClearance.SessionId = session.Id;
-                bursaryClearance.CreatedAt = DateTime.Now;
-                _context.BursaryClearances.Add(bursaryClearance);
-                await _context.SaveChangesAsync();
+                
 
 
                 TempData["PaymentSession"] = session.Name;
@@ -984,7 +991,6 @@ namespace EDSU_SYSTEM.Controllers
             return RedirectToAction("Index", "Wallets");
         }
 
-        [Authorize(Roles = "student, superAdmin")]
         public async Task<IActionResult> Verify(string? id)
         {
             if (id == null || _context.Payments == null)
@@ -1002,41 +1008,36 @@ namespace EDSU_SYSTEM.Controllers
             var wlt = (from e in _context.UgSubWallets where e.Id == payment.WalletId select e).FirstOrDefault();
             var department = (from d in _context.Departments where d.Id == wlt.Department select d.Name).FirstOrDefault();
             TempData["PaymentSession"] = session;
-            TempData["PaymentRef"] = payment.Ref;
-            TempData["ReceiptNo"] = "BSA-" + DateTime.Now.Year.ToString().Substring(2) + "-" + payment.Id;
-            TempData["PaymentDate"] = payment.PaymentDate;
+            
             TempData["PaymentDepartment"] = department;
             TempData["PaymentUTME"] = wlt.RegNo;
             TempData["PaymentName"] = wlt.Name;
             TempData["PaymentEmail"] = payment.Email;
             //Tempdata doesnt have the capability to accept objects or to serialize objects.
             //As a result, you need to do this yourself
-            TempData["PaymentAmount"] = JsonConvert.SerializeObject(payment.Amount);
-            TempData["PaymentDescription"] = payment.Type;
+           // TempData["PaymentAmount"] = JsonConvert.SerializeObject(payment.Amount);
             TempData["PaymentWalletId"] = wlt.WalletId;
+            TempData["wid"] = wlt.Id;
             return RedirectToAction("receipt", new { id });
             //return View(payment);
         }
-        [Authorize(Roles = "student, superAdmin")]
+        //[Authorize(Roles = "student, superAdmin")]
 
         //Payment Receipt
         public IActionResult Receipt()
         {
-            //var d = _context.HostelPayments.Where(x => x.Ref == Ref).FirstOrDefault();
-            ViewBag.PaymentRef = TempData["PaymentRef"];
-            ViewBag.ReceiptNo = TempData["ReceiptNo"];
-            ViewBag.Date = TempData["PaymentDate"];
             ViewBag.Name = TempData["PaymentName"];
             ViewBag.Email = TempData["PaymentEmail"];
             ViewBag.UTME = TempData["PaymentUTME"];
             ViewBag.Department = TempData["PaymentDepartment"];
             ViewBag.Session = TempData["PaymentSession"];
-            ViewBag.Amount = TempData["PaymentAmount"];
-            ViewBag.Description = TempData["PaymentDescription"];
             ViewBag.WalletId = TempData["PaymentWalletId"];
-
-            Console.WriteLine("update receipt with " + ViewBag.PaymentRef);
-            return View();
+            int walletIdFromTempData = (int)TempData["wid"];
+            string utme = ViewBag.WalletId;
+            var debit = (from s in _context.UgMainWallets where s.WalletId == utme select s.BulkDebitBalanace).FirstOrDefault();
+            ViewBag.debit = debit;
+            var payment = (from pt in _context.Payments where pt.WalletId == walletIdFromTempData && pt.Status == "Approved" select pt).ToList();
+            return View(payment);
         }
 
     }

@@ -34,7 +34,7 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.Level6)
                                 </th>
-                                <th>
+                                @*<th>
                                     @Html.DisplayNameFor(model => model.Pgd)
                                 </th>
                                 <th>
@@ -45,7 +45,7 @@
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.SessionId)
-                                </th>
+                                </th>*@
                             </tr>
                         </thead>
                         <form asp-action="Edit">
@@ -60,10 +60,10 @@
                                 <td><input class="form-control" asp-for="Level4"></td>
                                 <td><input class="form-control" asp-for="Level5"></td>
                                 <td><input class="form-control" asp-for="Level6"></td>
-                                <td><input class="form-control" asp-for="Pgd"></td>
+                               @* <td><input class="form-control" asp-for="Pgd"></td>
                                 <td><input class="form-control" asp-for="Msc"></td>
                                 <td><input class="form-control" asp-for="Phd"></td>
-                                <td><input class="form-control" asp-for="SessionId"></td>
+                                <td><input class="form-control" asp-for="SessionId"></td>*@
                                 <td>
                                     <div class="form-group">
                                         <input type="submit" value="Save" class="btn btn-primary" />
@@ -76,7 +76,7 @@
                         <tr>
                             <th>
                                 @*@Html.DisplayNameFor(model => model.Name)*@
-                                @Html.DisplayNameFor(model => model.DepartmentId)
+                                @Html.DisplayNameFor(model => model.Departments.Name)
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.Level1)
@@ -96,7 +96,7 @@
                             <th>
                                 @Html.DisplayNameFor(model => model.Level6)
                             </th>
-                            <th>
+                            @*<th>
                                 @Html.DisplayNameFor(model => model.Pgd)
                             </th>
                             <th>
@@ -107,7 +107,7 @@
                             </th>
                             <th>
                                 @Html.DisplayNameFor(model => model.Sessions.Name)
-                            </th>
+                            </th>*@
                         </tr>
                     </tfoot>
                 </table>

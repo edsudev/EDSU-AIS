@@ -4,7 +4,7 @@
 }
 @*All Transactions Done on this wallet*@
 <div class="main-container" id="container">
-<partial name="_StudentDashboardPartial" />
+@*<partial name="_StudentDashboardPartial" />*@
 <!--  BEGIN CONTENT AREA  -->
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
@@ -23,7 +23,7 @@
                                     <th>Status</th>
                                     <th>Session</th>
                                     <th>Date</th>
-                                    <th>Action</th>
+                                    @*<th>Action</th>*@
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,10 +51,10 @@
                                             @item.PaymentDate
                                         </td>
                                        
-                                        <td>
+                                        @*<td>
                                             <a class="btn btn-primary" asp-action="Verify" asp-route-id="@item.Ref"> Receipt</a>
                                            
-                                        </td>
+                                        </td>*@
                                     </tr>
                                 }
                             </tbody>

@@ -23,7 +23,7 @@ namespace EDSU_SYSTEM.Controllers
             _context = context;
             _userManager = userManager;
         }
-        [Authorize(Roles = "superAdmin")]
+       // [Authorize(Roles = "superAdmin")]
         // GET: Hostels
         public async Task<IActionResult> Index()
         {

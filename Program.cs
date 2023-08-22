@@ -1,13 +1,15 @@
 using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Hosting;
+
 using MySqlConnector;
 using System;
+using static EDSU_SYSTEM.Models.Enum;
+
 
 // Load environment variables from .env file
 DotNetEnv.Env.Load();
@@ -16,17 +18,13 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
+
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-services.AddDatabaseDeveloperPageExceptionFilter();
+//services.AddDatabaseDeveloperPageExceptionFilter();
 
-////////////////////
-///
-
-
-//////////////////////////
 
 services.AddDefaultIdentity<ApplicationUser>(options =>
 {
@@ -66,18 +64,28 @@ services.AddAuthentication()
         });
 
 var app = builder.Build();
-builder.Environment.EnvironmentName = Environments.Production;
+
+
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-//app.UseDeveloperExceptionPage();
-//app.UseMigrationsEndPoint();
+//    app.UseDeveloperExceptionPage();
+//    app.UseMigrationsEndPoint();
 //}
 //else
 //{
-        app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/Home/Error");
 //    // The default HSTS value is 30 days. You may want to change this for production scenarios.
-        app.UseHsts();
+app.UseHsts();
+//builder.Services.AddHsts(options =>
+//{
+//    options.Preload = true;
+//    options.IncludeSubDomains = true;
+//    options.MaxAge = TimeSpan.FromDays(60);
+//    //options.ExcludedHosts.Add("example.com");
+//    //options.ExcludedHosts.Add("www.example.com");
+//});
 //}
 
 

@@ -48,7 +48,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Activities");
+                    b.ToTable("Activities", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.AdmissionLetter", b =>
@@ -96,7 +96,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.ToTable("AdmissionLetters");
+                    b.ToTable("AdmissionLetters", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.AllFees", b =>
@@ -161,7 +161,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("AllFees");
+                    b.ToTable("AllFees", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Applicant", b =>
@@ -495,7 +495,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("YearOfAdmission");
 
-                    b.ToTable("UgApplicants");
+                    b.ToTable("UgApplicants", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ApplicationPayment", b =>
@@ -541,7 +541,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("ApplicationPayments");
+                    b.ToTable("ApplicationPayments", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ApplicationUser", b =>
@@ -673,7 +673,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("BursaryClearances");
+                    b.ToTable("BursaryClearances", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.BursaryClearanceFresher", b =>
@@ -713,7 +713,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("BursaryClearancesFreshers");
+                    b.ToTable("BursaryClearancesFreshers", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.BursaryClearedStudents", b =>
@@ -741,7 +741,7 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasIndex("StudentId", "SessionId")
                         .IsUnique();
 
-                    b.ToTable("BursaryClearedStudents");
+                    b.ToTable("BursaryClearedStudents", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionApplicant", b =>
@@ -1072,7 +1072,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("YearOfAdmission");
 
-                    b.ToTable("ConversionApplicants");
+                    b.ToTable("ConversionApplicants", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionCourse", b =>
@@ -1127,7 +1127,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("ConversionCourses");
+                    b.ToTable("ConversionCourses", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionCourseReg", b =>
@@ -1169,7 +1169,7 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasIndex("StudentId", "CourseId")
                         .IsUnique();
 
-                    b.ToTable("ConversionCourseRegs");
+                    b.ToTable("ConversionCourseRegs", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionMainWallet", b =>
@@ -1206,7 +1206,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("ApplicantId");
 
-                    b.ToTable("ConversionMainWallets");
+                    b.ToTable("ConversionMainWallets", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionProgram", b =>
@@ -1228,7 +1228,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("ConversionPrograms");
+                    b.ToTable("ConversionPrograms", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionProjectProgress", b =>
@@ -1275,7 +1275,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SupervisorId");
 
-                    b.ToTable("ConversionProjectProgresses");
+                    b.ToTable("ConversionProjectProgresses", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionResult", b =>
@@ -1310,7 +1310,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ConversionResults");
+                    b.ToTable("ConversionResults", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionStudent", b =>
@@ -1457,7 +1457,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("YearOfAdmission");
 
-                    b.ToTable("ConversionStudents");
+                    b.ToTable("ConversionStudents", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionStudentSupervisor", b =>
@@ -1487,7 +1487,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("Supervisor");
 
-                    b.ToTable("ConversionStudentSupervisors");
+                    b.ToTable("ConversionStudentSupervisors", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionSubWallet", b =>
@@ -1563,7 +1563,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("ConversionSubWallets");
+                    b.ToTable("ConversionSubWallets", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Countries", b =>
@@ -1577,7 +1577,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Course", b =>
@@ -1630,7 +1630,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.CourseAllocation", b =>
@@ -1664,7 +1664,7 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasIndex("LecturerId", "CourseId")
                         .IsUnique();
 
-                    b.ToTable("CourseAllocations");
+                    b.ToTable("CourseAllocations", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.CourseRegistration", b =>
@@ -1706,7 +1706,7 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasIndex("StudentId", "CourseId")
                         .IsUnique();
 
-                    b.ToTable("CourseRegistrations");
+                    b.ToTable("CourseRegistrations", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.CreditUnit", b =>
@@ -1743,7 +1743,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("CreditUnits");
+                    b.ToTable("CreditUnits", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.CreditWallet", b =>
@@ -1775,7 +1775,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CreditWallets");
+                    b.ToTable("CreditWallets", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Department", b =>
@@ -1800,7 +1800,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ENTVacancy", b =>
@@ -1841,7 +1841,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ENTVacancies");
+                    b.ToTable("ENTVacancies", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Evaluation", b =>
@@ -1984,7 +1984,7 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasIndex("StudentId", "LecturerId", "SessionId", "CourseId")
                         .IsUnique();
 
-                    b.ToTable("Evaluations");
+                    b.ToTable("Evaluations", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.EvaluationGrade", b =>
@@ -2001,7 +2001,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EvaluationGrades");
+                    b.ToTable("EvaluationGrades", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.EvaluationQuestion", b =>
@@ -2015,7 +2015,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EvaluationQuestions");
+                    b.ToTable("EvaluationQuestions", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Event", b =>
@@ -2041,7 +2041,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Exeat", b =>
@@ -2114,7 +2114,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("Hall");
 
-                    b.ToTable("Exeats");
+                    b.ToTable("Exeats", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Faculty", b =>
@@ -2131,7 +2131,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Faculties");
+                    b.ToTable("Faculties", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Fee", b =>
@@ -2182,7 +2182,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("Fees");
+                    b.ToTable("Fees", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Hostel", b =>
@@ -2194,10 +2194,16 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<decimal?>("Amount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("BedspacesCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("NumberOfRooms")
+                    b.Property<int?>("NoOfRooms")
                         .HasColumnType("int");
 
                     b.Property<int?>("SessionId")
@@ -2210,7 +2216,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("Hostels");
+                    b.ToTable("Hostels", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.HostelAllocation", b =>
@@ -2237,7 +2243,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("HostelAllocations");
+                    b.ToTable("HostelAllocations", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.HostelPayment", b =>
@@ -2284,7 +2290,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("HostelPayments");
+                    b.ToTable("HostelPayments", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.HostelRoomDetails", b =>
@@ -2312,7 +2318,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("HostelId");
 
-                    b.ToTable("HostelRoomDetails");
+                    b.ToTable("HostelRoomDetails", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.IctComplaint", b =>
@@ -2353,7 +2359,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("IctComplaints");
+                    b.ToTable("IctComplaints", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Jupeb", b =>
@@ -2651,7 +2657,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("YearOfAdmission");
 
-                    b.ToTable("JupebApplicants");
+                    b.ToTable("JupebApplicants", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.JupebStudent", b =>
@@ -2795,7 +2801,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("YearOfAdmission");
 
-                    b.ToTable("JupebStudents");
+                    b.ToTable("JupebStudents", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.LatestNews", b =>
@@ -2818,7 +2824,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LatestNews");
+                    b.ToTable("LatestNews", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Level", b =>
@@ -2832,7 +2838,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Levels");
+                    b.ToTable("Levels", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.LevelAdviser", b =>
@@ -2865,7 +2871,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("StaffId");
 
-                    b.ToTable("LevelAdvisers");
+                    b.ToTable("LevelAdvisers", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Lga", b =>
@@ -2882,7 +2888,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Lgas");
+                    b.ToTable("Lgas", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Magazine", b =>
@@ -2905,7 +2911,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Magazines");
+                    b.ToTable("Magazines", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Mail", b =>
@@ -2964,7 +2970,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Mails");
+                    b.ToTable("Mails", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.NewsSubcriptionEmail", b =>
@@ -2981,7 +2987,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("NewsSubcriptionEmails");
+                    b.ToTable("NewsSubcriptionEmails", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.OerConferencePaper", b =>
@@ -3039,7 +3045,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("OerConferencePapers");
+                    b.ToTable("OerConferencePapers", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.OerCourseware", b =>
@@ -3087,7 +3093,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.ToTable("OerCoursewares");
+                    b.ToTable("OerCoursewares", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.OerJournalArticle", b =>
@@ -3145,7 +3151,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("OerJournalArticles");
+                    b.ToTable("OerJournalArticles", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.OerStudentProject", b =>
@@ -3205,7 +3211,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.ToTable("OerStudentProjects");
+                    b.ToTable("OerStudentProjects", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.OerTextbook", b =>
@@ -3257,7 +3263,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("OerTextbooks");
+                    b.ToTable("OerTextbooks", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.OfflinePaymentClearance", b =>
@@ -3296,7 +3302,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("OfflinePaymentClearances");
+                    b.ToTable("OfflinePaymentClearances", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.OtherFees", b =>
@@ -3318,7 +3324,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("OtherFees");
+                    b.ToTable("OtherFees", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Parent", b =>
@@ -3353,7 +3359,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Parent");
+                    b.ToTable("Parent", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ParentWard", b =>
@@ -3378,7 +3384,7 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasIndex("StudentId", "ParentId")
                         .IsUnique();
 
-                    b.ToTable("ParentWards");
+                    b.ToTable("ParentWards", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Payment", b =>
@@ -3428,7 +3434,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgApplicant", b =>
@@ -3736,7 +3742,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("YearOfAdmission");
 
-                    b.ToTable("PgApplicants");
+                    b.ToTable("PgApplicants", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgCourse", b =>
@@ -3791,7 +3797,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("PgCourses");
+                    b.ToTable("PgCourses", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgCourseReg", b =>
@@ -3833,7 +3839,7 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasIndex("StudentId", "CourseId")
                         .IsUnique();
 
-                    b.ToTable("PgCourseRegs");
+                    b.ToTable("PgCourseRegs", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgMainWallet", b =>
@@ -3870,7 +3876,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("ApplicantId");
 
-                    b.ToTable("PgMainWallets");
+                    b.ToTable("PgMainWallets", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgProgram", b =>
@@ -3892,7 +3898,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("PgPrograms");
+                    b.ToTable("PgPrograms", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgProgress", b =>
@@ -3939,7 +3945,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SupervisorId");
 
-                    b.ToTable("PgProgresses");
+                    b.ToTable("PgProgresses", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgResult", b =>
@@ -3974,7 +3980,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PgResults");
+                    b.ToTable("PgResults", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgStudent", b =>
@@ -4128,7 +4134,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("YearOfAdmission");
 
-                    b.ToTable("PostGraduateStudents");
+                    b.ToTable("PostGraduateStudents", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgStudentSupervisor", b =>
@@ -4158,7 +4164,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("Supervisor");
 
-                    b.ToTable("PgStudentsSupervisors");
+                    b.ToTable("PgStudentsSupervisors", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgSubWallet", b =>
@@ -4234,7 +4240,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("PgSubWallets");
+                    b.ToTable("PgSubWallets", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Position", b =>
@@ -4251,7 +4257,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Positions");
+                    b.ToTable("Positions", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Result", b =>
@@ -4297,7 +4303,7 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasIndex("StudentId", "CourseId", "SessionId")
                         .IsUnique();
 
-                    b.ToTable("Results");
+                    b.ToTable("Results", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Semester", b =>
@@ -4314,7 +4320,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Semesters");
+                    b.ToTable("Semesters", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Session", b =>
@@ -4334,7 +4340,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sessions");
+                    b.ToTable("Sessions", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Slider", b =>
@@ -4354,7 +4360,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sliders");
+                    b.ToTable("Sliders", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.SSCEGrade", b =>
@@ -4368,7 +4374,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SSCEGrades");
+                    b.ToTable("SSCEGrades", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.SsceSubjects", b =>
@@ -4382,7 +4388,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SsceSubjects");
+                    b.ToTable("SsceSubjects", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Staff", b =>
@@ -4539,7 +4545,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("Type");
 
-                    b.ToTable("Staffs");
+                    b.ToTable("Staffs", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.States", b =>
@@ -4553,7 +4559,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("States");
+                    b.ToTable("States", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Student", b =>
@@ -4700,7 +4706,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("YearOfAdmission");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.SubDepartment", b =>
@@ -4725,7 +4731,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("SubDepartments");
+                    b.ToTable("SubDepartments", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.TimeTable", b =>
@@ -4774,7 +4780,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("LevelId");
 
-                    b.ToTable("TimeTables");
+                    b.ToTable("TimeTables", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ToDo", b =>
@@ -4809,7 +4815,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Todos");
+                    b.ToTable("Todos", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Transcript", b =>
@@ -4904,7 +4910,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Transcripts");
+                    b.ToTable("Transcripts", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.TypeOfStaff", b =>
@@ -4921,7 +4927,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Types");
+                    b.ToTable("Types", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.UgMainWallet", b =>
@@ -4961,7 +4967,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("ApplicantId");
 
-                    b.ToTable("UgMainWallets");
+                    b.ToTable("UgMainWallets", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.UgProgram", b =>
@@ -4986,7 +4992,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Programs");
+                    b.ToTable("Programs", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.UgProgress", b =>
@@ -5033,7 +5039,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SupervisorId");
 
-                    b.ToTable("UgProgresses");
+                    b.ToTable("UgProgresses", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.UgStudentSupervisor", b =>
@@ -5063,7 +5069,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("Supervisor");
 
-                    b.ToTable("UgStudentSupervisors");
+                    b.ToTable("UgStudentSupervisors", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.UgSubWallet", b =>
@@ -5142,7 +5148,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("SessionId");
 
-                    b.ToTable("UgSubWallets");
+                    b.ToTable("UgSubWallets", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Unit", b =>
@@ -5196,7 +5202,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("Units");
+                    b.ToTable("Units", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.UnitName", b =>
@@ -5216,7 +5222,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UnitNames");
+                    b.ToTable("UnitNames", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Vacancy", b =>
@@ -5335,7 +5341,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("StateId");
 
-                    b.ToTable("Vacancies");
+                    b.ToTable("Vacancies", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.VacancyList", b =>
@@ -5367,7 +5373,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("UnitId");
 
-                    b.ToTable("VacancyLists");
+                    b.ToTable("VacancyLists", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.VacationExeat", b =>
@@ -5431,7 +5437,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasIndex("Hall");
 
-                    b.ToTable("VacationExeats");
+                    b.ToTable("VacationExeats", (string)null);
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Work", b =>
@@ -5475,7 +5481,7 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Works");
+                    b.ToTable("Works", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -5774,7 +5780,7 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .WithMany()
                         .HasForeignKey("SessionId");
 
-                    b.HasOne("EDSU_SYSTEM.Models.Student", "Students")
+                    b.HasOne("EDSU_SYSTEM.Models.Applicant", "Students")
                         .WithMany()
                         .HasForeignKey("StudentId");
 

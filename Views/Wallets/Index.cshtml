@@ -12,11 +12,13 @@
             <div class="row p-3" style="">
                 <div class="col-7 mx-auto">
                     <img src="~/images/wallet.svg" style="height:60vh; width:100%" />
+
                 </div>
                 <div class="col-5 my-auto mx-auto">
                     <div class="col-xl-10 col-lg-10 col-sm-10 mx-auto alert alert-arrow-right alert-icon-right alert-light-info mb-4" role="alert">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12" y2="16"></line></svg>
-                        <strong>Use the + Sign on your wallet to make payment.</strong> 
+                        <strong>Having issues? contact the ICT via 08034256988 (WhatsApp Only).</strong> <br/>
+                        @*<strong>Use the + Sign on your wallet to make payment.</strong> *@
                         
                     </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing mx-auto">
@@ -34,10 +36,13 @@
                                             </div>
                                         </div>
                                         @*<p class="text-success">22- xxxxxxxxxx fg</p>*@
+                                    <a asp-action="debts" asp-route-id="@Model.WalletId" class="btn btn-primary">
+                                         Make payment
+                                    </a>
                                         <div class="acc-action">
                                             <div class="">
-                                            <a asp-action="credit" asp-route-id="@Model.WalletId" id="toggle" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Fund Wallet"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></a>
-                                            <a asp-action="debts" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Make Payment"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></a>
+                                            <a asp-action="debts" asp-route-id="@Model.WalletId" id="toggle" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Make Payment"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></a>
+                                            <a asp-action="history" asp-route-id="@Model.WalletId" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Wallet History"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-credit-card"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg></a>
                                             @if (Model.Status == true)
                                                 {
                                                     <span class="badge badge-success"> Active </span>

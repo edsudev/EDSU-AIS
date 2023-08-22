@@ -8,7 +8,7 @@ namespace EDSU_SYSTEM.Models
         public string? ClearanceId { get; set; }
         [ForeignKey("Students")]
         public int? StudentId { get; set; }
-        public Student? Students { get; set; }
+        public Applicant? Students { get; set; }
         [ForeignKey("Payments")]
         public int? PaymentId { get; set; }
         public Payment? Payments { get; set; }
