@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
+    [Authorize(Roles = "oer, superAdmin")]
     public class OerCoursewaresController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,7 +22,7 @@ namespace EDSU_SYSTEM.Controllers
             _hostingEnvironment = hostingEnvironment;
             _context = context;
         }
-
+        [AllowAnonymous]
         // GET: OerCoursewares
         public async Task<IActionResult> Index()
         {

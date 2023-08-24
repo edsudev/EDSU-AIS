@@ -139,32 +139,7 @@ namespace EDSU_SYSTEM.Controllers
                 throw;
             }
         }
-        ///Payment Receipt
-        //public IActionResult Receipt()
-        //{
-        //    ViewBag.Amount = TempData["PaymentAmount"];
-        //    ViewBag.PaymentRef = TempData["PaymentRef"];
-        //    ViewBag.Date = TempData["PaymentDate"];
-        //    ViewBag.Email = TempData["PaymentEmail"];
-        //    ViewBag.WalletId = TempData["PaymentWalletId"];
-
-        //    return View();
-        //}
-
-
-        /// <summary>
-        /// /////////////////////////////////////////////////
-        /// 
-        /// 
-        /// 
-        /// Here Downwards is not being used!
-        /// But it was kept incase we decide to start doing individual payments instead of internal paymenst
-        /// 
-        /// 
-        /// 
-        /// 
-        /// </summary>
-        /// <returns></returns>
+        [Authorize(Roles = "superAdmin")]
         // GET: wallets/Create
         public IActionResult Create()
         {
@@ -173,7 +148,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewData["Session"] = new SelectList(_context.Sessions, "Id", "Id");
             return View();
         }
-
+        [Authorize(Roles = "superAdmin")]
         // POST: wallets/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -685,7 +660,8 @@ namespace EDSU_SYSTEM.Controllers
         [Authorize(Roles = "student, superAdmin")]
         public async Task<IActionResult> OthersCheckout(string Ref)
         {
-            var paymentToUpdate = _context.Payments.Where(i => i.Ref == Ref).FirstOrDefault();
+            var paymentToUpdate = _context.Payments.Where(i => i.Ref == Ref).Include(x => x.OtherFees).FirstOrDefault();
+            ViewBag.name = paymentToUpdate.OtherFees.Name;
             if (Ref == null || _context.Payments == null)
             {
                 return NotFound();

@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
+    [Authorize(Roles = "oer, superAdmin")]
     public class OerTextbooksController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,7 +21,7 @@ namespace EDSU_SYSTEM.Controllers
         {
             _context = context;
         }
-
+        [AllowAnonymous]
         // GET: oerTextbooks
         public async Task<IActionResult> Index()
         {
@@ -226,6 +228,7 @@ namespace EDSU_SYSTEM.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        [AllowAnonymous]
         public FileResult DownloadFile(string FileName)
         {
             string path = Path.Combine(this._hostingEnvironment.WebRootPath, "files/oerTextbooks/") + FileName;

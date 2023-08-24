@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
+    [Authorize(Roles = "superAdmin")]
     public class HostelsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,11 +24,32 @@ namespace EDSU_SYSTEM.Controllers
             _context = context;
             _userManager = userManager;
         }
-       // [Authorize(Roles = "superAdmin")]
+        [Authorize(Roles = "busaryAdmin, superAdmin")]
         // GET: Hostels
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Hostels.Include(h => h.Sessions);
+            return View(await applicationDbContext.ToListAsync());
+        }
+        public IActionResult RoomDetails()
+        {
+            ViewData["HostelId"] = new SelectList(_context.Hostels, "Id", "Name");
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RoomDetails(HostelRoomDetails hostel)
+        {
+            hostel.BedSpacesCount = hostel.BedSpaces;
+            hostel.CreatedAt = DateTime.Now;
+            _context.Add(hostel);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Roomdetailslist));
+           
+        }
+        public async Task<IActionResult> Roomdetailslist()
+        {
+            var applicationDbContext = _context.HostelRoomDetails.Include(h => h.Hostels);
             return View(await applicationDbContext.ToListAsync());
         }
         public async Task<IActionResult> Choice()
@@ -167,7 +189,7 @@ namespace EDSU_SYSTEM.Controllers
         {
 
             var paymentToUpdate = _context.HostelPayments.Where(i => i.Ref == reference).Include(i => i.HostelFees).FirstOrDefault();
-
+            ViewBag.pk = "FLWPUBK_TEST-3f35866dc8566ccf6b5b8a468536f069-X";
             if (reference == null || _context.HostelPayments == null)
             {
                 return NotFound();
@@ -267,7 +289,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return View(hostel);
         }
-
+        [Authorize(Roles = "busaryAdmin, superAdmin")]
         // GET: Hostels/Create
         public IActionResult Create()
         {
@@ -278,6 +300,7 @@ namespace EDSU_SYSTEM.Controllers
         // POST: Hostels/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "busaryAdmin, superAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Hostel hostel)
@@ -292,6 +315,7 @@ namespace EDSU_SYSTEM.Controllers
         }
 
         // GET: Hostels/Edit/5
+        [Authorize(Roles = "busaryAdmin, superAdmin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Hostels == null)
@@ -311,6 +335,7 @@ namespace EDSU_SYSTEM.Controllers
         // POST: Hostels/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "busaryAdmin, superAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Hostel hostel)
@@ -344,6 +369,7 @@ namespace EDSU_SYSTEM.Controllers
         }
 
         // GET: Hostels/Delete/5
+        [Authorize(Roles = "busaryAdmin, superAdmin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Hostels == null)
@@ -361,7 +387,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return View(hostel);
         }
-
+        [Authorize(Roles = "busaryAdmin, superAdmin")]
         // POST: Hostels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

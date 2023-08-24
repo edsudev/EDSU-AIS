@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using EDSU_SYSTEM.Models;
 using EDSU_SYSTEM.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
+    [Authorize]
     public class IctComplaintsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -38,6 +40,7 @@ namespace EDSU_SYSTEM.Controllers
         }
 
         // GET: IctComplaints/Details/5
+        [Authorize(Roles = "ict, superAdmin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.IctComplaints == null)
@@ -82,6 +85,7 @@ namespace EDSU_SYSTEM.Controllers
             return View();
         }
         // GET: ictComplaint/Create
+        [Authorize(Roles = "staff, superAdmin")]
         public IActionResult Create()
         {
             return View();
@@ -120,6 +124,7 @@ namespace EDSU_SYSTEM.Controllers
             return View("_edit", work);
         }
         // GET: IctComplaints/Edit/5
+        [Authorize(Roles = "ict, superAdmin")]
         public async Task<IActionResult> Act(int? id)
         {
             if (id == null || _context.IctComplaints == null)
@@ -184,6 +189,7 @@ namespace EDSU_SYSTEM.Controllers
             return View();
 
         }
+        [Authorize(Roles = "staff, ict, superAdmin")]
 
         // GET: IctComplaints/Delete/5
         public async Task<IActionResult> Delete(int? id)

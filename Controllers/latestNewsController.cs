@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
+    [Authorize(Roles = "news, superAdmin")]
     public class LatestNewsController : Controller
     {
         private readonly ApplicationDbContext _context;

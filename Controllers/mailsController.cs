@@ -10,9 +10,11 @@ using EDSU_SYSTEM.Models;
 using Microsoft.AspNetCore.Identity;
 using static QRCoder.PayloadGenerator;
 using Mail = EDSU_SYSTEM.Models.Mail;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
+    [Authorize(Roles = "staff, superAdmin")]
     public class MailsController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
+    [Authorize]
     public class exeatsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -29,9 +30,9 @@ namespace EDSU_SYSTEM.Controllers
         }
 
         // GET: exeats
+        [Authorize(Roles = "staff, superAdmin")]
         public async Task<IActionResult> Index()
         {
-            //var parentNo = (from s in _context.Students
             return View(await _context.Exeats.ToListAsync());
         }
         // GET: exeats
@@ -46,6 +47,7 @@ namespace EDSU_SYSTEM.Controllers
         }
 
         // GET: exeats/Details/5
+        [Authorize(Roles = "exeat, superAdmin")]
         public IActionResult Details(string? id)
         {
             if (id == null || _context.Exeats == null)
@@ -60,6 +62,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return View(exeat);
         }
+        [Authorize(Roles = "exeat, superAdmin")]
         public IActionResult Act(string? id)
         {
             if (id == null || _context.Exeats == null)
@@ -74,10 +77,13 @@ namespace EDSU_SYSTEM.Controllers
 
             return View(exeat);
         }
+        [Authorize(Roles = "exeat, superAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Act(int? id, MainStatus status, ChiefPortalStatus cheifPortalStatus)
         {
+            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var staffId = loggedInUser.StaffId;
             var exeat = await _context.Exeats.FindAsync(id);
 
             if (exeat == null)
@@ -85,6 +91,8 @@ namespace EDSU_SYSTEM.Controllers
             exeat.Dean = status;
             exeat.HallMasterStatus = status;
             exeat.ChiefPortalStatus = ChiefPortalStatus.Recommended;
+            exeat.GrantedBy = staffId;
+            exeat.GrantedOn = DateTime.Now;
             _context.Exeats.Update(exeat);
 
             await _context.SaveChangesAsync();
@@ -127,6 +135,7 @@ namespace EDSU_SYSTEM.Controllers
             return RedirectToAction(nameof(History));
            
         }
+        [Authorize(Roles = "exeatPass, superAdmin")]
         public async Task<IActionResult> Pass(string? id)
         {
             var exeat = await _context.Exeats.FirstOrDefaultAsync(e => e.ExeatId == id);
@@ -150,6 +159,7 @@ namespace EDSU_SYSTEM.Controllers
             }
             return View();
         }
+        [Authorize(Roles = "student, superAdmin")]
         // GET: exeats/Edit/5
         public async Task<IActionResult> Edit(string? id)
         {
@@ -195,7 +205,7 @@ namespace EDSU_SYSTEM.Controllers
             }
             return View(exeat);
         }
-
+        [Authorize(Roles = "student, superAdmin")]
         // GET: exeats/Delete/5
         public async Task<IActionResult> Delete(string? id)
         {

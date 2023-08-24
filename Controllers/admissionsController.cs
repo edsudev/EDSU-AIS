@@ -47,11 +47,6 @@ namespace EDSU_SYSTEM.Controllers
        // [Authorize(Roles = "ugApplicant, superAdmin")]
         public async Task<IActionResult> Debts(string id)
         {
-            //var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
-            //var user = loggedInUser.StudentsId;
-            //var applicantUTME = (from ap in _context.UgApplicants where ap.UTMENumber == id select ap).FirstOrDefault();
-            //ViewBag.name = applicantUTME.Surname + " " + applicantUTME.FirstName + " " + applicantUTME.OtherName;
-            //ViewBag.department = applicantUTME.Departments.Name;
             var wallet = (from s in _context.UgSubWallets where s.WalletId == id select s).Include(c => c.Sessions).ToList();
             
             if (!wallet.Any())
@@ -62,6 +57,7 @@ namespace EDSU_SYSTEM.Controllers
             return View(wallet);
 
         }
+
         public async Task<IActionResult> Undergraduate1()
         {
             ViewBag.err = TempData["err"];
@@ -121,6 +117,7 @@ namespace EDSU_SYSTEM.Controllers
             //return RedirectToAction(nameof(Dashboard));
         }
         // GET: admissions/Details/5
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Details(string? id)
         {
             if (id == null || _context.UgApplicants == null)
@@ -170,6 +167,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewData["StateOfOriginId"] = new SelectList(_context.States, "Id", "Id", applicant.StateOfOriginId);
             return View(applicant);
         }
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Step1(string? id)
         {
             if (id == null)
@@ -240,6 +238,7 @@ namespace EDSU_SYSTEM.Controllers
             
         }
         // GET: Applicants/Step2/Id
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Step2(string? id)
         {
             if (id == null)
@@ -300,6 +299,7 @@ namespace EDSU_SYSTEM.Controllers
             return View();
 
         }
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Step3(string? id)
         {
             if (id == null)
@@ -382,6 +382,7 @@ namespace EDSU_SYSTEM.Controllers
             return View();
 
         }
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Step4(string? id)
         {
             if (id == null || _context.UgApplicants == null)
@@ -445,6 +446,7 @@ namespace EDSU_SYSTEM.Controllers
             return View();
 
         }
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Step5(string? id)
         {
             if (id == null || _context.UgApplicants == null)
@@ -593,7 +595,7 @@ namespace EDSU_SYSTEM.Controllers
             return RedirectToAction("step5", "admissions", new { ApplicantId });
 
         }
-
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Eligibility(string? id)
         {
             if (id == null || _context.UgApplicants == null)
@@ -617,7 +619,8 @@ namespace EDSU_SYSTEM.Controllers
                 throw;
             }
             
-        } 
+        }
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Summary(string? id)
         {
             
@@ -754,8 +757,8 @@ namespace EDSU_SYSTEM.Controllers
         public async Task<IActionResult> ClearApplicant(string? id, Student student)
         {
             //Get the person who performed this action
-            //var loggedInUser = await userManager.GetUserAsync(HttpContext.User);
-            //var userId = loggedInUser.StaffId;
+            var loggedInUser = await userManager.GetUserAsync(HttpContext.User);
+            var userId = loggedInUser.StaffId;
 
             try
             {
@@ -804,7 +807,7 @@ namespace EDSU_SYSTEM.Controllers
                 student.Level = applicant.LevelAdmittedTo;
                 student.ModeOfAdmission = applicant.ModeOfEntry;
                 student.Cleared = true;
-                //student.ClearedBy = userId;
+                student.ClearedBy = userId;
                 student.CreatedAt = DateTime.Now;
                 _context.Add(student);
                 await _context.SaveChangesAsync();
@@ -814,10 +817,12 @@ namespace EDSU_SYSTEM.Controllers
                     Email = student.SchoolEmailAddress,
                     UserName = student.SchoolEmailAddress,
                     StudentsId = student.Id,
+                    PhoneNumber = student.Phone,
+                    PhoneNumberConfirmed = true,
                     Type = 1,
                     EmailConfirmed = true
                 };
-                var r = await userManager.CreateAsync(user, "Password@1");
+                var r = await userManager.CreateAsync(user, student.Phone);
 
                 return RedirectToAction("index", "admissions");
             }

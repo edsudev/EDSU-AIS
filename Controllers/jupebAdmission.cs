@@ -16,6 +16,7 @@ using System.Xml;
 
 namespace EDSU_SYSTEM.Controllers
 {
+    [Authorize(Roles = "superAdmin")]
     public class JupebAdmission : Controller
     {
         private readonly ApplicationDbContext _context;

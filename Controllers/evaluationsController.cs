@@ -31,7 +31,7 @@ namespace EDSU_SYSTEM.Controllers
             var applicationDbContext = _context.Evaluations.Include(e => e.Courses).Include(e => e.Grades1).Include(e => e.Lecturers);
             return View(await applicationDbContext.ToListAsync());
         }
-       // [Authorize(Roles = "student")]
+        [Authorize(Roles = "student")]
         public async Task<IActionResult> Index()
         {
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
@@ -44,7 +44,7 @@ namespace EDSU_SYSTEM.Controllers
                                    select c).Include(c => c.Courses).Include(c => c.Students).ToList();
             return View(approvedCourses);
         }
-        
+        [Authorize(Roles = "staff, superAdmin")]
         // GET: evaluations/Details/5
         public IActionResult Results(string? id, string code)
         {
@@ -74,6 +74,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Percentage = json2;
             return View();
         }
+        [Authorize(Roles = "staff, superAdmin")]
         // GET: evaluations/Details/5
         public async Task<IActionResult> MyCourses()
         {
@@ -107,7 +108,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Percentage = json2;
             return View();
         }
-
+        [Authorize(Roles = "student, superAdmin")]
         // GET: evaluations/Create
         public async Task<IActionResult> Create(string id)
         {
@@ -177,10 +178,7 @@ namespace EDSU_SYSTEM.Controllers
           
         }
         //HOD to see all his lecturers
-        /// <summary>
-        /// The authorization would allow HOD see this
-        /// </summary>
-        /// <returns></returns>
+        [Authorize(Roles = "hod, superAdmin")]
         public async Task<IActionResult> Staffs()
         {
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
@@ -246,7 +244,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewData["LecturerId"] = new SelectList(_context.Staffs, "Id", "Id", evaluation.LecturerId);
             return View(evaluation);
         }
-
+        [Authorize(Roles = "superAdmin")]
         // GET: evaluations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

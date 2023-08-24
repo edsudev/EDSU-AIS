@@ -28,11 +28,13 @@ namespace EDSU_SYSTEM.Controllers
         public async Task<IActionResult> Index()
         {
               return View(await _context.Works.ToListAsync());
-        } 
+        }
+        [Authorize(Roles = "works, superAdmin")]
         public async Task<IActionResult> All()
         {
               return View(await _context.Works.ToListAsync());
         }
+
         public async Task<IActionResult> Pending()
         {
             var pending = (from d in _context.Works where d.Status == Models.Enum.WorksStatus.Pending select d);
@@ -83,6 +85,7 @@ namespace EDSU_SYSTEM.Controllers
             }
             return View();
         }
+        [Authorize(Roles = "staff, superAdmin")]
         // GET: works/Create
         public IActionResult Create()
         {
@@ -105,7 +108,7 @@ namespace EDSU_SYSTEM.Controllers
             return RedirectToAction(nameof(Index));
           
         }
-        
+        [Authorize(Roles = "staff, superAdmin")]
         // GET: works/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -121,6 +124,7 @@ namespace EDSU_SYSTEM.Controllers
             }
             return PartialView("_edit", work);
         }
+        [Authorize(Roles = "works, superAdmin")]
         // GET: works/Edit/5
         public async Task<IActionResult> Act(int? id)
         {
@@ -136,6 +140,7 @@ namespace EDSU_SYSTEM.Controllers
             }
             return PartialView("_act",work);
         }
+        [Authorize(Roles = "staff, superAdmin")]
         public async Task<IActionResult> Acknowledge(int? id)
         {
             if (id == null || _context.Works == null)
@@ -189,6 +194,7 @@ namespace EDSU_SYSTEM.Controllers
             return View();
 
         }
+        [Authorize(Roles = "staff, superAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id)
@@ -235,7 +241,7 @@ namespace EDSU_SYSTEM.Controllers
             return View();
 
         }
-
+        [Authorize(Roles = "superAdmin")]
         // GET: works/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

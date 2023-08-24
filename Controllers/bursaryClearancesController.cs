@@ -13,7 +13,7 @@ using static EDSU_SYSTEM.Models.Enum;
 
 namespace EDSU_SYSTEM.Controllers
 {
-   // [Authorize]
+    [Authorize]
     public class BursaryClearancesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -23,7 +23,7 @@ namespace EDSU_SYSTEM.Controllers
             _userManager = userManager;
             _context = context;
         }
-
+        [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
         // GET: busaryClearances
         public async Task<IActionResult> Index()
         {
@@ -32,12 +32,70 @@ namespace EDSU_SYSTEM.Controllers
 
             return View(students);
         }
+        [Authorize(Roles = "bursaryAdmin, superAdmin")]
+        public async Task<IActionResult> Mainwallets()
+        {
+            var mainwallets = _context.UgMainWallets.ToList();
+            return View(mainwallets);
+        }
+        [Authorize(Roles = "bursaryAdmin, superAdmin")]
+        public async Task<IActionResult> Sub(string id)
+        {
+            var subwallets = _context.UgSubWallets.Where(x => x.WalletId == id).FirstOrDefault();
+            ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Name");
+            ViewData["LevelId"] = new SelectList(_context.Levels, "Id", "Name");
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
+            return View(subwallets);
+        }
+        [Authorize(Roles = "bursaryAdmin, superAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubPost(string? id)
+        {
+            try
+            {
+                var record = await _context.UgSubWallets
+               .FirstOrDefaultAsync(c => c.WalletId == id);
+
+                if (await TryUpdateModelAsync<UgSubWallet>(record, "", c => c.Name, c => c.WalletId, c => c.CreditBalance, 
+                    c => c.Tuition, c => c.Tuition2, c => c.FortyPercent, c => c.SixtyPercent, c => c.LMS, 
+                    c => c.AcceptanceFee, c => c.SRC, c => c.EDHIS, c => c.SessionId, c => c.Level, c => c.Department))
+                {
+                    record.SixtyPercent = record.Tuition * 60 / 100;
+                    record.FortyPercent = record.Tuition * 40 / 100;
+                    record.Debit = record.Tuition + record.Tuition2 + record.AcceptanceFee + record.SRC + record.LMS + record.EDHIS;
+                    var mainw = _context.UgMainWallets.Where(x => x.WalletId == id).FirstOrDefault();
+                    mainw.BulkDebitBalanace = record.Debit;
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                            "Try again, and if the problem persists, " +
+                            "see your system administrator.");
+                    }
+                    return RedirectToAction("mainwallets", "bursaryclearances");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+
+            }
+            return View();
+
+        }
+        [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
         public async Task<IActionResult> Students()
         {
             var applicationDbContext = _context.BursaryClearances.Include(b => b.Payments).ThenInclude(i => i.Sessions).Include(b => b.Students);
             return View(await applicationDbContext.ToListAsync());
         }
-      //  [Authorize(Roles = "student")]
+        [Authorize(Roles = "student")]
         public async Task<IActionResult> Preview(string? id)
         {
             try
@@ -77,6 +135,7 @@ namespace EDSU_SYSTEM.Controllers
             return View(await sessions.ToListAsync());
         }
         // GET: busaryClearances/Details/5
+        [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
         public async Task<IActionResult> Details(string? id)
         {
             try
@@ -103,6 +162,7 @@ namespace EDSU_SYSTEM.Controllers
             }
            
         }
+        [Authorize(Roles = "bursaryClearance, bursaryAdmin")]
         [HttpPost]
         public async Task<IActionResult> Clearance(ClearanceRemark status, string email, BursaryClearedStudents bs)
         {
@@ -153,6 +213,7 @@ namespace EDSU_SYSTEM.Controllers
         }
 
         // GET: busaryClearances/Create
+        [Authorize(Roles = "superAdmin")]
         public IActionResult Create()
         {
             ViewData["PaymentId"] = new SelectList(_context.Payments, "Id", "Id");
@@ -179,6 +240,7 @@ namespace EDSU_SYSTEM.Controllers
         }
 
         // GET: busaryClearances/Edit/5
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.BursaryClearances == null)
@@ -234,6 +296,7 @@ namespace EDSU_SYSTEM.Controllers
         }
 
         // GET: busaryClearances/Delete/5
+        [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.BursaryClearances == null)
@@ -252,7 +315,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return View(busaryClearance);
         }
-
+        [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
         // POST: busaryClearances/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

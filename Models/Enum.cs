@@ -134,5 +134,13 @@ namespace EDSU_SYSTEM.Models
             Not_Cleared
 
         }
+
+        public enum HostelStaffType
+        {
+            Portal,
+            Chief,
+            Master,
+            Mistress
+        }
     }
 }

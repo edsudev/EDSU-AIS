@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
+    [Authorize(Roles = "oer, superAdmin")]
     public class OerJournalArticlesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,6 +23,7 @@ namespace EDSU_SYSTEM.Controllers
         }
 
         // GET: oerJournalArticles
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
               return View(await _context.OerJournalArticles.ToListAsync());

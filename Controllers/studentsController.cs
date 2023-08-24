@@ -19,7 +19,7 @@ using Enum = EDSU_SYSTEM.Models.Enum;
 
 namespace EDSU_SYSTEM.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class StudentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -84,6 +84,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = "superAdmin")]
         //Set wallet fees for students
         public async Task<IActionResult> Setwallet(string? id, UgSubWallet subWallet, UgMainWallet ugmain)
         {
@@ -153,9 +154,9 @@ namespace EDSU_SYSTEM.Controllers
 
             return View();
         }
-
+        [Authorize(Roles = "superAdmin")]
         //Populate fees for applicants 23/34
-         public async Task<IActionResult> PopulateWallet(UgSubWallet subWallet, UgMainWallet ugmain)
+        public async Task<IActionResult> PopulateWallet(UgSubWallet subWallet, UgMainWallet ugmain)
         {
             var students = (from s in _context.UgApplicants where s.Status == (Enum.MainStatus)1 || s.Status == (Enum.MainStatus)2 select s).ToList();
 
@@ -218,6 +219,7 @@ namespace EDSU_SYSTEM.Controllers
             return View();
         }
         //Create mainwallet for applicants
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> CreateMainWalletUGA(UgSubWallet subWallet, UgMainWallet ugmain)
         {
             var students = (from s in _context.Students select s).ToList();
@@ -310,7 +312,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return View();
         }
-
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> CreateMainWalletUGA1(UgSubWallet subWallet, UgMainWallet ugmain)
         {
             //var students = (from s in _context.Students select s).ToList();
@@ -390,12 +392,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return View();
         }
-        /// <summary>
-        /// //////////////////
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="myWallet"></param>
-        /// <returns></returns>
+        [Authorize(Roles = "superAdmin")]
         //For migrated Students
         public async Task<IActionResult> ActivateWallet(string? id, UgSubWallet myWallet)
         {
@@ -654,6 +651,7 @@ namespace EDSU_SYSTEM.Controllers
             }
         }
         //Graduate Student by changing their status
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Return(string id, Student student)
         {
             try
@@ -694,7 +692,8 @@ namespace EDSU_SYSTEM.Controllers
                 .FirstOrDefault();
             //Console.WriteLine(student.Fullname);
             return View(student);
-        } 
+        }
+        [Authorize(Roles = "student, superAdmin")]
         public async Task<IActionResult> Details(string? id)
         {
             if (id == null || _context.Students == null)
@@ -834,6 +833,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewData["StateOfOriginId"] = new SelectList(_context.States, "Id", "Id", student.StateOfOriginId);
             return RedirectToAction("profile");
         }
+        [Authorize(Roles = "student, superAdmin")]
         public async Task<IActionResult> Upload(IFormFile passport, int id)
         {
             var student = await _context.Students.FindAsync(id);
@@ -868,7 +868,7 @@ namespace EDSU_SYSTEM.Controllers
             }
             return RedirectToAction(nameof(Profile));
         }
-
+        [Authorize(Roles = "superAdmin")]
         // GET: students/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

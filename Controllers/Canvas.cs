@@ -7,7 +7,7 @@ using System.Text;
 
 namespace EDSU_SYSTEM.Controllers
 {
-    [Authorize(Roles = "superAdmin")]
+    [Authorize(Roles = "staff, superAdmin")]
     public class Canvas : Controller
     {
         private readonly ApplicationDbContext _context;

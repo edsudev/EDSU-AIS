@@ -143,7 +143,8 @@ namespace EDSU_SYSTEM.Controllers
                 }
 
                 model.Add(userRoleViewModel);
-               // TempData["UserRoleModel"] = model; // Store the model list in TempData
+               TempData["UserRoleModel"] = model; // Store the model list in TempData
+                Console.Write("model ", TempData["id"]);
             }
             
             return View(model);
@@ -155,7 +156,6 @@ namespace EDSU_SYSTEM.Controllers
         public async Task<IActionResult> EditUserRole(List<UserRoleVM> model, string? id)
         {
             id = (string)TempData["id"];
-            Console.WriteLine("This is the id from post " );
             var role = await roleManager.FindByIdAsync(id);
 
             if (role == null)
@@ -163,26 +163,27 @@ namespace EDSU_SYSTEM.Controllers
                 ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
                 return View("NotFound");
             }
+
             var storedModel = TempData["UserRoleModel"] as List<UserRoleVM>;
-            Console.WriteLine("This is ",storedModel);
-            //foreach (var userRoleViewModel in storedModel)
-            //{
-            //    var user = await userManager.FindByIdAsync(userRoleViewModel.UserId);
+            Console.Write("model 3 ", storedModel);
+            foreach (var userRoleViewModel in storedModel)
+            {
+                var user = await userManager.FindByIdAsync(userRoleViewModel.UserId);
 
-            //    if (user == null)
-            //    {
-            //        continue;
-            //    }
+                if (user == null)
+                {
+                    continue;
+                }
 
-            //    if (userRoleViewModel.IsSelected)
-            //    {
-            //        await userManager.AddToRoleAsync(user, role.Name);
-            //    }
-            //    else
-            //    {
-            //        await userManager.RemoveFromRoleAsync(user, role.Name);
-            //    }
-            //}
+                if (userRoleViewModel.IsSelected)
+                {
+                    await userManager.AddToRoleAsync(user, role.Name);
+                }
+                else
+                {
+                    await userManager.RemoveFromRoleAsync(user, role.Name);
+                }
+            }
 
             return RedirectToAction("Index", "administration"); // Replace with appropriate redirect action and controller
         }

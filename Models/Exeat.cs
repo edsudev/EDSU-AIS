@@ -31,6 +31,10 @@ namespace EDSU_SYSTEM.Models
         public MainStatus? GatePass { get; set; }
         //Checks when student is supposed to come back
         public bool? ReturnStatus { get; set; }
+        [ForeignKey("Staffs")]
+        public int? GrantedBy { get; set; }
+        public Staff? Staffs { get; set; }
+        public DateTime GrantedOn { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
     }
 }

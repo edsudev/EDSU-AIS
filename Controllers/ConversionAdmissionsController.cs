@@ -9,9 +9,11 @@ using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
 using Microsoft.AspNetCore.Identity;
 using static EDSU_SYSTEM.Models.Enum;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
+    [Authorize(Roles = "superAdmin")]
     public class ConversionAdmissionsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -26,53 +28,7 @@ namespace EDSU_SYSTEM.Controllers
             this.roleManager = roleManager;
             this.userManager = userManager;
         }
-        /// <summary>
-        /// ////////////////////////////////////
-        /// This is to create user profile the aspnet users table from the students table
-        /// To be deleted after migration
-        /// /////////////////////////////////////////
-        /// </summary>
-        /// <returns></returns>
-        /// 
-
-
-        public async Task<IActionResult> Migrate()
-        {
-            var students = (from s in _context.Students select s).ToList();
-            foreach (var item in students)
-            {
-                try
-                {
-                    var user = new ApplicationUser
-                    {
-                        Email = item.SchoolEmailAddress,
-                        UserName = item.SchoolEmailAddress,
-                        StudentsId = item.Id,
-                        Type = 1,
-                        EmailConfirmed = true
-                    };
-                    var r = await userManager.CreateAsync(user, item.SchoolEmailAddress);
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-
-            }
-
-            return View();
-        }
-
-
-
-
-
-
-
-
-
-
+       
         // GET: admissions
         public async Task<IActionResult> Index()
         {

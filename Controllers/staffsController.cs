@@ -25,6 +25,7 @@ namespace EDSU_SYSTEM.Controllers
             _userManager = userManager;
             _context = context;
         }
+        [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Admin()
         {
             return View();
@@ -200,6 +201,7 @@ namespace EDSU_SYSTEM.Controllers
             return View(staff);
         }
         // GET: staffs/Create
+        [Authorize(Roles = "superAdmin")]
         public IActionResult Create()
         {
             ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
@@ -213,6 +215,7 @@ namespace EDSU_SYSTEM.Controllers
         // POST: staffs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http:/sta/go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "superAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Type,Position,FacultyId,DepartmentId,FirstName,LastName,OtherName,Email,SchoolEmail,DOB,Sex,NationalityId,StateId,LGAId,Phone,ContactAddress,HighestQualification,FieldOfStudy,AreaOfSpecialization,WorkedInHigherInstuition,CurrentPlaceOfWork,PositionAtCurrentPlaceOfWork,YearsOfExperience,CertUpload,CVUpload,Picture,CreatedAt,UpdatedAt,IsEmployed,EmployedBy,ORCID,ResearcherId,GoogleScholar,ResearchGate,Academia,LinkedIn,Mendeley,Scopus")] Staff staff)

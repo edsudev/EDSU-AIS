@@ -242,7 +242,7 @@ namespace EDSU_SYSTEM.Controllers
            var id = (string)TempData["studentEmail"];
             return RedirectToAction("pendingreg", "courseregistrations", new { id });
         }
-            
+        [Authorize(Roles = "superAdmin")]
         // GET: courseRegistrations/Details/5
         public async Task<IActionResult> Details(int? id)
         {

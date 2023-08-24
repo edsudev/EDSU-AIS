@@ -138,6 +138,7 @@ namespace EDSU_SYSTEM.Data
         public DbSet<EDSU_SYSTEM.Models.JupebStudent>? JupebStudents { get; set; }
         public DbSet<EDSU_SYSTEM.Models.HostelAllocation>? HostelAllocations { get; set; }
         public DbSet<EDSU_SYSTEM.Models.HostelRoomDetails>? HostelRoomDetails { get; set; }
+        public DbSet<EDSU_SYSTEM.Models.HostelStaff>? HostelStaffs { get; set; }
 
 
     }
