@@ -20,11 +20,9 @@
 
                 </div>
                 <div class="col-md-12 widget-content widget-content-area p-3">
-                        <form id="HostelPaymentForm">
+                        <form method="POST" action="https://checkout.flutterwave.com/v3/hosted/pay">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <input type="hidden" name="reference" />
-
-
                             <div class="form-group">
                                 <label asp-for="Email" class="control-label"></label>
                                 <input asp-for="Email" disabled id="email-address" class="form-control" />
