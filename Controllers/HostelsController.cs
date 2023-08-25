@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
-    [Authorize(Roles = "superAdmin")]
+  //  [Authorize(Roles = "superAdmin")]
     public class HostelsController : Controller
     {
         private readonly ApplicationDbContext _context;

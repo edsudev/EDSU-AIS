@@ -20,7 +20,7 @@
 
                 </div>
                 <div class="col-md-12 widget-content widget-content-area p-3">
-                        <form method="post" action="https://checkout.flutterwave.com/v3/hosted/pay">
+                        <form  id="payment-form">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <input type="hidden" name="public_key" value="@ViewBag.pk"   />
                             <div class="form-group">
@@ -45,9 +45,7 @@
                             </div>
 
                             <div class="form-group">
-                                <input type="submit" id="start-payment-button" onclick="makePayment()" value="Pay Now" class="btn btn-primary form-control" />
-                                
-
+                                <button type="button" id="start-payment-button" onclick="makePayment()">Pay Now</button>
                             </div>
                         </form>
                 </div>
@@ -59,9 +57,5 @@
 <!--  END CONTENT AREA  -->
     </div>
 <!-- END MAIN CONTAINER -->
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    }
-    <script src="https://checkout.flutterwave.com/v3.js"></script>
+
+<script src="https://checkout.flutterwave.com/v3.js"></script>

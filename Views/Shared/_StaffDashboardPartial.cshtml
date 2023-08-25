@@ -382,10 +382,12 @@
                         </div>
                     </a>
                         <ul class="collapse submenu list-unstyled" id="appp" data-parent="#accordionExample">
-                       
+                          <li>
+                            <a asp-controller="fees" asp-action="index"> Fees </a>
+                        </li>
                         <li>
                             <a href="#app2" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> UG <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
-                            <ul class="collapse list-unstyled sub-submenu" id="app2" data-parent="#app">
+                            <ul class="collapse list-unstyled sub-submenu" id="app2" data-parent="#appp">
                                 <li>
                                     <a asp-controller="bursaryclearances" asp-action="freshers"> Freshers Clearance </a>
                                 </li>
@@ -400,31 +402,31 @@
                         </li>
                         <li>
                             <a href="#app3" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> PG <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
-                            <ul class="collapse list-unstyled sub-submenu" id="app3" data-parent="#app">
-                                <li>
-                                    <a asp-controller="courseregistrations" asp-action="first"> Freshers Clearance </a>
+                            <ul class="collapse list-unstyled sub-submenu" id="app3" data-parent="#appp">
+                               <li>
+                                    <a asp-controller="bursaryclearances" asp-action="freshers"> Freshers Clearance </a>
                                 </li>
                                 <li>
-                                    <a asp-controller="courseregistrations" asp-action="second"> Students Clearance </a>
+                                    <a asp-controller="bursaryclearances" asp-action="students"> Students Clearance </a>
                                 </li>
                                 <li>
-                                    <a asp-controller="courseregistrations" asp-action="second"> Main Wallets </a>
+                                    <a asp-controller="bursaryclearances" asp-action="mainwallets"> Main Wallets </a>
                                 </li>
                                 
                             </ul>
                         </li>
                         <li>
                             <a href="#app4" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> CV <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
-                                <ul class="collapse list-unstyled sub-submenu" id="app4" data-parent="#app">
-                                <li>
-                                    <a asp-controller="courseregistrations" asp-action="first"> Freshers Clearance </a>
-                                </li>
-                                <li>
-                                    <a asp-controller="courseregistrations" asp-action="second"> Students Clearance </a>
-                                </li>
-                                <li>
-                                    <a asp-controller="courseregistrations" asp-action="second"> Main Wallets </a>
-                                </li>
+                                <ul class="collapse list-unstyled sub-submenu" id="app4" data-parent="#appp">
+                                    <li>
+                                        <a asp-controller="bursaryclearances" asp-action="freshers"> Freshers Clearance </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="bursaryclearances" asp-action="students"> Students Clearance </a>
+                                    </li>
+                                    <li>
+                                        <a asp-controller="bursaryclearances" asp-action="mainwallets"> Main Wallets </a>
+                                    </li>
                                
                             </ul>
                         </li>

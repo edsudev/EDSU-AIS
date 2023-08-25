@@ -95,6 +95,12 @@ namespace EDSU_SYSTEM.Controllers
             var applicationDbContext = _context.BursaryClearances.Include(b => b.Payments).ThenInclude(i => i.Sessions).Include(b => b.Students);
             return View(await applicationDbContext.ToListAsync());
         }
+        [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
+        public async Task<IActionResult> Freshers()
+        {
+            var applicationDbContext = _context.BursaryClearancesFreshers.Include(b => b.Payments).ThenInclude(i => i.Sessions).Include(b => b.Students);
+            return View(await applicationDbContext.ToListAsync());
+        }
         [Authorize(Roles = "student")]
         public async Task<IActionResult> Preview(string? id)
         {
