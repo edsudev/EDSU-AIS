@@ -28,7 +28,12 @@ namespace EDSU_SYSTEM.Controllers
             var paymentKey = Environment.GetEnvironmentVariable("PAYSTACK_LIVE_KEY");
             return Json(paymentKey);
         }
-
+        [HttpGet]
+        public IActionResult GetRavePaymentKey()
+        {
+            var paymentKey = Environment.GetEnvironmentVariable("RAVE_TEST_KEY");
+            return Json(paymentKey);
+        }
         // GET: wallets
         [Authorize(Roles = "student, superAdmin")]
         public async Task<IActionResult> Index()
@@ -691,6 +696,7 @@ namespace EDSU_SYSTEM.Controllers
 
                     try
                     {
+                        PaymentToUpdate.Mode = "Paystack";
                         await _context.SaveChangesAsync();
 
                     }
@@ -997,23 +1003,28 @@ namespace EDSU_SYSTEM.Controllers
             return RedirectToAction("receipt", new { id });
             //return View(payment);
         }
-        //[Authorize(Roles = "student, superAdmin")]
+        [AllowAnonymous]
 
         //Payment Receipt
-        public IActionResult Receipt()
+        public IActionResult Summary()
         {
             ViewBag.Name = TempData["PaymentName"];
             ViewBag.Email = TempData["PaymentEmail"];
             ViewBag.UTME = TempData["PaymentUTME"];
             ViewBag.Department = TempData["PaymentDepartment"];
             ViewBag.Session = TempData["PaymentSession"];
-            ViewBag.WalletId = TempData["PaymentWalletId"];
-            int walletIdFromTempData = (int)TempData["wid"];
-            string utme = ViewBag.WalletId;
-            var debit = (from s in _context.UgMainWallets where s.WalletId == utme select s.BulkDebitBalanace).FirstOrDefault();
-            ViewBag.debit = debit;
-            var payment = (from pt in _context.Payments where pt.WalletId == walletIdFromTempData && pt.Status == "Approved" select pt).ToList();
-            return View(payment);
+            ViewBag.WalletId = TempData["PaymentUTME"];
+
+            string utme = (string)ViewBag.WalletId;
+           
+            var debit = (from w in _context.UgMainWallets where w.WalletId == utme select w).FirstOrDefault();
+            var wallet = (from w in _context.UgSubWallets where w.WalletId == utme select w).FirstOrDefault();
+           
+            ViewBag.debit = debit.BulkDebitBalanace;
+            var applicationDbContext = (from pt in _context.Payments where pt.WalletId == wallet.Id && pt.Status == "Approved" select pt).Include(i => i.Wallets).Include(i => i.Wallets.Levels).Include(i => i.Sessions).Include(i => i.OtherFees);
+            return View(applicationDbContext.ToList());
+            //var payment = (from pt in _context.Payments where pt.WalletId == wallet.Id && pt.Status == "Approved" select pt).ToList();
+            //return View(applicationDbContext);
         }
 
     }

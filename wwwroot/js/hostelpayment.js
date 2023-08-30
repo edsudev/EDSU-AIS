@@ -1,28 +1,28 @@
-﻿    document.addEventListener("DOMContentLoaded", function () {
-        const startPaymentButton = document.getElementById("start-payment-button");
+﻿const ravePaymentForm = document.getElementById('ravePaymentForm');
+ravePaymentForm.addEventListener("submit", payWithRave, false);
 
-        startPaymentButton.addEventListener("click", function () {
-            // Get form data
-            const form = document.getElementById("payment-form");
-            const formData = new FormData(form);
+function payWithRave(e) {
+    e.preventDefault(); // Prevent default form submission
 
-            // Construct the payment request data
+    fetch('/wallets/GetRavePaymentKey')
+        .then(response => response.json())
+        .then(data => {
             const paymentData = {
-                public_key: "FLWPUBK_TEST-3f35866dc8566ccf6b5b8a468536f069-X",
-                tx_ref: formData.get("tx_ref"),
-                amount: parseFloat(formData.get("amount")),
+                public_key: data,
+                tx_ref: document.getElementById("ref").value,
+                amount: document.getElementById("amount").value * 100,
                 currency: "NGN",
                 payment_options: "card, banktransfer, ussd",
                 redirect_url: "https://edouniversity.edu.ng",
+
+               
                 //meta: {
                 //    consumer_id: 23,
                 //    consumer_mac: "92a3-912ba-1192a",
                 //},
-                //customer: {
-                //    email: formData.get("customer[email]"),
-                //    phone_number: "08102909304",
-                //    name: "Rose DeWitt Bukater",
-                //},
+                customer: {
+                    email: document.getElementById("customer[email]").value,
+                },
                 customizations: {
                     title: "Edo State University Uzairue",
                     description: "Accommodation payment",
@@ -31,7 +31,7 @@
             };
 
             // Call the FlutterwaveCheckout function
-            FlutterwaveCheckout(paymentData);
+            //payWithRave(paymentData);
         });
-    });
+};
 

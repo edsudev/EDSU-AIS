@@ -201,20 +201,80 @@ namespace EDSU_SYSTEM.Controllers
 
             return View(paymentToUpdate);
         }
-        public async Task<IActionResult> HostelUpdate(string data, BursaryClearance bursaryClearance)
+        public async Task<IActionResult> HostelUpdate(string data, BursaryClearance bursaryClearance, HostelAllocation haa)
         {
             try
             {
-                var hostelPaymentToUpdate = _context.HostelPayments.Where(x => x.Ref == data).Include(x => x.HostelFees).FirstOrDefault();
+                var hostelPaymentToUpdate = _context.HostelPayments.Where(x => x.Ref == data).FirstOrDefault();
                 var session = (from s in _context.Sessions where s.Id == hostelPaymentToUpdate.SessionId select s).FirstOrDefault();
                 var wlt = (from e in _context.UgSubWallets where e.Id == hostelPaymentToUpdate.WalletId select e).FirstOrDefault();
                 var department = (from d in _context.Departments where d.Id == wlt.Department select d.Name).FirstOrDefault();
 
-                hostelPaymentToUpdate.Status = "Approved";
-                hostelPaymentToUpdate.ReceiptNo = "BSA-" + DateTime.Now.Year.ToString().Substring(2);
-                _context.SaveChangesAsync();
+                //Update the payment record if the payment is successful
+                //hostelPaymentToUpdate.Status = "Approved";
+                //hostelPaymentToUpdate.ReceiptNo = "BSA-" + DateTime.Now.Year.ToString().Substring(2);
+                //_context.SaveChangesAsync();
+                //Get the student making payment
+
+                var hostelApplicant = (from ha in _context.Students where ha.UTMENumber == wlt.WalletId select ha).FirstOrDefault();
+                Console.WriteLine("hp "+ hostelPaymentToUpdate.HostelType);
+                var availableHostel = (from hostel in _context.Hostels where hostel.Id == hostelPaymentToUpdate.HostelType select hostel).FirstOrDefault();
+                Console.WriteLine("Hostel avail " + availableHostel.Name);
+                if (availableHostel.BedspacesCount > 0)
+                {
+                    var availableRooms = (from rm in _context.HostelRoomDetails where rm.HostelId == hostelPaymentToUpdate.HostelType && rm.BedSpacesCount > 0 select rm).ToList();
+
+                    
+
+                    foreach (var item in availableRooms)
+                    {
+                        Console.WriteLine("Room avail "+ item.HostelId);
+                        var roomFound = false;
+                        var eligible4room = (from er in _context.HostelAllocations where er.RoomIdId == item.Id select er).ToList();
+                        var allocationsToAdd = new List<int?>();
+                        foreach (var i in eligible4room)
+                        {
+                            var student = (from st in _context.Students where st.Id == i.StudentId select st).FirstOrDefault();
+                            allocationsToAdd.Add(student.Department);
+
+                        }
+                        if (!allocationsToAdd.Contains(hostelApplicant.Department)){
+
+                            haa.StudentId = hostelApplicant.Id;
+                            haa.RoomIdId = item.Id;
+                            haa.HostelId = item.HostelId;
+
+                            _context.HostelAllocations.Add(haa);
+                            await _context.SaveChangesAsync();
+                        }
+                       
+
+                    }
+
+                    
+                }
+                //try
+                //{
 
 
+                //    if (student.Department != hostelApplicant.Department)
+                //    {
+                //        i.HostelId = hostelPaymentToUpdate.Id;
+                //        i.StudentId = hostelApplicant.Id;
+                //        i.RoomIdId = i.RoomIdId;
+
+                //        Console.WriteLine("Student " + i.StudentId);
+                //        _context.HostelAllocations.Add(i);
+                //        await _context.SaveChangesAsync();
+
+                //    }
+                //}
+                //catch (Exception)
+                //{
+                //    Console.WriteLine("rtfyghj");
+                //    TempData["err"] = "Unfortunately, the system ran into some issues during allocation, kindly contact ICT ASAP for assistance.";
+                //    throw;
+                //}
                 //var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
                 //if (loggedInUser != null)
                 //{
@@ -232,19 +292,7 @@ namespace EDSU_SYSTEM.Controllers
                 //_context.BursaryClearances.Add(bursaryClearance);
                 //await _context.SaveChangesAsync();
 
-                TempData["PaymentSession"] = session.Name;
-                TempData["PaymentRef"] = hostelPaymentToUpdate.Ref;
-                TempData["ReceiptNo"] = hostelPaymentToUpdate.ReceiptNo;
-                TempData["PaymentDate"] = hostelPaymentToUpdate.PaymentDate;
-                TempData["PaymentDepartment"] = department;
-                TempData["PaymentUTME"] = wlt.RegNo;
-                TempData["PaymentName"] = wlt.Name;
-                TempData["PaymentEmail"] = hostelPaymentToUpdate.Email;
-                //Tempdata doesnt have the capability to accept objects or to serialize objects.
-                //As a result, you need to do this yourself
-                TempData["PaymentAmount"] = JsonConvert.SerializeObject(hostelPaymentToUpdate.Amount);
-                TempData["PaymentDescription"] = hostelPaymentToUpdate.HostelFees.Name;
-                TempData["PaymentWalletId"] = wlt.WalletId;
+
                 return RedirectToAction("Index", "Wallets");
             }
             catch (Exception)

@@ -1,0 +1,222 @@
+﻿@*<div class="admin-data-content layout-top-spacing">
+
+    <div class="row invoice layout-spacing">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+
+            <div class="doc-container">
+
+                <div class="row">
+
+                    <div class="col-xl-8 col-lg-8 col-md-8 mx-auto">
+
+                        <div class="invoice-container">
+                            <div class="invoice-inbox">
+                                <div id="ct" class="">
+                                    <div class="invoice-00001">
+                                        <div class="content-section">
+                                            <div class="inv--head-section inv--detail-section">
+                                                <div class="row">
+                                                    <div class="col-sm-12 col-xl-10 col-lg-10 col-md-10 mx-auto">
+                                                        <div class="d-flex">
+                                                            <img src="~/logo.png" style="width:180px; height:150px" class="mt-2" alt="Logo" />
+                                                            <div class="my-auto text-center">
+                                                                <h1 class="in-heading">EDO STATE UNIVERSITY UZAIRUE</h1>
+                                                                <h6 class="in-heading">Km7, Auchi-Abuja Road, Iyamho-Uzairue Edo State, Nigeria.</h6><br />
+                                                               
+                                                            </div>
+                                                        </div>
+                                                       
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-8 col-xl-8 col-lg-8 col-md-8 mx-auto">
+                                                     <span class="">Note: This receipt does not give access to any of the university facilities!<br/> Kindly proceed to the bursary department to obtain a clearance card.</span> 
+                                                     <span class="">For more info, contact the bursary via bursary.edounuiversity.edu.ng</span> 
+                                                     
+                                                </div>
+
+                                            </div>
+
+                                            <div class="inv--detail-section inv--customer-detail-section">
+
+                                                <div class="row">
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-6">
+                                                        <p><span class=" inv-subtitle">Ref: @ViewBag.PaymentRef </span></p>
+                                                    </div>
+
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-sm-4 col-6 mx-auto">
+                                                        <p><span class=" inv-subtitle">Receipt No.: @ViewBag.ReceiptNo</span></p>
+                                                    </div>
+
+                                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-sm-4 col-6 mx-auto">
+                                                        <p><span class=" inv-subtitle">WalletID: @ViewBag.WalletId</span></p>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="inv--detail-section inv--customer-detail-section">
+
+                                                <div class="row">
+                                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6">
+                                                        <p><span class=" inv-subtitle">Name:</span></p>
+                                                        <p><span class=" inv-subtitle">Email:</span></p>
+                                                        <p><span class=" inv-subtitle">Amount: </span></p>
+                                                        <p><span class=" inv-subtitle">Description: </span></p>
+                                                        <p><span class=" inv-subtitle">Date: </span></p>
+                                                        <p><span class=" inv-subtitle">Bursar's Signature: </span></p>
+                                                    </div>
+
+                                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-4 col-sm-4 col-6">
+                                                        <p><span class=" inv-subtitle">@ViewBag.Name</span></p>
+                                                        <p><span class=" inv-subtitle">@ViewBag.Email</span></p>
+                                                       
+                                                        <p><span class=" inv-subtitle">N @ViewBag.Amount </span></p>
+                                                        <p><span class=" inv-subtitle">@ViewBag.Description </span></p>
+                                                        <p><span class=" inv-subtitle">@ViewBag.Date </span></p>
+                                                        <img src="~/images/bsa-1.png" style="height:120px; margin-left:-30px; margin-top:-20px" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="inv--note">
+
+                                                <div class="row mt-4">
+                                                    <div class="col-sm-12 col-12 order-sm-0 order-1">
+                                                        <p>POWERED BY: EDSU ICT TEAM.</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-xl-6 mx-auto">
+
+                        <div class="invoice-actions-btn">
+
+                            <div class="invoice-action-btn">
+
+                                <div class="row">
+
+                                    <div class="col-xl-4 col-md-3 col-sm-4 mx-auto">
+                                        <a href="javascript:void(0);" class="btn btn-secondary btn-print  action-print">Print</a>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+*@
+@model IEnumerable<EDSU_SYSTEM.Models.Payment>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments Overview</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="jumbotron">
+            <h1 class="display-4">Payments Overview</h1>
+            <p class="lead">View all your successful transactions here.</p
+            <p class="lead text-danger">Note: This printout does not give you access to any of the university vacilities.<br/> Kindly proceed to the bursary unit for your clearance card</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        Personal Information
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@ViewBag.Name</h5>
+                        <p class="card-text">
+                            UTME Number: @ViewBag.UTME<br>
+                            Department: @ViewBag.Department<br>
+                            Wallet ID: @ViewBag.WalletId<br>
+                            Session: @ViewBag.Session
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-header">
+                        Total Debt 
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title text-light">N @ViewBag.debit</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h2>Payment History</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Payment Description</th>
+                        <th>Amount</th>
+                        <th>Ref</th>
+                        <th>Session</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                      @foreach (var item in Model.Where(payment => payment.OtherFeesDesc == null))
+                       {
+                        <tr>
+                            <td>@item.Type</td>
+                            <td>@item.Amount</td>
+                            <td>@item.Ref</td>
+                            <td>@item.Sessions.Name</td>
+                            <td>@item.PaymentDate</td>
+                        </tr>
+                     }
+                     @foreach (var item in Model.Where(payment => payment.OtherFeesDesc != null))
+                       {
+                        <tr>
+                            <td>@item.OtherFees.Name</td>
+                            <td>@item.Amount</td>
+                            <td>@item.Ref</td>
+                            <td>@item.Sessions.Name</td>
+                            <td>@item.PaymentDate</td>
+                        </tr>
+                     }
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    @*<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>*@
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

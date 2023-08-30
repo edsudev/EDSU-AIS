@@ -20,12 +20,12 @@
 
                 </div>
                 <div class="col-md-12 widget-content widget-content-area p-3">
-                        <form  id="payment-form">
+                        <form id ="ravePaymentForm">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <input type="hidden" name="public_key" value="@ViewBag.pk"   />
                             <div class="form-group">
                                 <label asp-for="Email" class="control-label"></label>
-                                <input asp-for="Email" disabled name="customer[email]" class="form-control" />
+                                <input asp-for="Email" disabled id="customer[email]" class="form-control" />
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                             <div class="form-group">
@@ -35,19 +35,20 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="Amount" class="control-label"></label>
-                                <input asp-for="Amount" disabled name="amount" class="form-control" />
+                                <input asp-for="Amount" disabled id="amount" class="form-control" />
                                 <span asp-validation-for="Amount" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Ref" class="control-label"></label>
-                                <input asp-for="Ref" disabled name="tx_ref" class="form-control" />
+                                <input asp-for="Ref" disabled id="ref" class="form-control" />
                                 <span asp-validation-for="Ref" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
-                                <button type="button" id="start-payment-button" onclick="makePayment()">Pay Now</button>
+                                <button type="button" id="start-payment-button" onclick="payWithRave()">Pay Now</button>
                             </div>
                         </form>
+                        <a asp-action="HostelUpdate" asp-route-data="EDSU-5789891898">Test</a>
                 </div>
             </div>
         </div>
