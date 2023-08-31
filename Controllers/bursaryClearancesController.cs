@@ -32,6 +32,15 @@ namespace EDSU_SYSTEM.Controllers
 
             return View(students);
         }
+        [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
+        // GET: busaryClearances
+        public async Task<IActionResult> OfflineClearance()
+        {
+            var studentIds = _context.OfflinePaymentClearances.Select(b => b.StudentId).ToList();
+            var students = _context.Students.Where(s => studentIds.Contains(s.Id)).Include(i => i.Departments).Include(i => i.Levels).ToList();
+
+            return View(students);
+        }
         [Authorize(Roles = "bursaryAdmin, superAdmin")]
         public async Task<IActionResult> Mainwallets()
         {
@@ -63,7 +72,10 @@ namespace EDSU_SYSTEM.Controllers
                 {
                     record.SixtyPercent = record.Tuition * 60 / 100;
                     record.FortyPercent = record.Tuition * 40 / 100;
+
+                    record.Tuition -= record.CreditBalance;
                     record.Debit = record.Tuition + record.Tuition2 + record.AcceptanceFee + record.SRC + record.LMS + record.EDHIS;
+                    
                     var mainw = _context.UgMainWallets.Where(x => x.WalletId == id).FirstOrDefault();
                     mainw.BulkDebitBalanace = record.Debit;
                     try
@@ -168,7 +180,7 @@ namespace EDSU_SYSTEM.Controllers
             }
            
         }
-        [Authorize(Roles = "bursaryClearance, bursaryAdmin")]
+        [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
         [HttpPost]
         public async Task<IActionResult> Clearance(ClearanceRemark status, string email, BursaryClearedStudents bs)
         {
@@ -188,14 +200,13 @@ namespace EDSU_SYSTEM.Controllers
                 studentExist.Remark = status;
                 await _context.SaveChangesAsync();
             }
-            
-
             return RedirectToAction(nameof(Index));
         }
         // GET: busaryClearances/Create
       //  [Authorize(Roles = "student")]
         public IActionResult Offline()
         {
+            ViewBag.success = TempData["success"];
             ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Name");
             return View();
         }
@@ -203,7 +214,7 @@ namespace EDSU_SYSTEM.Controllers
         // POST: busaryClearances/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-      //  [Authorize(Roles = "student")]
+        // [Authorize(Roles = "student")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Offline(OfflinePaymentClearance offlinePayment)
@@ -213,8 +224,9 @@ namespace EDSU_SYSTEM.Controllers
             offlinePayment.StudentId = user;
             offlinePayment.CreatedAt = DateTime.Now;
            _context.Add(offlinePayment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            await _context.SaveChangesAsync();
+            TempData["success"] = "Offline Payment Added succesfully.";
+            return RedirectToAction(nameof(Offline));
           
         }
 

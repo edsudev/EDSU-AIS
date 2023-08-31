@@ -27,7 +27,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model)
+                                    @foreach (var item in Model.Where(payment => payment.OtherFeesDesc != null))
                                 {
                                     <tr>
 
@@ -51,12 +51,36 @@
                                             @item.PaymentDate
                                         </td>
                                        
-                                        @*<td>
-                                            <a class="btn btn-primary" asp-action="Verify" asp-route-id="@item.Ref"> Receipt</a>
-                                           
-                                        </td>*@
+                                       
                                     </tr>
                                 }
+                                    @foreach (var item in Model.Where(payment => payment.OtherFeesDesc == null))
+                                    {
+                                        <tr>
+
+                                            <td>
+                                                @item.Type
+                                            </td>
+                                            <td>
+                                                @item.Amount
+                                            </td>
+                                            <td>
+                                                @item.Ref
+                                            </td>
+
+                                            <td>
+                                                @item.Status
+                                            </td>
+                                            <td>
+                                                @item.Sessions.Name
+                                            </td>
+                                            <td>
+                                                @item.PaymentDate
+                                            </td>
+
+
+                                        </tr>
+                                    }
                             </tbody>
                         </table>
                     </div>
