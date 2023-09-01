@@ -10,7 +10,7 @@ using OfficeOpenXml;
 
 namespace EDSU_SYSTEM.Controllers
 {
-    [Authorize]
+    
     public class WalletsController : Controller
     {
         private readonly ApplicationDbContext _context;
