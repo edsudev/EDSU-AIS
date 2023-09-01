@@ -1101,7 +1101,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Name = wallet.Name;
             payment.SessionId = wallet.SessionId;
             payment.WalletId = wallet.Id;
-            payment.Amount = (double)wallet.AcceptanceFee;
+            payment.Amount = (double)wallet.AcceptanceFee + 300;
             payment.Status = "Pending";
             payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
             payment.PaymentDate = DateTime.Now;
@@ -1132,7 +1132,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Name = wallet.Name;
             payment.SessionId = wallet.SessionId;
             payment.WalletId = wallet.Id;
-            payment.Amount = (double)wallet.Tuition2;
+            payment.Amount = (double)wallet.Tuition2 + 300;
             payment.Status = "Pending";
             payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
             payment.PaymentDate = DateTime.Now;
@@ -1164,7 +1164,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Name = wallet.Name;
             payment.SessionId = wallet.SessionId;
             payment.WalletId = wallet.Id;
-            payment.Amount = (double)wallet.Tuition;
+            payment.Amount = (double)wallet.Tuition + 300;
             payment.Status = "Pending";
             payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
             payment.PaymentDate = DateTime.Now;
@@ -1195,7 +1195,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Name = wallet.Name;
             payment.SessionId = wallet.SessionId;
             payment.WalletId = wallet.Id;
-            payment.Amount = (double)wallet.SixtyPercent;
+            payment.Amount = (double)wallet.SixtyPercent + 300;
             payment.Status = "Pending";
             payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
             payment.PaymentDate = DateTime.Now;
@@ -1226,7 +1226,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Name = wallet.Name;
             payment.SessionId = wallet.SessionId;
             payment.WalletId = wallet.Id;
-            payment.Amount = (double)wallet.FortyPercent;
+            payment.Amount = (double)wallet.FortyPercent + 300;
             payment.Status = "Pending";
             payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
             payment.PaymentDate = DateTime.Now;
@@ -1258,7 +1258,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Name = wallet.Name;
             payment.SessionId = wallet.SessionId;
             payment.WalletId = wallet.Id;
-            payment.Amount = (double)wallet.LMS;
+            payment.Amount = (double)wallet.LMS + 300;
             payment.Status = "Pending";
             payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
             payment.PaymentDate = DateTime.Now;
@@ -1289,7 +1289,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Name = wallet.Name;
             payment.SessionId = wallet.SessionId;
             payment.WalletId = wallet.Id;
-            payment.Amount = (double)wallet.SRC;
+            payment.Amount = (double)wallet.SRC + 300;
             payment.Status = "Pending";
             payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
             payment.PaymentDate = DateTime.Now;
@@ -1320,7 +1320,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Name = wallet.Name;
             payment.SessionId = wallet.SessionId;
             payment.WalletId = wallet.Id;
-            payment.Amount = (double)wallet.EDHIS;
+            payment.Amount = (double)wallet.EDHIS + 300;
             payment.Status = "Pending";
             payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
             payment.PaymentDate = DateTime.Now;
