@@ -121,7 +121,7 @@ namespace EDSU_SYSTEM.Controllers
                 var student = (from st in _context.Students where st.Id == ugStudent select st).FirstOrDefault();
                 ViewBag.Name = student.Fullname;
                 // I did this because the walletId is same as the student UTME Number
-                var wallet = await _context.UgSubWallets
+                var wallet = await _context.UgMainWallets
                 .FirstOrDefaultAsync(m => m.WalletId == student.UTMENumber);
                 if (wallet == null)
                 {
@@ -130,7 +130,7 @@ namespace EDSU_SYSTEM.Controllers
                 }
                 Random r = new();
                 //ViewBag.hostel =
-                payment.SessionId = wallet.SessionId;
+                payment.SessionId = student.CurrentSession;
                 payment.WalletId = wallet.Id;
                 payment.Amount = (double)TempData["hostelAmount"];
                 payment.HostelType = (int)TempData["hostelType"];
@@ -201,105 +201,71 @@ namespace EDSU_SYSTEM.Controllers
 
             return View(paymentToUpdate);
         }
-        public async Task<IActionResult> HostelUpdate(string data, BursaryClearance bursaryClearance, HostelAllocation haa)
+        [HttpGet("/hostels/RaveRedirect")]
+        public async Task<IActionResult> RaveRedirect(string status, string tx_ref, string transaction_id, BursaryClearance bursaryClearance, HostelAllocation haa)
         {
             try
             {
-                var hostelPaymentToUpdate = _context.HostelPayments.Where(x => x.Ref == data).FirstOrDefault();
-                var session = (from s in _context.Sessions where s.Id == hostelPaymentToUpdate.SessionId select s).FirstOrDefault();
-                var wlt = (from e in _context.UgSubWallets where e.Id == hostelPaymentToUpdate.WalletId select e).FirstOrDefault();
-                var department = (from d in _context.Departments where d.Id == wlt.Department select d.Name).FirstOrDefault();
-
-                //Update the payment record if the payment is successful
-                //hostelPaymentToUpdate.Status = "Approved";
-                //hostelPaymentToUpdate.ReceiptNo = "BSA-" + DateTime.Now.Year.ToString().Substring(2);
-                //_context.SaveChangesAsync();
-                //Get the student making payment
-
-                var hostelApplicant = (from ha in _context.Students where ha.UTMENumber == wlt.WalletId select ha).FirstOrDefault();
-                Console.WriteLine("hp "+ hostelPaymentToUpdate.HostelType);
-                var availableHostel = (from hostel in _context.Hostels where hostel.Id == hostelPaymentToUpdate.HostelType select hostel).FirstOrDefault();
-                Console.WriteLine("Hostel avail " + availableHostel.Name);
-                if (availableHostel.BedspacesCount > 0)
+                var payment = _context.HostelPayments.Where(x => x.Ref == tx_ref).FirstOrDefault();
+                if (payment != null)
                 {
-                    var availableRooms = (from rm in _context.HostelRoomDetails where rm.HostelId == hostelPaymentToUpdate.HostelType && rm.BedSpacesCount > 0 select rm).ToList();
+                    //Update the payment record if the payment is successful
+                    payment.Status = status;
+                    payment.Mode = "Rave";
+                    _context.SaveChangesAsync();
 
-                    
-
-                    foreach (var item in availableRooms)
+                   
+                    var wlt = (from e in _context.UgSubWallets where e.Id == payment.WalletId select e).FirstOrDefault();
+                   
+                    //Get the student making payment
+                    var hostelApplicant = (from ha in _context.Students where ha.UTMENumber == wlt.WalletId select ha).FirstOrDefault();
+                   
+                    var availableHostel = (from hostel in _context.Hostels where hostel.Id == payment.HostelType select hostel).FirstOrDefault();
+                  
+                    if (availableHostel.BedspacesCount > 0)
                     {
-                        Console.WriteLine("Room avail "+ item.HostelId);
-                        var roomFound = false;
-                        var eligible4room = (from er in _context.HostelAllocations where er.RoomIdId == item.Id select er).ToList();
-                        var allocationsToAdd = new List<int?>();
-                        foreach (var i in eligible4room)
+                        var availableRooms = (from rm in _context.HostelRoomDetails where rm.HostelId == payment.HostelType && rm.BedSpacesCount > 0 select rm).ToList();
+
+
+
+                        foreach (var item in availableRooms)
                         {
-                            var student = (from st in _context.Students where st.Id == i.StudentId select st).FirstOrDefault();
-                            allocationsToAdd.Add(student.Department);
+                            Console.WriteLine("Room avail " + item.HostelId);
+                            var roomFound = false;
+                            var eligible4room = (from er in _context.HostelAllocations where er.RoomIdId == item.Id select er).ToList();
+                            var allocationsToAdd = new List<int?>();
+                            foreach (var i in eligible4room)
+                            {
+                                var student = (from st in _context.Students where st.Id == i.StudentId select st).FirstOrDefault();
+                                allocationsToAdd.Add(student.Department);
+
+                            }
+                            if (!allocationsToAdd.Contains(hostelApplicant.Department))
+                            {
+
+                                haa.StudentId = hostelApplicant.Id;
+                                haa.RoomIdId = item.Id;
+                                haa.HostelId = item.HostelId;
+
+                                _context.HostelAllocations.Add(haa);
+                                await _context.SaveChangesAsync();
+                            }
+
 
                         }
-                        if (!allocationsToAdd.Contains(hostelApplicant.Department)){
-
-                            haa.StudentId = hostelApplicant.Id;
-                            haa.RoomIdId = item.Id;
-                            haa.HostelId = item.HostelId;
-
-                            _context.HostelAllocations.Add(haa);
-                            await _context.SaveChangesAsync();
-                        }
-                       
-
                     }
-
-                    
                 }
-                //try
-                //{
-
-
-                //    if (student.Department != hostelApplicant.Department)
-                //    {
-                //        i.HostelId = hostelPaymentToUpdate.Id;
-                //        i.StudentId = hostelApplicant.Id;
-                //        i.RoomIdId = i.RoomIdId;
-
-                //        Console.WriteLine("Student " + i.StudentId);
-                //        _context.HostelAllocations.Add(i);
-                //        await _context.SaveChangesAsync();
-
-                //    }
-                //}
-                //catch (Exception)
-                //{
-                //    Console.WriteLine("rtfyghj");
-                //    TempData["err"] = "Unfortunately, the system ran into some issues during allocation, kindly contact ICT ASAP for assistance.";
-                //    throw;
-                //}
-                //var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
-                //if (loggedInUser != null)
-                //{
-                //    var user = loggedInUser.StudentsId;
-                //    bursaryClearance.StudentId = user;
-                //}
-                //else
-                //{
-                //    //bursaryClearance.StudentId = ;
-                //}
-                //bursaryClearance.ClearanceId = Guid.NewGuid().ToString();
-                //bursaryClearance.HostelId = hostelPaymentToUpdate.Id;
-                //bursaryClearance.SessionId = session.Id;
-                //bursaryClearance.CreatedAt = DateTime.Now;
-                //_context.BursaryClearances.Add(bursaryClearance);
-                //await _context.SaveChangesAsync();
-
-
-                return RedirectToAction("Index", "Wallets");
+                else
+                {
+                    Console.Write($"else tx_ref: {tx_ref}");
+                }
             }
             catch (Exception)
             {
 
                 throw;
             }
+            return RedirectToAction("Index", "Wallets");
         }
         public IActionResult Receipt()
         {

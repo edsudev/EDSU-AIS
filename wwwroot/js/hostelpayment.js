@@ -1,37 +1,27 @@
-﻿const ravePaymentForm = document.getElementById('ravePaymentForm');
-ravePaymentForm.addEventListener("submit", payWithRave, false);
+﻿
+function makePayment() {
+    const publicKey = document.querySelector('input[name="public_key"]').value;
+    const email = document.getElementById('email').value;
+    const amount = parseFloat(document.getElementById('amount').value) / 100;
+    const ref = document.getElementById('ref').value;
 
-function payWithRave(e) {
-    e.preventDefault(); // Prevent default form submission
+    const paymentData = {
+        public_key: publicKey,
+        tx_ref: ref,
+        amount: amount * 100, // Convert amount to kobo (NGN currency)
+        currency: "NGN",
+        payment_options: "card, banktransfer, ussd",
+        redirect_url: "https://localhost:2222/hostels/RaveRedirect",
+        customer: {
+            email: email,
+        },
+        customizations: {
+            title: "Edo State University, Uzairue",
+            description: "Rave Checkout",
+            logo: "https://old.edouniversity.edu.ng/uploads/settings/logo.png",
+        },
+    };
 
-    fetch('/wallets/GetRavePaymentKey')
-        .then(response => response.json())
-        .then(data => {
-            const paymentData = {
-                public_key: data,
-                tx_ref: document.getElementById("ref").value,
-                amount: document.getElementById("amount").value * 100,
-                currency: "NGN",
-                payment_options: "card, banktransfer, ussd",
-                redirect_url: "https://edouniversity.edu.ng",
-
-               
-                //meta: {
-                //    consumer_id: 23,
-                //    consumer_mac: "92a3-912ba-1192a",
-                //},
-                customer: {
-                    email: document.getElementById("customer[email]").value,
-                },
-                customizations: {
-                    title: "Edo State University Uzairue",
-                    description: "Accommodation payment",
-                    logo: "https://old.edouniversity.edu.ng/uploads/settings/logo.png",
-                },
-            };
-
-            // Call the FlutterwaveCheckout function
-            //payWithRave(paymentData);
-        });
-};
-
+    // Call the FlutterwaveCheckout function
+    FlutterwaveCheckout(paymentData);
+  }

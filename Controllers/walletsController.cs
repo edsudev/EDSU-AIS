@@ -34,6 +34,7 @@ namespace EDSU_SYSTEM.Controllers
             var paymentKey = Environment.GetEnvironmentVariable("RAVE_TEST_KEY");
             return Json(paymentKey);
         }
+       
         // GET: wallets
         [Authorize(Roles = "student, superAdmin")]
         public async Task<IActionResult> Index()
@@ -948,7 +949,7 @@ namespace EDSU_SYSTEM.Controllers
                     bcf.PaymentId = payments.Id;
                     bcf.CreatedAt = DateTime.Now;
                     bcf.ClearanceId = wlt.WalletId;
-                   // bcf.StudentId = wlt.WalletId;
+                    bcf.StudentId = wlt.Id;
                     _context.BursaryClearancesFreshers.Add(bcf);
                     await _context.SaveChangesAsync();
                 }

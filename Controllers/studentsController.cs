@@ -84,6 +84,34 @@ namespace EDSU_SYSTEM.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> MigrateStudent(string email)
+        {
+            try
+            {
+                var student = (from s in _context.Students where s.SchoolEmailAddress == email select s).FirstOrDefault();
+
+                var user = new ApplicationUser
+                {
+                    Email = student.SchoolEmailAddress,
+                    UserName = student.SchoolEmailAddress,
+                    StudentsId = student.Id,
+                    PhoneNumber = student.Phone,
+                    PhoneNumberConfirmed = true,
+                    Type = 1,
+                    EmailConfirmed = true
+                };
+                var r = await _userManager.CreateAsync(user, student.Phone);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
         [Authorize(Roles = "superAdmin")]
         //Set wallet fees for students
         public async Task<IActionResult> Setwallet(string? id, UgSubWallet subWallet, UgMainWallet ugmain)
@@ -312,11 +340,9 @@ namespace EDSU_SYSTEM.Controllers
 
             return View();
         }
-        [Authorize(Roles = "superAdmin")]
+       [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> CreateMainWalletUGA1(UgSubWallet subWallet, UgMainWallet ugmain)
         {
-            //var students = (from s in _context.Students select s).ToList();
-
             var students = (from s in _context.UgApplicants select s).ToList();
 
             foreach (var st in students)
@@ -355,7 +381,7 @@ namespace EDSU_SYSTEM.Controllers
                         newSubWallet.Status = true;
                         newSubWallet.DateCreated = DateTime.Now;
 
-                        if (st.ModeOfEntry == "Transfer" && (st.AdmittedInto == 38 || st.AdmittedInto == 24 || st.AdmittedInto == 1))
+                        if (st.ModeOfEntry == "3" && (st.AdmittedInto == 38 || st.AdmittedInto == 24 || st.AdmittedInto == 1))
                         {
                             newSubWallet.Tuition2 = fee.Level1;
                         }
@@ -466,10 +492,7 @@ namespace EDSU_SYSTEM.Controllers
 
             var CourseCode = (from c in sortedCourses select c.Courses.Code).ToList();
             var TestScores = (from v in sortedGrades select v.CA).ToList();
-            foreach (var item in CourseCode)
-            {
-                Console.WriteLine("This is it",item);
-            }
+            
            
             var json = JsonSerializer.Serialize(CourseCode);
             var json2 = JsonSerializer.Serialize(TestScores);

@@ -25,7 +25,7 @@ namespace EDSU_SYSTEM.Controllers
             _userManager = userManager;
             _context = context;
         }
-        [Authorize(Roles = "superAdmin")]
+        //[Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> Admin()
         {
             return View();
