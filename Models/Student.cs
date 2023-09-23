@@ -76,5 +76,7 @@ namespace EDSU_SYSTEM.Models
         // 2 Graduate
         // 3 Rusticated/Expelled
         public int? StudentStatus { get; set; }
+        //Normal, Scholarship, staffChildren
+        public StudentType? StudentType { get; set; }
     }
 }

@@ -44,8 +44,29 @@ namespace EDSU_SYSTEM.Controllers
         [Authorize(Roles = "bursaryAdmin, superAdmin")]
         public async Task<IActionResult> Mainwallets()
         {
-            var mainwallets = _context.UgMainWallets.ToList();
+            var mainwallets = _context.UgMainWallets.Where(x => x.StudentType == Models.Enum.StudentType.Fee_Paying).ToList();
             return View(mainwallets);
+        }
+        [Authorize(Roles = "bursaryAdmin, superAdmin")]
+        public async Task<IActionResult> Scholarshipwallets()
+        {
+            var mainwallets = _context.UgMainWallets.Where(x => x.StudentType == Models.Enum.StudentType.Scholarship).ToList();
+            return View(mainwallets);
+        }
+        [Authorize(Roles = "bursaryAdmin, superAdmin")]
+        public async Task<IActionResult> StaffChildrenwallets()
+        {
+            var mainwallets = _context.UgMainWallets.Where(x => x.StudentType == Models.Enum.StudentType.Staff_Sponsored).ToList();
+            return View(mainwallets);
+        }
+        [Authorize(Roles = "bursaryAdmin, superAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> StudentType(string walletId, StudentType studentType, UgMainWallet main)
+        {
+            var wallet = (from m in _context.UgMainWallets where m.WalletId == walletId select m).FirstOrDefault();
+            wallet.StudentType = studentType;
+            _context.SaveChanges();
+            return RedirectToAction("sub", "bursaryclearances", new { });
         }
         [Authorize(Roles = "bursaryAdmin, superAdmin")]
         public async Task<IActionResult> Sub(string id)

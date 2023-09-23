@@ -749,7 +749,7 @@ namespace EDSU_SYSTEM.Controllers
             var fee = (from s in _context.AllFees where s.DepartmentId == applicant.AdmittedInto select s).FirstOrDefault();
             var TuitionFee = fee.Tuition;
             myWallet.Name = applicant.Surname + " " + applicant.FirstName + " " + applicant.OtherName;
-            myWallet.ApplicantId = applicant.Id;
+           
             myWallet.Pic = applicant.PassportUpload;
            // myWallet.RegNo = applicant.UTMENumber;
             myWallet.Level = applicant.LevelAdmittedTo;

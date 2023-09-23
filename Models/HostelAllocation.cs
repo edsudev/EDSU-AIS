@@ -9,9 +9,9 @@ namespace EDSU_SYSTEM.Models
         public int? HostelId { get; set; }
         public int? RoomIdId { get; set; }
         public Hostel? Hostels { get; set; }
-        [ForeignKey("Students")]
-        public int? StudentId { get; set; }
-        public Student? Students { get; set; }
+        [ForeignKey("UgMainWallets")]
+        public int? WalletId { get; set; }
+        public UgMainWallet? UgMainWallets { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

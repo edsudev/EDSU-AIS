@@ -22,7 +22,7 @@ namespace EDSU_SYSTEM.Controllers
         // GET: conversionSubWallets
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.ConversionSubWallets.Include(c => c.Applicants).Include(c => c.Departments).Include(c => c.Levels).Include(c => c.Sessions);
+            var applicationDbContext = _context.ConversionSubWallets.Include(c => c.Departments).Include(c => c.Levels).Include(c => c.Sessions);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,7 +35,7 @@ namespace EDSU_SYSTEM.Controllers
             }
 
             var conversionSubWallet = await _context.ConversionSubWallets
-                .Include(c => c.Applicants)
+                
                 .Include(c => c.Departments)
                 .Include(c => c.Levels)
                 .Include(c => c.Sessions)
@@ -71,7 +71,6 @@ namespace EDSU_SYSTEM.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ApplicantId"] = new SelectList(_context.ConversionApplicants, "Id", "Id", conversionSubWallet.ApplicantId);
             ViewData["Department"] = new SelectList(_context.Departments, "Id", "Id", conversionSubWallet.Department);
             ViewData["Level"] = new SelectList(_context.Levels, "Id", "Id", conversionSubWallet.Level);
             ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Id", conversionSubWallet.SessionId);
@@ -91,7 +90,6 @@ namespace EDSU_SYSTEM.Controllers
             {
                 return NotFound();
             }
-            ViewData["ApplicantId"] = new SelectList(_context.ConversionApplicants, "Id", "Id", conversionSubWallet.ApplicantId);
             ViewData["Department"] = new SelectList(_context.Departments, "Id", "Id", conversionSubWallet.Department);
             ViewData["Level"] = new SelectList(_context.Levels, "Id", "Id", conversionSubWallet.Level);
             ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Id", conversionSubWallet.SessionId);
@@ -130,8 +128,7 @@ namespace EDSU_SYSTEM.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ApplicantId"] = new SelectList(_context.ConversionApplicants, "Id", "Id", conversionSubWallet.ApplicantId);
-            ViewData["Department"] = new SelectList(_context.Departments, "Id", "Id", conversionSubWallet.Department);
+           ViewData["Department"] = new SelectList(_context.Departments, "Id", "Id", conversionSubWallet.Department);
             ViewData["Level"] = new SelectList(_context.Levels, "Id", "Id", conversionSubWallet.Level);
             ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Id", conversionSubWallet.SessionId);
             return View(conversionSubWallet);
@@ -146,7 +143,6 @@ namespace EDSU_SYSTEM.Controllers
             }
 
             var conversionSubWallet = await _context.ConversionSubWallets
-                .Include(c => c.Applicants)
                 .Include(c => c.Departments)
                 .Include(c => c.Levels)
                 .Include(c => c.Sessions)

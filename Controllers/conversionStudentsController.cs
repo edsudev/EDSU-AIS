@@ -30,7 +30,7 @@ namespace EDSU_SYSTEM.Controllers
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             var userId = loggedInUser.ConversionStudent;
             var student = (from c in _context.ConversionStudents where c.Id == userId select c).Include(i => i.Departments).FirstOrDefault();
-            var wallet = (from c in _context.UgMainWallets where c.UTME == student.UTMENumber select c).Include(i => i.Applicants).ThenInclude(i => i.Departments).FirstOrDefault();
+            //var wallet = (from c in _context.UgMainWallets where c.UTME == student.UTMENumber select c).Include(i => i.Applicants).ThenInclude(i => i.Departments).FirstOrDefault();
 
             var mainWallet = (from s in _context.ConversionMainWallets where s.WalletId == student.UTMENumber select s).FirstOrDefault(); ;
 

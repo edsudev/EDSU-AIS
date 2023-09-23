@@ -32,6 +32,186 @@ namespace EDSU_SYSTEM.Controllers
             var applicationDbContext = _context.Vacancies;
             return View(await applicationDbContext.ToListAsync());
         }
+
+        public async Task<IActionResult> Signin()
+        {
+            ViewBag.err = TempData["err"];
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Signin(string email, string password)
+        {
+            var applicant = (from s in _context.VcApplications where s.Email == email select s).FirstOrDefault();
+            if(applicant == null)
+            {
+                TempData["err"] = "Email does not exist";
+                return RedirectToAction(nameof(SignIn));
+            }
+            if(applicant.Email != email || applicant.Password != password)
+            {
+                TempData["err"] = "Invalid Credentials";
+                return RedirectToAction(nameof(SignIn));
+            }
+            var id = applicant.ApplicantId;
+            return RedirectToAction("update", "vacancies", new {id});
+        }
+        public async Task<IActionResult> Upload(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var applicant = await _context.VcApplicationUploads.FirstOrDefaultAsync(i => i.ApplicantId == id);
+            if (applicant == null)
+            {
+                return NotFound();
+            }
+            
+            return View(applicant);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Upload(string id, IFormFile pdf,VcApplicationUpload upload)
+        {
+           
+            if (id == null)
+            {
+                return NotFound();
+            }
+            
+            try
+            {
+                var vacancy = (from a in _context.VcApplications where a.ApplicantId == id select a).FirstOrDefault();
+                if (pdf != null && pdf.Length > 0)
+                {
+                    var uploadDir = @"/var/www/EDSU-SYSTEM/files/vacancyUploads/vc";
+                    var fileName = Path.GetFileNameWithoutExtension(pdf.FileName);
+                    var extension = Path.GetExtension(pdf.FileName);
+                    var webRootPath = _hostingEnvironment.WebRootPath;
+                    fileName = vacancy.ApplicantId + extension;
+
+                    //fileName = fileName + extension;
+                    var path = Path.Combine(webRootPath, uploadDir, fileName);
+                    using (FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write))
+                    {
+                        pdf.CopyTo(fs);
+                        upload.FileName = fileName;
+
+                    }
+                }
+                _context.Add(vacancy);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists, " +
+                    "see your system administrator.");
+            }
+            return RedirectToAction("success", "vacancies", new { id });
+        }
+
+        public async Task<IActionResult> Update(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var applicant = await _context.VcApplications.FirstOrDefaultAsync(i => i.ApplicantId == id);
+            if (applicant == null)
+            {
+                return NotFound();
+            }
+            ViewData["LGAId"] = new SelectList(_context.Lgas, "Id", "Name");
+            ViewData["NationalityId"] = new SelectList(_context.Countries, "Id", "Name");
+            ViewData["StateId"] = new SelectList(_context.States, "Id", "Name");
+            return View(applicant);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(string id, int a)
+        {
+            var vacancy = await _context.VcApplications.FirstOrDefaultAsync(i => i.ApplicantId == id);
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+            try
+            {
+                var vacancyToUpdate = await _context.VcApplications
+                .FirstOrDefaultAsync(c => c.ApplicantId == id);
+
+                if (await TryUpdateModelAsync<VcApplication>(vacancyToUpdate, "", c => c.FullName, c => c.ContactAddress,c => c.PermanentAddress,
+                c => c.DOB, c => c.Gender, c => c.Phone, c => c.Email, c => c.ContactAddress, c => c.Nationality, c => c.State, c => c.Lga,
+                c => c.ToProfessor, c => c.FirstAppointment, c => c.AdministrativeExperiences,c => c.CommunicationSkills,c => c.Position,
+                c => c.Qualifications,c => c.Institution
+                ))
+                {
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                            "Try again, and if the problem persists, " +
+                            "see your system administrator.");
+                    }
+                    return RedirectToAction("upload", "vacancies", new { id });
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+
+            }
+            return RedirectToAction("update", "vacancies", new { id });
+        }
+        public async Task<IActionResult> Vc()
+        {
+            ViewBag.err = TempData["err"];
+            ViewData["LGAId"] = new SelectList(_context.Lgas, "Id", "Name");
+            ViewData["NationalityId"] = new SelectList(_context.Countries, "Id", "Name");
+            ViewData["StateId"] = new SelectList(_context.States, "Id", "Name");
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Vc(VcApplication application, VcApplicationUpload upload)
+        {
+            var email = (from s in _context.VcApplications where s.Email == application.Email select s.Email).FirstOrDefault();
+            if(email == null)
+            {
+                Random r = new();
+                application.ApplicantId = "EDSU-VC-" + r.Next(1000) + DateTime.Now.Millisecond; ;
+                application.CreatedAt = DateTime.Now;
+                _context.Add(application);
+                await _context.SaveChangesAsync();
+
+                upload.ApplicantId = application.ApplicantId;
+                _context.Add(upload);
+                await _context.SaveChangesAsync();
+                var id = application.ApplicantId;
+                return RedirectToAction("upload", "vacancies", new {id});
+            }
+            else
+            {
+                TempData["err"] = "The email address you provided already has a record, kindly login to continue";
+                return RedirectToAction(nameof(Vc));
+            }
+            
+            
+        }
+        public async Task<IActionResult> Success()
+        {
+            return View();
+        }
         public IActionResult Login()
         {
             return View();

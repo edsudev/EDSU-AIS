@@ -142,5 +142,11 @@ namespace EDSU_SYSTEM.Models
             Master,
             Mistress
         }
+        public enum StudentType
+        {
+            Fee_Paying,
+            Scholarship,
+            Staff_Sponsored
+        }
     }
 }

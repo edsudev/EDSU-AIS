@@ -1178,9 +1178,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("ApplicantId")
-                        .HasColumnType("int");
-
                     b.Property<decimal?>("BulkDebitBalanace")
                         .HasColumnType("decimal(18,2)");
 
@@ -1203,8 +1200,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicantId");
 
                     b.ToTable("ConversionMainWallets");
                 });
@@ -1499,9 +1494,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<decimal?>("AcceptanceFee")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ApplicantId")
-                        .HasColumnType("int");
-
                     b.Property<decimal?>("CreditBalance")
                         .HasColumnType("decimal(18,2)");
 
@@ -1554,8 +1546,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicantId");
 
                     b.HasIndex("Department");
 
@@ -2242,14 +2232,14 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<int?>("RoomIdId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StudentId")
+                    b.Property<int?>("WalletId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("HostelId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("WalletId");
 
                     b.ToTable("HostelAllocations");
                 });
@@ -3883,9 +3873,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int?>("ApplicantId")
-                        .HasColumnType("int");
-
                     b.Property<decimal?>("BulkDebitBalanace")
                         .HasColumnType("decimal(18,2)");
 
@@ -3908,8 +3895,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicantId");
 
                     b.ToTable("PgMainWallets");
                 });
@@ -4211,9 +4196,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<decimal?>("AcceptanceFee")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ApplicantId")
-                        .HasColumnType("int");
-
                     b.Property<decimal?>("CreditBalance")
                         .HasColumnType("decimal(18,2)");
 
@@ -4266,8 +4248,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicantId");
 
                     b.HasIndex("Department");
 
@@ -4711,6 +4691,9 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<int?>("StudentStatus")
                         .HasColumnType("int");
 
+                    b.Property<int?>("StudentType")
+                        .HasColumnType("int");
+
                     b.Property<string>("UTMENumber")
                         .HasColumnType("longtext");
 
@@ -4992,6 +4975,9 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<bool?>("Status")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int?>("StudentType")
+                        .HasColumnType("int");
+
                     b.Property<string>("UTME")
                         .HasColumnType("longtext");
 
@@ -4999,8 +4985,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicantId");
 
                     b.ToTable("UgMainWallets");
                 });
@@ -5116,9 +5100,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<decimal?>("AcceptanceFee")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ApplicantId")
-                        .HasColumnType("int");
-
                     b.Property<decimal?>("CreditBalance")
                         .HasColumnType("decimal(18,2)");
 
@@ -5174,8 +5155,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicantId");
 
                     b.HasIndex("Department");
 
@@ -5473,6 +5452,112 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasIndex("Hall");
 
                     b.ToTable("VacationExeats");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.VcApplication", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("AdministrativeExperiences")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ApplicantId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CommunicationSkills")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ContactAddress")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DOB")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("FirstAppointment")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Institution")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("LgaId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NationalityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PermanentAddress")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Position")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ProfessionalExperiences")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Qualifications")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("StateId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ToProfessor")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LgaId");
+
+                    b.HasIndex("NationalityId");
+
+                    b.HasIndex("StateId");
+
+                    b.ToTable("VcApplications");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.VcApplicationUpload", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ApplicantId")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FileType")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VcApplicationUploads");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Work", b =>
@@ -5942,15 +6027,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Navigation("Students");
                 });
 
-            modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionMainWallet", b =>
-                {
-                    b.HasOne("EDSU_SYSTEM.Models.ConversionApplicant", "Applicants")
-                        .WithMany()
-                        .HasForeignKey("ApplicantId");
-
-                    b.Navigation("Applicants");
-                });
-
             modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionProgram", b =>
                 {
                     b.HasOne("EDSU_SYSTEM.Models.Department", "Departments")
@@ -6067,10 +6143,6 @@ namespace EDSU_SYSTEM.Data.Migrations
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.ConversionSubWallet", b =>
                 {
-                    b.HasOne("EDSU_SYSTEM.Models.ConversionApplicant", "Applicants")
-                        .WithMany()
-                        .HasForeignKey("ApplicantId");
-
                     b.HasOne("EDSU_SYSTEM.Models.Department", "Departments")
                         .WithMany()
                         .HasForeignKey("Department");
@@ -6082,8 +6154,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasOne("EDSU_SYSTEM.Models.Session", "Sessions")
                         .WithMany()
                         .HasForeignKey("SessionId");
-
-                    b.Navigation("Applicants");
 
                     b.Navigation("Departments");
 
@@ -6389,13 +6459,13 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .WithMany()
                         .HasForeignKey("HostelId");
 
-                    b.HasOne("EDSU_SYSTEM.Models.Student", "Students")
+                    b.HasOne("EDSU_SYSTEM.Models.UgMainWallet", "UgMainWallets")
                         .WithMany()
-                        .HasForeignKey("StudentId");
+                        .HasForeignKey("WalletId");
 
                     b.Navigation("Hostels");
 
-                    b.Navigation("Students");
+                    b.Navigation("UgMainWallets");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.HostelPayment", b =>
@@ -6782,15 +6852,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Navigation("Students");
                 });
 
-            modelBuilder.Entity("EDSU_SYSTEM.Models.PgMainWallet", b =>
-                {
-                    b.HasOne("EDSU_SYSTEM.Models.PgApplicant", "Applicants")
-                        .WithMany()
-                        .HasForeignKey("ApplicantId");
-
-                    b.Navigation("Applicants");
-                });
-
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgProgram", b =>
                 {
                     b.HasOne("EDSU_SYSTEM.Models.Department", "Departments")
@@ -6901,10 +6962,6 @@ namespace EDSU_SYSTEM.Data.Migrations
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgSubWallet", b =>
                 {
-                    b.HasOne("EDSU_SYSTEM.Models.Applicant", "Applicants")
-                        .WithMany()
-                        .HasForeignKey("ApplicantId");
-
                     b.HasOne("EDSU_SYSTEM.Models.Department", "Departments")
                         .WithMany()
                         .HasForeignKey("Department");
@@ -6916,8 +6973,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasOne("EDSU_SYSTEM.Models.Session", "Sessions")
                         .WithMany()
                         .HasForeignKey("SessionId");
-
-                    b.Navigation("Applicants");
 
                     b.Navigation("Departments");
 
@@ -7085,15 +7140,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Navigation("Staffs");
                 });
 
-            modelBuilder.Entity("EDSU_SYSTEM.Models.UgMainWallet", b =>
-                {
-                    b.HasOne("EDSU_SYSTEM.Models.Applicant", "Applicants")
-                        .WithMany()
-                        .HasForeignKey("ApplicantId");
-
-                    b.Navigation("Applicants");
-                });
-
             modelBuilder.Entity("EDSU_SYSTEM.Models.UgProgram", b =>
                 {
                     b.HasOne("EDSU_SYSTEM.Models.Department", "Departments")
@@ -7141,10 +7187,6 @@ namespace EDSU_SYSTEM.Data.Migrations
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.UgSubWallet", b =>
                 {
-                    b.HasOne("EDSU_SYSTEM.Models.Applicant", "Applicants")
-                        .WithMany()
-                        .HasForeignKey("ApplicantId");
-
                     b.HasOne("EDSU_SYSTEM.Models.Department", "Departments")
                         .WithMany()
                         .HasForeignKey("Department");
@@ -7156,8 +7198,6 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasOne("EDSU_SYSTEM.Models.Session", "Sessions")
                         .WithMany()
                         .HasForeignKey("SessionId");
-
-                    b.Navigation("Applicants");
 
                     b.Navigation("Departments");
 
@@ -7254,6 +7294,27 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .HasForeignKey("Hall");
 
                     b.Navigation("Hostels");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.VcApplication", b =>
+                {
+                    b.HasOne("EDSU_SYSTEM.Models.Lga", "Lga")
+                        .WithMany()
+                        .HasForeignKey("LgaId");
+
+                    b.HasOne("EDSU_SYSTEM.Models.Countries", "Nationality")
+                        .WithMany()
+                        .HasForeignKey("NationalityId");
+
+                    b.HasOne("EDSU_SYSTEM.Models.States", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId");
+
+                    b.Navigation("Lga");
+
+                    b.Navigation("Nationality");
+
+                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

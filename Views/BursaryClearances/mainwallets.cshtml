@@ -1,4 +1,5 @@
-﻿
+﻿@using static EDSU_SYSTEM.Models.Enum
+
 @model IEnumerable<EDSU_SYSTEM.Models.UgMainWallet>
 
 @{
@@ -34,7 +35,8 @@
                                     <th>
                                         Status
                                     </th>
-                                    <th></th>
+                                    <th>Action</th>
+                                    <th>Type</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,6 +61,19 @@
                                         <td>
                                             <a asp-action="sub" asp-controller="bursaryclearances" asp-route-id="@item.WalletId" class="btn btn-primary">View</a>
                                         </td>
+                                        <form asp-action="StudentType">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <input value="@item.WalletId" name="walletId" hidden>
+                                        <td>
+                                            <select asp-for="@item.StudentType" class="form-control" name="type"asp-items="@Html.GetEnumSelectList<StudentType>()"></select>
+                                        </td>
+                                       
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="submit" value="Save" class="btn btn-primary" />
+                                            </div>
+                                        </td>
+                                        </form>
                                     </tr>
                                 }
                             </tbody>

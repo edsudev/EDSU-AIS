@@ -7,9 +7,7 @@ namespace EDSU_SYSTEM.Models
     public class ConversionMainWallet
     {
         public int? Id { get; set; }
-        [ForeignKey("Applicants")]
-        public int? ApplicantId { get; set; }
-        public ConversionApplicant? Applicants { get; set; }
+        
         public string? WalletId { get; set; }
         public string? Name { get; set; }
         

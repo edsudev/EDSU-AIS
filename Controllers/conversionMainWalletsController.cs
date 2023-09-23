@@ -22,7 +22,7 @@ namespace EDSU_SYSTEM.Controllers
         // GET: conversionMainWallets
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.ConversionMainWallets.Include(c => c.Applicants);
+            var applicationDbContext = _context.ConversionMainWallets;
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,7 +35,7 @@ namespace EDSU_SYSTEM.Controllers
             }
 
             var conversionMainWallet = await _context.ConversionMainWallets
-                .Include(c => c.Applicants)
+                
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (conversionMainWallet == null)
             {
@@ -65,7 +65,6 @@ namespace EDSU_SYSTEM.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ApplicantId"] = new SelectList(_context.ConversionApplicants, "Id", "Id", conversionMainWallet.ApplicantId);
             return View(conversionMainWallet);
         }
 
@@ -82,7 +81,6 @@ namespace EDSU_SYSTEM.Controllers
             {
                 return NotFound();
             }
-            ViewData["ApplicantId"] = new SelectList(_context.ConversionApplicants, "Id", "Id", conversionMainWallet.ApplicantId);
             return View(conversionMainWallet);
         }
 
@@ -118,7 +116,6 @@ namespace EDSU_SYSTEM.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ApplicantId"] = new SelectList(_context.ConversionApplicants, "Id", "Id", conversionMainWallet.ApplicantId);
             return View(conversionMainWallet);
         }
 
@@ -131,7 +128,7 @@ namespace EDSU_SYSTEM.Controllers
             }
 
             var conversionMainWallet = await _context.ConversionMainWallets
-                .Include(c => c.Applicants)
+               
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (conversionMainWallet == null)
             {

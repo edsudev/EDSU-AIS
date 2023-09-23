@@ -19,7 +19,7 @@ using Enum = EDSU_SYSTEM.Models.Enum;
 
 namespace EDSU_SYSTEM.Controllers
 {
-    [Authorize]
+   // [Authorize]
     public class StudentsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -340,7 +340,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return View();
         }
-       [Authorize(Roles = "superAdmin")]
+       //[Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> CreateMainWalletUGA1(UgSubWallet subWallet, UgMainWallet ugmain)
         {
             var students = (from s in _context.UgApplicants select s).ToList();
@@ -360,7 +360,7 @@ namespace EDSU_SYSTEM.Controllers
                         newUgMain.UTME = st.UTMENumber;
                         newUgMain.BulkDebitBalanace = 0;
                         newUgMain.CreditBalance = 0;
-                        newUgMain.Status = false;
+                        newUgMain.Status = true;
                         newUgMain.DateCreated = DateTime.Now;
                         _context.UgMainWallets.Add(newUgMain);
                         await _context.SaveChangesAsync();
@@ -472,8 +472,8 @@ namespace EDSU_SYSTEM.Controllers
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             var userId = loggedInUser.StudentsId;
             var student = (from c in _context.Students where c.Id == userId select c).Include(i => i.Departments).FirstOrDefault();
-            var wallet = (from c in _context.UgMainWallets where c.UTME == student.UTMENumber select c).Include(i=>i.Applicants).ThenInclude(i => i.Departments).FirstOrDefault();
-            ViewBag.Name = wallet.Name;
+            var wallet = (from c in _context.UgMainWallets where c.UTME == student.UTMENumber select c).FirstOrDefault();
+            ViewBag.Name = student.Fullname;
             ViewBag.Department = student.Departments.Name;
             var approvedCourses = (from c in _context.CourseRegistrations
                                    where c.StudentId == userId &&

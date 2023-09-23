@@ -74,7 +74,7 @@ namespace EDSU_SYSTEM.Data.Migrations
                 name: "IX_HostelRoomDetails_HostelId",
                 table: "HostelRoomDetails",
                 column: "HostelId");
-           
+
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

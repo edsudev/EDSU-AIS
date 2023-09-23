@@ -9,9 +9,6 @@ namespace EDSU_SYSTEM.Models
     {
         public int? Id { get; set; }
         public string? WalletId { get; set; }
-        [ForeignKey("Applicants")]
-        public int? ApplicantId { get; set; }
-        public Applicant? Applicants { get; set; }
         public string? Name { get; set; }
         public string? Pic { get; set; }
         public string? RegNo { get; set; }

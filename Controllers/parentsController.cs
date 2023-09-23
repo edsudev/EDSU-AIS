@@ -95,7 +95,7 @@ namespace EDSU_SYSTEM.Controllers
         public async Task<IActionResult> Details(string? id)
         {
             var student = (from c in _context.Students where c.SchoolEmailAddress == id select c).Include(i => i.Applicants).FirstOrDefault();
-            var wallet = (from c in _context.UgMainWallets where c.Id == student.ApplicantId select c).Include(i => i.Applicants).ThenInclude(i => i.Departments).FirstOrDefault();
+            //var wallet = (from c in _context.UgMainWallets where c.Id == student.ApplicantId select c).Include(i => i.Applicants).ThenInclude(i => i.Departments).FirstOrDefault();
             var approvedCourses = (from c in _context.CourseRegistrations
                                    where c.StudentId == student.Id &&
                             c.Status == MainStatus.Approved &&

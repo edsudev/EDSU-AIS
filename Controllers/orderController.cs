@@ -64,7 +64,7 @@ namespace EDSU_SYSTEM.Controllers
         // GET: order
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.UgSubWallets.Include(u => u.Applicants).Include(u => u.Departments).Include(u => u.Levels).Include(u => u.Sessions);
+            var applicationDbContext = _context.UgSubWallets.Include(u => u.Departments).Include(u => u.Levels).Include(u => u.Sessions);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -77,7 +77,7 @@ namespace EDSU_SYSTEM.Controllers
             }
 
             var ugSubWallet = await _context.UgSubWallets
-                .Include(u => u.Applicants)
+                
                 .Include(u => u.Departments)
                 .Include(u => u.Levels)
                 .Include(u => u.Sessions)
@@ -103,7 +103,6 @@ namespace EDSU_SYSTEM.Controllers
             {
                 return NotFound();
             }
-            ViewData["ApplicantId"] = new SelectList(_context.UgApplicants, "Id", "Id", ugSubWallet.ApplicantId);
             ViewData["Department"] = new SelectList(_context.Departments, "Id", "Id", ugSubWallet.Department);
             ViewData["Level"] = new SelectList(_context.Levels, "Id", "Id", ugSubWallet.Level);
             ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Id", ugSubWallet.SessionId);
@@ -142,7 +141,6 @@ namespace EDSU_SYSTEM.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ApplicantId"] = new SelectList(_context.UgApplicants, "Id", "Id", ugSubWallet.ApplicantId);
             ViewData["Department"] = new SelectList(_context.Departments, "Id", "Id", ugSubWallet.Department);
             ViewData["Level"] = new SelectList(_context.Levels, "Id", "Id", ugSubWallet.Level);
             ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Id", ugSubWallet.SessionId);
@@ -158,7 +156,7 @@ namespace EDSU_SYSTEM.Controllers
             }
 
             var ugSubWallet = await _context.UgSubWallets
-                .Include(u => u.Applicants)
+                
                 .Include(u => u.Departments)
                 .Include(u => u.Levels)
                 .Include(u => u.Sessions)

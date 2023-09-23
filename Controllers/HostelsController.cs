@@ -62,15 +62,16 @@ namespace EDSU_SYSTEM.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Choice(int hostel)
+        public async Task<IActionResult> Choice(int hostel, string utme)
         {
             try
             {
                 //Gets the logged in user (Student)
-                var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
-                var ugStudent = loggedInUser.StudentsId;
+                //var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+                //var ugStudent = loggedInUser.StudentsId;
 
-                var student = (from st in _context.Students where st.Id == ugStudent select st).FirstOrDefault();
+
+                var student = (from st in _context.Students where st.UTMENumber == utme select st).FirstOrDefault();
 
                 //Checks if this hostel exists
                 var hostelIsAvailable = (from s in _context.Hostels where s.Id == hostel select s).FirstOrDefault();
@@ -110,15 +111,15 @@ namespace EDSU_SYSTEM.Controllers
 
         }
 
-        public async Task<IActionResult> Order(HostelPayment payment)
+        public async Task<IActionResult> Order(HostelPayment payment, string utme)
         {
             try
             {
                 //Gets the logged in user (Student)
-                var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
-                var ugStudent = loggedInUser.StudentsId;
+                //var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+                //var ugStudent = loggedInUser.StudentsId;
 
-                var student = (from st in _context.Students where st.Id == ugStudent select st).FirstOrDefault();
+                var student = (from st in _context.Students where st.UTMENumber == utme select st).FirstOrDefault();
                 ViewBag.Name = student.Fullname;
                 // I did this because the walletId is same as the student UTME Number
                 var wallet = await _context.UgMainWallets
@@ -236,14 +237,14 @@ namespace EDSU_SYSTEM.Controllers
                             var allocationsToAdd = new List<int?>();
                             foreach (var i in eligible4room)
                             {
-                                var student = (from st in _context.Students where st.Id == i.StudentId select st).FirstOrDefault();
+                                var student = (from st in _context.Students where st.UTMENumber == i.UgMainWallets.UTME select st).FirstOrDefault();
                                 allocationsToAdd.Add(student.Department);
 
                             }
                             if (!allocationsToAdd.Contains(hostelApplicant.Department))
                             {
-
-                                haa.StudentId = hostelApplicant.Id;
+                                //work here
+                                haa.WalletId = hostelApplicant.Id;
                                 haa.RoomIdId = item.Id;
                                 haa.HostelId = item.HostelId;
 

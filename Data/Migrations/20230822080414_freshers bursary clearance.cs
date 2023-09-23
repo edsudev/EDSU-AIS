@@ -17,18 +17,18 @@ namespace EDSU_SYSTEM.Data.Migrations
             //    table: "Hostels",
             //    newName: "NoOfRooms");
 
-            //migrationBuilder.AddColumn<int>(
-            //    name: "BedspacesCount",
-            //    table: "Hostels",
-            //    type: "int",
-            //    nullable: true);
+            migrationBuilder.AddColumn<int>(
+                name: "BedspacesCount",
+                table: "Hostels",
+                type: "int",
+                nullable: true);
 
-            //migrationBuilder.AddColumn<string>(
-            //    name: "Gender",
-            //    table: "Hostels",
-            //    type: "longtext",
-            //    nullable: true)
-            //    .Annotation("MySql:CharSet", "utf8mb4");
+            migrationBuilder.AddColumn<string>(
+                name: "Gender",
+                table: "Hostels",
+                type: "longtext",
+                nullable: true)
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_BursaryClearancesFreshers_UgApplicants_StudentId",
@@ -44,13 +44,13 @@ namespace EDSU_SYSTEM.Data.Migrations
                 name: "FK_BursaryClearancesFreshers_UgApplicants_StudentId",
                 table: "BursaryClearancesFreshers");
 
-            //migrationBuilder.DropColumn(
-            //    name: "BedspacesCount",
-            //    table: "Hostels");
+            migrationBuilder.DropColumn(
+                name: "BedspacesCount",
+                table: "Hostels");
 
-            //migrationBuilder.DropColumn(
-            //    name: "Gender",
-            //    table: "Hostels");
+            migrationBuilder.DropColumn(
+                name: "Gender",
+                table: "Hostels");
 
             //migrationBuilder.RenameColumn(
             //    name: "NoOfRooms",
