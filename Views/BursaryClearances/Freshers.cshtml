@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EDSU_SYSTEM.Models.BursaryClearanceFresher>
+﻿@model IEnumerable<EDSU_SYSTEM.Models.Applicant>
 
 @{
     ViewData["Title"] = "Index";
@@ -12,26 +12,26 @@
             <div class="row layout-spacing">
                 <!-- Content -->
                 <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 mx-auto layout-top-spacing">
-                    Freshers Bursary Clearance
+                    Students' Bursary Clearance
                     <div class="widget-content widget-content-area br-6">
                         <table id="html5-extension" class="table table-hover non-hover">
                             <thead>
                                 <tr>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.ClearanceId)
+                                        @Html.DisplayNameFor(model => model.Surname),
+                                        @Html.DisplayNameFor(model => model.FirstName)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Payments.Ref)
+                                        @Html.DisplayNameFor(model => model.UTMENumber)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Students)
+                                        Department
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Payments)
+                                        Level
                                     </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.CreatedAt)
-                                    </th>
+
+                                    
                                     <th></th>
                                 </tr>
                             </thead>
@@ -40,21 +40,21 @@
                                 {
                                     <tr>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.ClearanceId)
+                                            @Html.DisplayFor(modelItem => item.Surname)
+                                            @Html.DisplayFor(modelItem => item.FirstName)
+                                            @Html.DisplayFor(modelItem => item.OtherName)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Students.Surname, item.Students.FirstName)
+                                            @Html.DisplayFor(modelItem => item.UTMENumber)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Payments.Id)
+                                            @Html.DisplayFor(modelItem => item.Departments.Name)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.CreatedAt)
+                                            @Html.DisplayFor(modelItem => item.Levels.Name)
                                         </td>
                                         <td>
-                                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                            <a asp-action="fresher" asp-controller="bursaryclearances" asp-route-id="@item.UTMENumber" class="btn btn-primary">View</a>
                                         </td>
                                     </tr>
                                 }
@@ -65,7 +65,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
     <!--  END CONTENT AREA  -->
 </div>

@@ -34,6 +34,15 @@ namespace EDSU_SYSTEM.Controllers
         }
         [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
         // GET: busaryClearances
+        public async Task<IActionResult> Freshers()
+        {
+            var studentIds = _context.BursaryClearancesFreshers.Select(b => b.ClearanceId).ToList();
+            var students = _context.UgApplicants.Where(s => studentIds.Contains(s.UTMENumber)).Include(i => i.Departments).Include(i => i.Levels).ToList();
+
+            return View(students);
+        }
+        [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
+        // GET: busaryClearances
         public async Task<IActionResult> OfflineClearance()
         {
             var studentIds = _context.OfflinePaymentClearances.Select(b => b.StudentId).ToList();
@@ -66,7 +75,8 @@ namespace EDSU_SYSTEM.Controllers
             var wallet = (from m in _context.UgMainWallets where m.WalletId == walletId select m).FirstOrDefault();
             wallet.StudentType = studentType;
             _context.SaveChanges();
-            return RedirectToAction("sub", "bursaryclearances", new { });
+            var id = wallet.WalletId;
+            return RedirectToAction("sub", "bursaryclearances", new {id });
         }
         [Authorize(Roles = "bursaryAdmin, superAdmin")]
         public async Task<IActionResult> Sub(string id)
@@ -128,12 +138,12 @@ namespace EDSU_SYSTEM.Controllers
             var applicationDbContext = _context.BursaryClearances.Include(b => b.Payments).ThenInclude(i => i.Sessions).Include(b => b.Students);
             return View(await applicationDbContext.ToListAsync());
         }
-        [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
-        public async Task<IActionResult> Freshers()
-        {
-            var applicationDbContext = _context.BursaryClearancesFreshers.Include(b => b.Payments).ThenInclude(i => i.Sessions).Include(b => b.Students);
-            return View(await applicationDbContext.ToListAsync());
-        }
+        //[Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
+        //public async Task<IActionResult> Freshers()
+        //{
+        //    var applicationDbContext = _context.BursaryClearancesFreshers.Include(b => b.Payments).ThenInclude(i => i.Sessions).Include(b => b.Payments).ThenInclude(i => i.Wallets);
+        //    return View(await applicationDbContext.ToListAsync());
+        //}
         [Authorize(Roles = "student")]
         public async Task<IActionResult> Preview(string? id)
         {
@@ -223,8 +233,35 @@ namespace EDSU_SYSTEM.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
+        public async Task<IActionResult> Fresher(string? id)
+        {
+            try
+            {
+                var student = (from s in _context.UgApplicants where s.UTMENumber == id select s).Include(i => i.Departments).FirstOrDefault();
+                ViewBag.name = student.Surname + " " + student.FirstName + " " + student.OtherName;
+                ViewBag.utme = student.UTMENumber;
+                ViewBag.department = student.Departments.Name;
+                ViewBag.email = student.Email;
+               // ViewBag.currentStatus = (from c in _context.BursaryClearedStudents where c.StudentId == student.Id select c.Remark).FirstOrDefault();
+                var clearances = (from c in _context.BursaryClearancesFreshers where c.ClearanceId == id select c).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ToList();
+
+                if (clearances == null)
+                {
+                    return RedirectToAction("PageNotFound", "error");
+                }
+
+                return View(clearances);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
         // GET: busaryClearances/Create
-      //  [Authorize(Roles = "student")]
+        //  [Authorize(Roles = "student")]
         public IActionResult Offline()
         {
             ViewBag.success = TempData["success"];

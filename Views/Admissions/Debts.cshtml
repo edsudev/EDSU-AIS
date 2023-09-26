@@ -61,8 +61,7 @@
 
                 <div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 col-12 mx-auto layout-spacing">
                     <div class="widget widget-chart-one">
-                        @*<h4>Name: @ViewBag.name</h4>
-                        <h4>Department: @ViewBag.department</h4>*@
+                        <a asp-action="preview" asp-controller="admissions" asp-route-utme="@ViewBag.utme" class="btn btn-primary">Print Clearance Slip</a>
                          <div class="widget-content widget-content-area br-6">
                             <table id="example" class="table" style="width:100%">
                                 <thead>
@@ -237,10 +236,23 @@
                                                 <a asp-action="Others" asp-controller="admissions" asp-route-id="@item.WalletId" class="btn btn-primary">Proceed</a>
 
                                             </td>
+
                                         </tr>
+                                        @*<tr>
+                                            <td>
+                                                <label>Hostel Application</label>
+                                            </td>
+                                            <td>Select hostel type to continue</td>
+                                            <td>👉</td>
+                                            <td>
+                                                <a asp-action="applicantchoice" asp-controller="hostels" asp-route-utme="@item.WalletId" class="btn btn-primary">Proceed</a>
+
+                                            </td>
+
+                                        </tr>*@
                                     }
 
-
+                                    
 
                                 </tbody>
                             </table>

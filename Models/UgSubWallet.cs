@@ -46,6 +46,7 @@ namespace EDSU_SYSTEM.Models
         [ForeignKey("Departments")]
         public int? Department { get; set; }
         public Department? Departments { get; set; }
+        public bool? Waiver { get; set; }
 
     }
 }

@@ -2229,7 +2229,7 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<int?>("HostelId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RoomIdId")
+                    b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
                     b.Property<int?>("WalletId")
@@ -2238,6 +2238,8 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("HostelId");
+
+                    b.HasIndex("RoomId");
 
                     b.HasIndex("WalletId");
 
@@ -5151,6 +5153,9 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<decimal?>("Tuition2")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<bool?>("Waiver")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("WalletId")
                         .HasColumnType("longtext");
 
@@ -6459,9 +6464,15 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .WithMany()
                         .HasForeignKey("HostelId");
 
+                    b.HasOne("EDSU_SYSTEM.Models.HostelRoomDetails", "HostelRooms")
+                        .WithMany()
+                        .HasForeignKey("RoomId");
+
                     b.HasOne("EDSU_SYSTEM.Models.UgMainWallet", "UgMainWallets")
                         .WithMany()
                         .HasForeignKey("WalletId");
+
+                    b.Navigation("HostelRooms");
 
                     b.Navigation("Hostels");
 

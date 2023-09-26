@@ -48,7 +48,7 @@ namespace EDSU_SYSTEM.Controllers
         public async Task<IActionResult> Debts(string id)
         {
             var wallet = (from s in _context.UgSubWallets where s.WalletId == id select s).Include(c => c.Sessions).ToList();
-            
+            ViewBag.utme = id;
             if (!wallet.Any())
             {
                 return RedirectToAction("pagenotfound", "error");
@@ -1467,7 +1467,38 @@ namespace EDSU_SYSTEM.Controllers
 
             return View(paymentToUpdate);
         }
+        public async Task<IActionResult> Preview(string? utme)
+        {
+            try
+            {
+                var student = (from s in _context.UgApplicants where s.UTMENumber == utme select s)
+                    .Include(c => c.Departments).Include(c => c.Levels).Include(c => c.Programs).FirstOrDefault();
+                var session = (from ses in _context.Sessions where ses.IsActive == true select ses).FirstOrDefault();
+                ViewBag.name = student.Surname + " " + student.FirstName + " " + student.OtherName;
+                ViewBag.email = student.Email;
+                ViewBag.dept = student.Departments.Name;
+                //ViewBag.programme = student.Programs.NameOfProgram;
+                ViewBag.session = session.Name;
+                ViewBag.level = student.Levels.Name;
+                var clearance = (from s in _context.BursaryClearancesFreshers where s.ClearanceId == student.UTMENumber && s.SessionId == session.Id select s)
+                    .Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
+                //var hostel = (from s in _context.HostelPayments where s.)
 
+                if (clearance.Count() == 0)
+                {
+                    return RedirectToAction("resourcenotfound", "error");
+                }
+
+
+                return View(clearance);
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("badreq", "error");
+                throw;
+            }
+
+        }
         public async Task<IActionResult> History(string id)
         {
             var applicationDbContext = (from f in _context.Payments where f.Wallets.WalletId == id select f).Include(i => i.Wallets).Include(i => i.Wallets.Levels).Include(i => i.Sessions);

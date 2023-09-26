@@ -31,12 +31,11 @@
                                     <th>
                                         Debit
                                     </th>
-                                    
-                                    <th>
-                                        Status
-                                    </th>
+
                                     <th>Action</th>
-                                    <th>Type</th>
+                                    <th>Type of student</th>
+
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -55,19 +54,18 @@
                                         <td>
                                             @Html.DisplayFor(modelItem => item.BulkDebitBalanace)
                                         </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Status)
-                                        </td>
+
                                         <td>
                                             <a asp-action="sub" asp-controller="bursaryclearances" asp-route-id="@item.WalletId" class="btn btn-primary">View</a>
                                         </td>
                                         <form asp-action="StudentType">
-                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                
                                         <td>
-                                            <select asp-for="@item.StudentType" class="form-control" asp-items="@Html.GetEnumSelectList<StudentType>()"></select>
+
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <input value="@item.WalletId" name="walletId" hidden>
+                                            <select asp-for="@item.StudentType" class="form-control" name="studentType" asp-items="@Html.GetEnumSelectList<StudentType>()"></select>
                                         </td>
-                                       
+
                                         <td>
                                             <div class="form-group">
                                                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -83,7 +81,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
     <!--  END CONTENT AREA  -->
 </div>

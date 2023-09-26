@@ -1,0 +1,78 @@
+﻿@model EDSU_SYSTEM.Models.HostelAllocation
+@using static EDSU_SYSTEM.Models.Enum
+@{
+    ViewData["Title"] = "Success - ";
+}
+
+<!--  BEGIN NAVBAR  -->
+<div class="header-container fixed-top">
+    <header class="header navbar navbar-expand-sm">
+
+        <ul class="navbar-item theme-brand flex-row  text-center">
+            <li class="nav-item theme-logo">
+                <a asp-action="index" asp-controller="home">
+
+                    <img src="~/logo.png" class="navbar-logo" alt="logo" />
+                </a>
+            </li>
+            <li class="nav-item theme-text">
+                <a asp-action="index" asp-controller="home"> EDO STATE UNIVERSITY UZAIRUE  </a>
+            </li>
+        </ul>
+
+    </header>
+</div>
+<!--  END NAVBAR  -->
+<!--  BEGIN NAVBAR  -->
+<div class="sub-header-container">
+    <header class="header navbar navbar-expand-sm">
+        <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
+
+        <ul class="navbar-nav flex-row">
+            <li>
+                <div class="page-header">
+
+                    <nav class="breadcrumb-one" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0);">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><span>Hostel Accommodation</span></li>
+                        </ol>
+                    </nav>
+
+                </div>
+            </li>
+        </ul>
+    </header>
+</div>
+
+<!--  END SIDEBAR  -->
+<!--  BEGIN CONTENT AREA  -->
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+        <div class="row">
+            <div class="col-md-6 mx-auto my-auto text-center">
+                <span class="display-4"></span>
+                <h3 class="mt-3">Your room details are below</h3>
+                <div class="mt-4">
+                    <p><strong>Hostel Name:</strong>@Model.Hostels.Name</p>
+                    <p><strong>Student Name:</strong> @Model.UgMainWallets.Name</p>
+                    <p><strong>Room Number:</strong> @Model.HostelRooms.RoomNo</p>
+                    <p><strong>Date:</strong> @Model.CreatedAt</p>
+                </div>
+                <p class="mt-4"><a href="/" class="btn btn-primary">Go Back to the University Website</a></p>
+                <button class="btn btn-secondary" onclick="printPage()">Print</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function printPage() {
+        window.print();
+    }
+</script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

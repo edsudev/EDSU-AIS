@@ -52,26 +52,45 @@ namespace EDSU_SYSTEM.Controllers
             var applicationDbContext = _context.HostelRoomDetails.Include(h => h.Hostels);
             return View(await applicationDbContext.ToListAsync());
         }
-        public async Task<IActionResult> Choice()
+        public async Task<IActionResult> ApplicantChoice(string utme)
         {
+            //Check if the student owes anything
+            var Subwallet = (from sf in _context.UgSubWallets where sf.WalletId == utme select sf).FirstOrDefault();
+            if (Subwallet != null)
+            {
+                if(Subwallet.SessionId > 0 || Subwallet.LMS > 0 || Subwallet.EDHIS > 0 || Subwallet.SRC > 0 && Subwallet.Waiver == false)
+                {
+                    ViewBag.ErrorMessage = "Kindly clear all outstanding debts and try again. For further complaints, contact the ICT";
+                    return View();
+                }
+            }
+            var wallet = (from sf in _context.UgMainWallets where sf.WalletId == utme select sf.Id).FirstOrDefault();
+            var alreadyPaid = (from sd in _context.HostelAllocations where sd.WalletId == wallet select sd).FirstOrDefault();
+            if (alreadyPaid != null)
+            {
+                ViewBag.ErrorMessage = "It Appears you have already been allocated a room. For further complaints, contact the ICT";
+                return View();
+            }
             ViewData["HostelId"] = new SelectList(_context.Hostels, "Id", "Name");
-            ViewBag.err = TempData["err"];
-            string err = (string)TempData["err"];
-            ViewBag.ErrorMessage = err;
-            return View();
+            var student = (from s in _context.UgSubWallets where s.WalletId == utme select s).FirstOrDefault();
+            if (student != null)
+            {
+                string err = (string)TempData["err"];
+                ViewBag.ErrorMessage = err;
+                TempData["utme"] = utme;
+                return View();
+            }
+            return Redirect(Request.Headers["Referer"].ToString());
         }
+            
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Choice(int hostel, string utme)
+        public async Task<IActionResult> ApplicantChoice(int hostel, string utme)
         {
             try
             {
-                //Gets the logged in user (Student)
-                //var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
-                //var ugStudent = loggedInUser.StudentsId;
-
-
-                var student = (from st in _context.Students where st.UTMENumber == utme select st).FirstOrDefault();
+                utme = (string)TempData["utme"];
+                var student = (from st in _context.UgApplicants where st.UTMENumber == utme select st).FirstOrDefault();
 
                 //Checks if this hostel exists
                 var hostelIsAvailable = (from s in _context.Hostels where s.Id == hostel select s).FirstOrDefault();
@@ -100,8 +119,8 @@ namespace EDSU_SYSTEM.Controllers
                     TempData["hostelName"] = hostelIsAvailable.Name;
                     TempData["hostelAmount"] = hostelIsAvailable.Amount;
                 }
-                var id = hostelIsAvailable.Id;
-                return RedirectToAction("order", "hostels");
+                //var utme = hostelIsAvailable.Id;
+                return RedirectToAction("order", "hostels", new {utme});
             }
             catch (Exception)
             {
@@ -119,8 +138,8 @@ namespace EDSU_SYSTEM.Controllers
                 //var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
                 //var ugStudent = loggedInUser.StudentsId;
 
-                var student = (from st in _context.Students where st.UTMENumber == utme select st).FirstOrDefault();
-                ViewBag.Name = student.Fullname;
+                var student = (from st in _context.UgApplicants where st.UTMENumber == utme select st).FirstOrDefault();
+                ViewBag.Name = student.FirstName + " " + student.Surname;
                 // I did this because the walletId is same as the student UTME Number
                 var wallet = await _context.UgMainWallets
                 .FirstOrDefaultAsync(m => m.WalletId == student.UTMENumber);
@@ -129,9 +148,10 @@ namespace EDSU_SYSTEM.Controllers
                     TempData["err"] = "Student doesn't have a wallet, contact the bursary.";
                     return Redirect(Request.Headers["Referer"].ToString());
                 }
+                var sessionId = (from ss in _context.Sessions where ss.IsActive == true select ss.Id).FirstOrDefault();
                 Random r = new();
                 //ViewBag.hostel =
-                payment.SessionId = student.CurrentSession;
+               payment.SessionId = sessionId;
                 payment.WalletId = wallet.Id;
                 payment.Amount = (double)TempData["hostelAmount"];
                 payment.HostelType = (int)TempData["hostelType"];
@@ -190,7 +210,7 @@ namespace EDSU_SYSTEM.Controllers
         {
 
             var paymentToUpdate = _context.HostelPayments.Where(i => i.Ref == reference).Include(i => i.HostelFees).FirstOrDefault();
-            ViewBag.pk = "FLWPUBK_TEST-3f35866dc8566ccf6b5b8a468536f069-X";
+            
             if (reference == null || _context.HostelPayments == null)
             {
                 return NotFound();
@@ -208,18 +228,19 @@ namespace EDSU_SYSTEM.Controllers
             try
             {
                 var payment = _context.HostelPayments.Where(x => x.Ref == tx_ref).FirstOrDefault();
+                TempData["walletId"] = payment.WalletId;
                 if (payment != null)
                 {
                     //Update the payment record if the payment is successful
                     payment.Status = status;
                     payment.Mode = "Rave";
-                    _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
                    
-                    var wlt = (from e in _context.UgSubWallets where e.Id == payment.WalletId select e).FirstOrDefault();
+                    var wlt = (from e in _context.UgMainWallets where e.Id == payment.WalletId select e).FirstOrDefault();
                    
                     //Get the student making payment
-                    var hostelApplicant = (from ha in _context.Students where ha.UTMENumber == wlt.WalletId select ha).FirstOrDefault();
+                    var hostelApplicant = (from ha in _context.UgApplicants where ha.UTMENumber == wlt.WalletId select ha).FirstOrDefault();
                    
                     var availableHostel = (from hostel in _context.Hostels where hostel.Id == payment.HostelType select hostel).FirstOrDefault();
                   
@@ -229,27 +250,32 @@ namespace EDSU_SYSTEM.Controllers
 
 
 
-                        foreach (var item in availableRooms)
+                        var random = new Random();
+                        var shuffledRooms = availableRooms.OrderBy(x => random.Next()).ToList();
+
+                        foreach (var item in shuffledRooms)
                         {
-                            Console.WriteLine("Room avail " + item.HostelId);
+                           
                             var roomFound = false;
-                            var eligible4room = (from er in _context.HostelAllocations where er.RoomIdId == item.Id select er).ToList();
+                            var eligible4room = (from er in _context.HostelAllocations where er.RoomId == item.Id select er).Include(x => x.UgMainWallets).ToList();
                             var allocationsToAdd = new List<int?>();
                             foreach (var i in eligible4room)
                             {
-                                var student = (from st in _context.Students where st.UTMENumber == i.UgMainWallets.UTME select st).FirstOrDefault();
-                                allocationsToAdd.Add(student.Department);
+                                var studentMainWallet = (from st in _context.UgMainWallets where st.Id == i.WalletId select st.WalletId).FirstOrDefault();
+                                var studentDept = (from dt in _context.UgSubWallets where dt.WalletId == studentMainWallet select dt.Department).FirstOrDefault();
+                                allocationsToAdd.Add(studentDept);
 
                             }
-                            if (!allocationsToAdd.Contains(hostelApplicant.Department))
+                            if (!allocationsToAdd.Contains(hostelApplicant.AdmittedInto))
                             {
                                 //work here
-                                haa.WalletId = hostelApplicant.Id;
-                                haa.RoomIdId = item.Id;
+                                haa.WalletId = wlt.Id;
+                                haa.RoomId = item.Id;
                                 haa.HostelId = item.HostelId;
-
+                                haa.CreatedAt = DateTime.Now;
                                 _context.HostelAllocations.Add(haa);
                                 await _context.SaveChangesAsync();
+                                break;
                             }
 
 
@@ -258,33 +284,27 @@ namespace EDSU_SYSTEM.Controllers
                 }
                 else
                 {
-                    Console.Write($"else tx_ref: {tx_ref}");
+                    return RedirectToAction("badreq", "error");
                 }
+                
             }
             catch (Exception)
             {
 
                 throw;
             }
-            return RedirectToAction("Index", "Wallets");
+           
+            return RedirectToAction("Success", "Hostels");
         }
-        public IActionResult Receipt()
+        public IActionResult Success(int utme)
         {
-            //var d = _context.HostelPayments.Where(x => x.Ref == Ref).FirstOrDefault();
-            ViewBag.PaymentRef = TempData["PaymentRef"];
-            ViewBag.ReceiptNo = TempData["ReceiptNo"];
-            ViewBag.Date = TempData["PaymentDate"];
-            ViewBag.Name = TempData["PaymentName"];
-            ViewBag.Email = TempData["PaymentEmail"];
-            ViewBag.UTME = TempData["PaymentUTME"];
-            ViewBag.Department = TempData["PaymentDepartment"];
-            ViewBag.Session = TempData["PaymentSession"];
-            ViewBag.Amount = TempData["PaymentAmount"];
-            ViewBag.Description = TempData["PaymentDescription"];
-            ViewBag.WalletId = TempData["PaymentWalletId"];
-
-            Console.WriteLine("update receipt with " + ViewBag.PaymentRef);
-            return View();
+            utme = (int)TempData["walletId"];
+            var room = (from s in _context.HostelAllocations where s.WalletId == utme select s)
+                .Include(x => x.Hostels)
+                .Include(x => x.HostelRooms)
+                .Include(x => x.UgMainWallets)
+                .FirstOrDefault();
+            return View(room);
         }
         // GET: Hostels/Details/5
         public async Task<IActionResult> Details(int? id)
