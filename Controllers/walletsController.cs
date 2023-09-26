@@ -25,7 +25,7 @@ namespace EDSU_SYSTEM.Controllers
         [HttpGet]
         public IActionResult GetPaymentKey()
         {
-            var paymentKey = Environment.GetEnvironmentVariable("PAYSTACK_LIVE_KEY");
+            var paymentKey = Environment.GetEnvironmentVariable("PAYSTACK_TEST_KEY");
             return Json(paymentKey);
         }
         [HttpGet]
@@ -794,7 +794,7 @@ namespace EDSU_SYSTEM.Controllers
 
         }
         
-         //  [Authorize(Roles = "student, superAdmin")]
+        //[Authorize(Roles = "student, superAdmin")]
         //Updating the payment record and creating tempdata for receipt
         public async Task<IActionResult> UpdatePayment(string data, BursaryClearance bursaryClearance, BursaryClearanceFresher bcf)
         {
@@ -806,7 +806,7 @@ namespace EDSU_SYSTEM.Controllers
             if (await TryUpdateModelAsync<Payment>(payments, ""))
             {
                 payments.Status = "Approved";
-
+                Console.WriteLine("got here");
                 switch (payments.Type)
                 {
                     case "Tuition(Transfer)":
@@ -921,6 +921,7 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.AcceptanceFee = 0;
+                            Console.WriteLine("got here"+ wallet.AcceptanceFee);
                         }
                         break;
                     await _context.SaveChangesAsync();
@@ -971,7 +972,7 @@ namespace EDSU_SYSTEM.Controllers
                 TempData["PaymentWalletId"] = wlt.WalletId;
             }
 
-            return RedirectToAction("Index", "Wallets");
+            return RedirectToAction("summary", "wallets");
         }
 
         public async Task<IActionResult> Verify(string? id)
