@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<EDSU_SYSTEM.Models.BursaryClearance>
 @using static EDSU_SYSTEM.Models.Enum
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "";
 }
 
 
@@ -19,7 +19,10 @@
                         
                         <strong>@ViewBag.name</strong><br/>
                         <strong>@ViewBag.mat</strong><br />
+                        <strong>@ViewBag.utme</strong><br />
+                        <strong>@ViewBag.phone</strong><br />
                         <strong>@ViewBag.email</strong><br/>
+                        <strong>@ViewBag.level</strong><br/>
                         <strong>@ViewBag.department</strong>
                     </div>
                     <div class="row">

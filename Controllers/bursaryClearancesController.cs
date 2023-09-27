@@ -189,9 +189,12 @@ namespace EDSU_SYSTEM.Controllers
         {
             try
             {
-                var student = (from s in _context.Students where s.SchoolEmailAddress == id select s).Include(i => i.Departments).FirstOrDefault();
+                var student = (from s in _context.Students where s.SchoolEmailAddress == id select s).Include(i => i.Departments).Include(x => x.Levels).FirstOrDefault();
                 ViewBag.name = student.Fullname;
                 ViewBag.mat = student.MatNumber;
+                ViewBag.utme = student.UTMENumber;
+                ViewBag.phone = student.Phone;
+                ViewBag.level = student.Levels.Name;
                 ViewBag.department = student.Departments.Name;
                 ViewBag.email = student.SchoolEmailAddress;
                 ViewBag.currentStatus = (from c in _context.BursaryClearedStudents where c.StudentId == student.Id select c.Remark).FirstOrDefault();
