@@ -58,7 +58,7 @@ namespace EDSU_SYSTEM.Controllers
             var Subwallet = (from sf in _context.UgSubWallets where sf.WalletId == utme select sf).FirstOrDefault();
             if (Subwallet != null)
             {
-                if(Subwallet.SessionId > 0 || Subwallet.LMS > 0 || Subwallet.EDHIS > 0 || Subwallet.SRC > 0 && Subwallet.Waiver == false)
+                if((Subwallet.Tuition2 > 0 || Subwallet.SixtyPercent > 0 || Subwallet.LMS > 0 || Subwallet.EDHIS > 0 || Subwallet.SRC > 0) && Subwallet.Waiver == false)
                 {
                     ViewBag.ErrorMessage = "Kindly clear all outstanding debts and try again. For further complaints, contact the ICT";
                     return View();
@@ -266,9 +266,13 @@ namespace EDSU_SYSTEM.Controllers
                                 allocationsToAdd.Add(studentDept);
 
                             }
-                            if (!allocationsToAdd.Contains(hostelApplicant.AdmittedInto))
+                            var applicantDept = hostelApplicant.AdmittedInto;
+                            var applicantLevel = hostelApplicant.LevelAdmittedTo;
+
+                            if (!allocationsToAdd.Any(allocatedDept => allocatedDept == applicantDept) &&
+                                !allocationsToAdd.Any(allocatedLevel => allocatedLevel == applicantLevel))
                             {
-                                //work here
+                                // If no existing allocations are found in the same department or level, add a new allocation.
                                 haa.WalletId = wlt.Id;
                                 haa.RoomId = item.Id;
                                 haa.HostelId = item.HostelId;
@@ -277,7 +281,6 @@ namespace EDSU_SYSTEM.Controllers
                                 await _context.SaveChangesAsync();
                                 break;
                             }
-
 
                         }
                     }
@@ -446,5 +449,261 @@ namespace EDSU_SYSTEM.Controllers
         {
             return _context.Hostels.Any(e => e.Id == id);
         }
+
+        ////////////////////////////////////////////////////////////////////////
+        ///
+        ////////////////////////////////////////////////////////////////////////
+        public async Task<IActionResult> Choice(string utme)
+        {
+            ViewBag.utme = utme;
+            //Check if the student owes anything
+            var Subwallet = (from sf in _context.UgSubWallets where sf.WalletId == utme select sf).FirstOrDefault();
+            if (Subwallet != null)
+            {
+                if (Subwallet.Tuition2 > 0 || Subwallet.SixtyPercent > 0 || Subwallet.LMS > 0 || Subwallet.EDHIS > 0 || Subwallet.SRC > 0 && Subwallet.Waiver == false)
+                {
+                    ViewBag.ErrorMessage = "Kindly clear all outstanding debts and try again. For further complaints, contact the ICT";
+                    return View();
+                }
+            }
+            var wallet = (from sf in _context.UgMainWallets where sf.WalletId == utme select sf.Id).FirstOrDefault();
+            var alreadyPaid = (from sd in _context.HostelAllocations where sd.WalletId == wallet select sd).FirstOrDefault();
+            if (alreadyPaid != null)
+            {
+                ViewBag.ErrorMessage = "It Appears you have already been allocated a room. For further complaints, contact the ICT";
+                return View();
+            }
+            ViewData["HostelId"] = new SelectList(_context.Hostels, "Id", "Name");
+            var student = (from s in _context.UgSubWallets where s.WalletId == utme select s).FirstOrDefault();
+            if (student != null)
+            {
+                string err = (string)TempData["err"];
+                ViewBag.ErrorMessage = err;
+                TempData["utme"] = utme;
+                return View();
+            }
+            return View();
+            //return Redirect(Request.Headers["Referer"].ToString());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Choice(int hostel, string utme)
+        {
+            try
+            {
+               // utme = (string)TempData["utme"];
+                var student = (from st in _context.Students where st.UTMENumber == utme select st).FirstOrDefault();
+
+                //Checks if this hostel exists
+                var hostelIsAvailable = (from s in _context.Hostels where s.Id == hostel select s).FirstOrDefault();
+                if (hostelIsAvailable == null)
+                {
+                    TempData["err"] = "Hostel does not exist. Kindly make another choice.";
+                    return Redirect(Request.Headers["Referer"].ToString());
+                }
+                //Checks if the hostel is for the gender of the logged in user
+                var isForMyGender = (from f in _context.Hostels where f.Id == hostel select f.Gender).FirstOrDefault();
+                if (isForMyGender != student.Sex)
+                {
+                    TempData["err"] = "You picked a hostel for the opposite gender😔. Kindly make another choice.";
+                    return Redirect(Request.Headers["Referer"].ToString());
+                }
+
+                //checks if there's a room in this hostel
+                if (hostelIsAvailable.BedspacesCount <= 0)
+                {
+                    TempData["err"] = "Unfortunately the hostel type you picked is not available at this time. Kindly make another choice.";
+                    return Redirect(Request.Headers["Referer"].ToString());
+                }
+                else if (hostelIsAvailable.BedspacesCount > 0)
+                {
+                    TempData["hostelType"] = hostelIsAvailable.Id;
+                    TempData["hostelName"] = hostelIsAvailable.Name;
+                    TempData["hostelAmount"] = hostelIsAvailable.Amount;
+                }
+                //var utme = hostelIsAvailable.Id;
+                return RedirectToAction("hostelorder", "hostels", new { utme });
+            }
+            catch (Exception)
+            {
+                throw;
+
+            }
+
+        }
+
+        public async Task<IActionResult> HostelOrder(HostelPayment payment, string utme)
+        {
+            try
+            {
+                //Gets the logged in user (Student)
+                //var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+                //var ugStudent = loggedInUser.StudentsId;
+
+                var student = (from st in _context.Students where st.UTMENumber == utme select st).FirstOrDefault();
+                ViewBag.Name = student.Fullname;
+                // I did this because the walletId is same as the student UTME Number
+                var wallet = await _context.UgMainWallets
+                .FirstOrDefaultAsync(m => m.WalletId == student.UTMENumber);
+                if (wallet == null)
+                {
+                    TempData["err"] = "Student doesn't have a wallet, contact the bursary.";
+                    return Redirect(Request.Headers["Referer"].ToString());
+                }
+                var sessionId = (from ss in _context.Sessions where ss.IsActive == true select ss.Id).FirstOrDefault();
+                Random r = new();
+                //ViewBag.hostel =
+                payment.SessionId = sessionId;
+                payment.WalletId = wallet.Id;
+                payment.Amount = (double)TempData["hostelAmount"];
+                payment.HostelType = (int)TempData["hostelType"];
+                payment.Status = "Pending";
+                payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+                payment.PaymentDate = DateTime.Now;
+                _context.HostelPayments.Add(payment);
+                await _context.SaveChangesAsync();
+
+                ViewBag.reference = payment.Ref;
+                ViewBag.hostel = TempData["hostelName"];
+                Console.WriteLine(ViewBag.hostel);
+                return View();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> HostelOrder(string? reference)
+        {
+            Console.Write(reference);
+            try
+            {
+                var PaymentToUpdate = await _context.HostelPayments.FirstOrDefaultAsync(i => i.Ref == reference);
+
+                if (await TryUpdateModelAsync<HostelPayment>(PaymentToUpdate, "", c => c.Email))
+                {
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                            "Try again, and if the problem persists, " +
+                            "see your system administrator.");
+                    }
+                    return RedirectToAction("checkout", "hostels", new { reference });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+
+            }
+            return RedirectToAction("checkout", "hostels", new { reference });
+
+        }
+        public async Task<IActionResult> Checkout(string reference)
+        {
+
+            var paymentToUpdate = _context.HostelPayments.Where(i => i.Ref == reference).Include(i => i.HostelFees).FirstOrDefault();
+
+            if (reference == null || _context.HostelPayments == null)
+            {
+                return NotFound();
+            }
+            if (paymentToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            return View(paymentToUpdate);
+        }
+        [HttpGet("/hostels/Rave")]
+        public async Task<IActionResult> Rave(string status, string tx_ref, string transaction_id, BursaryClearance bursaryClearance, HostelAllocation haa)
+        {
+            try
+            {
+                var payment = _context.HostelPayments.Where(x => x.Ref == tx_ref).FirstOrDefault();
+                TempData["walletId"] = payment.WalletId;
+                if (payment != null)
+                {
+                    //Update the payment record if the payment is successful
+                    payment.Status = status;
+                    payment.Mode = "Rave";
+                    await _context.SaveChangesAsync();
+
+
+                    var wlt = (from e in _context.UgMainWallets where e.Id == payment.WalletId select e).FirstOrDefault();
+
+                    //Get the student making payment
+                    var hostelApplicant = (from ha in _context.Students where ha.UTMENumber == wlt.WalletId select ha).FirstOrDefault();
+
+                    var availableHostel = (from hostel in _context.Hostels where hostel.Id == payment.HostelType select hostel).FirstOrDefault();
+
+                    if (availableHostel.BedspacesCount > 0)
+                    {
+                        var availableRooms = (from rm in _context.HostelRoomDetails where rm.HostelId == payment.HostelType && rm.BedSpacesCount > 0 select rm).ToList();
+
+
+
+                        var random = new Random();
+                        var shuffledRooms = availableRooms.OrderBy(x => random.Next()).ToList();
+
+                        foreach (var item in shuffledRooms)
+                        {
+
+                            var roomFound = false;
+                            var eligible4room = (from er in _context.HostelAllocations where er.RoomId == item.Id select er).Include(x => x.UgMainWallets).ToList();
+                            var allocationsToAdd = new List<int?>();
+                            foreach (var i in eligible4room)
+                            {
+                                var studentMainWallet = (from st in _context.UgMainWallets where st.Id == i.WalletId select st.WalletId).FirstOrDefault();
+                                var studentDept = (from dt in _context.UgSubWallets where dt.WalletId == studentMainWallet select dt.Department).FirstOrDefault();
+                                allocationsToAdd.Add(studentDept);
+
+                            }
+                            var applicantDept = hostelApplicant.Department;
+                            var applicantLevel = hostelApplicant.Level;
+
+                            if (!allocationsToAdd.Any(allocatedDept => allocatedDept == applicantDept) &&
+                                !allocationsToAdd.Any(allocatedLevel => allocatedLevel == applicantLevel))
+                            {
+                                // If no existing allocations are found in the same department or level, add a new allocation.
+                                haa.WalletId = wlt.Id;
+                                haa.RoomId = item.Id;
+                                haa.HostelId = item.HostelId;
+                                haa.CreatedAt = DateTime.Now;
+                                _context.HostelAllocations.Add(haa);
+                                await _context.SaveChangesAsync();
+                                break;
+                            }
+
+
+                        }
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("badreq", "error");
+                }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return RedirectToAction("Success", "Hostels");
+        }
+
+
     }
 }

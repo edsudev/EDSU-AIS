@@ -166,8 +166,8 @@ namespace EDSU_SYSTEM.Controllers
                 newSubWallet.Level = student.Level;
                 newSubWallet.Department = student.Department;
 
-                //_context.UgSubWallets.Add(newSubWallet);
-                //await _context.SaveChangesAsync();
+                _context.UgSubWallets.Add(newSubWallet);
+                await _context.SaveChangesAsync();
 
                 //var main = (from m in _context.UgMainWallets where m.WalletId == newSubWallet.WalletId select m).FirstOrDefault();
                 //main.BulkDebitBalanace = newSubWallet.Debit;

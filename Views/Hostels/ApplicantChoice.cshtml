@@ -3,7 +3,46 @@
 @{
     ViewData["Title"] = "Hostel - ";
 }
+<!--  BEGIN NAVBAR  -->
+<div class="header-container fixed-top">
+    <header class="header navbar navbar-expand-sm">
 
+        <ul class="navbar-item theme-brand flex-row  text-center">
+            <li class="nav-item theme-logo">
+                <a asp-action="index" asp-controller="home">
+
+                    <img src="~/logo.png" class="navbar-logo" alt="logo" />
+                </a>
+            </li>
+            <li class="nav-item theme-text">
+                <a asp-action="index" asp-controller="home"> EDO STATE UNIVERSITY UZAIRUE  </a>
+            </li>
+        </ul>
+
+    </header>
+</div>
+<!--  END NAVBAR  -->
+<!--  BEGIN NAVBAR  -->
+<div class="sub-header-container">
+    <header class="header navbar navbar-expand-sm">
+        <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
+
+        <ul class="navbar-nav flex-row">
+            <li>
+                <div class="page-header">
+
+                    <nav class="breadcrumb-one" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0);">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><span>Hostel Accommodation</span></li>
+                        </ol>
+                    </nav>
+
+                </div>
+            </li>
+        </ul>
+    </header>
+</div>
 <div class="main-container" id="container">
     @*<partial name="_StudentDashboardPartial" />*@
     <!--  BEGIN CONTENT AREA  -->
@@ -16,24 +55,26 @@
                     <strong>@ViewBag.ErrorMessage</strong>
                 </div>
 
+            }else{
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-10 mx-auto layout-top-spacing">
+                    <img src="~/files/hostels.png" />
+                    <h2>What category of hostel are you interested in? 🤨</h2>
+                    <div class="widget-content widget-content-area br-6 p-3">
+                        <form asp-action="ApplicantChoice" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="Id" class="control-label">Hostel Type</label>
+                                <select asp-for="Id" name="hostel" class="form-control basic" asp-items="ViewBag.HostelId"></select>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Submit" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
             }
             <!-- Content -->
-            <div class="col-xl-4 col-lg-4 col-md-4 col-sm-10 mx-auto layout-top-spacing">
-                   
-                <h2>What category of hostel are you interested in? 🤨</h2>
-                <div class="widget-content widget-content-area br-6 p-3">
-                    <form asp-action="ApplicantChoice" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-group">
-                            <label asp-for="Id" class="control-label">Hostel Type</label>
-                            <select asp-for="Id" name="hostel" class="form-control" asp-items="ViewBag.HostelId"></select>
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Submit" class="btn btn-primary" />
-                        </div>
-                    </form>
-                </div>
-            </div>
+           
            </div>
     </div>
     <!--  END CONTENT AREA  -->
