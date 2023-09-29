@@ -63,7 +63,7 @@
 <script>
 
     function MakePayment() {
-        const publicKey = 'FLWPUBK-5e9f4d87d1802b5de17c356e006ae112-X'//document.querySelector('input[name="public_key"]').value;
+        const publicKey = 'FLWPUBK-d7425a3b40b1a193a9eb77e2ec32a3de-X'//document.querySelector('input[name="public_key"]').value;
     const email = document.getElementById('email').value;
     const amount = parseFloat(document.getElementById('amount').value) / 100;
     const ref = document.getElementById('ref').value;
@@ -74,7 +74,7 @@
         amount: amount * 100, // Convert amount to kobo (NGN currency)
         currency: "NGN",
         payment_options: "card, banktransfer, ussd",
-        redirect_url: "https://localhost:2222/hostels/RaveRedirect",
+        redirect_url: "https://edouniversity.edu.ng/hostels/RaveRedirect",
         customer: {
             email: email,
         },
