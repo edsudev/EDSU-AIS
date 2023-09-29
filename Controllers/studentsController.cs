@@ -450,12 +450,8 @@ namespace EDSU_SYSTEM.Controllers
 
                         // Create a new instance of UgSubWallet for each student
                         var newSubWallet = new UgSubWallet();
-                        var fee = (from tu in _context.Fees where tu.DepartmentId == st.AdmittedInto select tu).FirstOrDefault();
-                        if (fee == null)
-                        {
-                            fee = new Fee { Level1 = 0 };
-                        }
-                        newSubWallet.Tuition = fee.Level1;
+                       
+                        newSubWallet.Tuition = 150000;
                         newSubWallet.Level = st.LevelAdmittedTo;
                         newSubWallet.WalletId = st.ApplicantionId;
                         newSubWallet.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
@@ -463,22 +459,13 @@ namespace EDSU_SYSTEM.Controllers
                         newSubWallet.CreditBalance = 0;
                         newSubWallet.Status = true;
                         newSubWallet.DateCreated = DateTime.Now;
-
-                        if (st.ModeOfEntry == "3" && (st.AdmittedInto == 38 || st.AdmittedInto == 24 || st.AdmittedInto == 1))
-                        {
-                            newSubWallet.Tuition2 = fee.Level1;
-                        }
-                        else
-                        {
-                            newSubWallet.Tuition2 = 0;
-                        }
-
+                        newSubWallet.Tuition2 = 0;
                         newSubWallet.FortyPercent = newSubWallet.Tuition * 40 / 100;
                         newSubWallet.SixtyPercent = newSubWallet.Tuition * 60 / 100;
-                        newSubWallet.LMS = 40000;
-                        newSubWallet.AcceptanceFee = 70000;
-                        newSubWallet.SRC = 2000;
-                        newSubWallet.EDHIS = 25000;
+                        newSubWallet.LMS = 35000;
+                        newSubWallet.AcceptanceFee = 50000;
+                        newSubWallet.SRC = 0;
+                        newSubWallet.EDHIS = 0;
                         newSubWallet.SessionId = 9;
 
 

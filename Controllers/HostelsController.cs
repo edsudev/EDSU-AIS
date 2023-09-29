@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
-   [Authorize(Roles = "superAdmin")]
+  // [Authorize(Roles = "superAdmin")]
     public class HostelsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -65,12 +65,7 @@ namespace EDSU_SYSTEM.Controllers
                 }
             }
             var wallet = (from sf in _context.UgMainWallets where sf.WalletId == utme select sf.Id).FirstOrDefault();
-            var alreadyPaid = (from sd in _context.HostelAllocations where sd.WalletId == wallet select sd).FirstOrDefault();
-            if (alreadyPaid != null)
-            {
-                ViewBag.ErrorMessage = "It Appears you have already been allocated a room. For further complaints, contact the ICT";
-                return View();
-            }
+            
             ViewData["HostelId"] = new SelectList(_context.Hostels, "Id", "Name");
             var student = (from s in _context.UgSubWallets where s.WalletId == utme select s).FirstOrDefault();
             if (student != null)
@@ -253,6 +248,15 @@ namespace EDSU_SYSTEM.Controllers
                         var random = new Random();
                         var shuffledRooms = availableRooms.OrderBy(x => random.Next()).ToList();
 
+
+                        var alreadyPaid = (from sd in _context.HostelAllocations where sd.WalletId == wlt.Id select sd).FirstOrDefault();
+                        if (alreadyPaid != null)
+                        {
+                            ViewBag.ErrorMessage = "Check your clearance slip for your room details. For further complaints, contact the ICT";
+                            return View();
+                        }
+
+
                         foreach (var item in shuffledRooms)
                         {
                            
@@ -266,18 +270,20 @@ namespace EDSU_SYSTEM.Controllers
                                 allocationsToAdd.Add(studentDept);
 
                             }
-                            var applicantDept = hostelApplicant.AdmittedInto;
                             var applicantLevel = hostelApplicant.LevelAdmittedTo;
 
-                            if (!allocationsToAdd.Any(allocatedDept => allocatedDept == applicantDept) &&
-                                !allocationsToAdd.Any(allocatedLevel => allocatedLevel == applicantLevel))
+                            if (!allocationsToAdd.Any(allocatedLevel => allocatedLevel == applicantLevel))
                             {
                                 // If no existing allocations are found in the same department or level, add a new allocation.
                                 haa.WalletId = wlt.Id;
                                 haa.RoomId = item.Id;
                                 haa.HostelId = item.HostelId;
                                 haa.CreatedAt = DateTime.Now;
-                                _context.HostelAllocations.Add(haa);
+                                await _context.HostelAllocations.AddAsync(haa);
+                                item.BedSpacesCount -= 1;
+                                _context.HostelRoomDetails.Update(item);
+                                availableHostel.BedspacesCount -= 1;
+                                _context.Hostels.Update(availableHostel);
                                 await _context.SaveChangesAsync();
                                 break;
                             }
@@ -468,11 +474,11 @@ namespace EDSU_SYSTEM.Controllers
             }
             var wallet = (from sf in _context.UgMainWallets where sf.WalletId == utme select sf.Id).FirstOrDefault();
             var alreadyPaid = (from sd in _context.HostelAllocations where sd.WalletId == wallet select sd).FirstOrDefault();
-            if (alreadyPaid != null)
-            {
-                ViewBag.ErrorMessage = "It Appears you have already been allocated a room. For further complaints, contact the ICT";
-                return View();
-            }
+            //if (alreadyPaid != null)
+            //{
+            //    ViewBag.ErrorMessage = "It Appears you have already been allocated a room. For further complaints, contact the ICT";
+            //    return View();
+            //}
             ViewData["HostelId"] = new SelectList(_context.Hostels, "Id", "Name");
             var student = (from s in _context.UgSubWallets where s.WalletId == utme select s).FirstOrDefault();
             if (student != null)
@@ -656,6 +662,13 @@ namespace EDSU_SYSTEM.Controllers
                         var random = new Random();
                         var shuffledRooms = availableRooms.OrderBy(x => random.Next()).ToList();
 
+                        var alreadyPaid = (from sd in _context.HostelAllocations where sd.WalletId == wlt.Id select sd).FirstOrDefault();
+                        if (alreadyPaid != null)
+                        {
+                            ViewBag.ErrorMessage = "Check your clearance slip for your room details. For further complaints, contact the ICT";
+                            return View();
+                        }
+
                         foreach (var item in shuffledRooms)
                         {
 
@@ -672,16 +685,21 @@ namespace EDSU_SYSTEM.Controllers
                             var applicantDept = hostelApplicant.Department;
                             var applicantLevel = hostelApplicant.Level;
 
-                            if (!allocationsToAdd.Any(allocatedDept => allocatedDept == applicantDept) &&
-                                !allocationsToAdd.Any(allocatedLevel => allocatedLevel == applicantLevel))
+                            if (!allocationsToAdd.Any(allocatedLevel => allocatedLevel == applicantLevel))
                             {
                                 // If no existing allocations are found in the same department or level, add a new allocation.
                                 haa.WalletId = wlt.Id;
                                 haa.RoomId = item.Id;
                                 haa.HostelId = item.HostelId;
                                 haa.CreatedAt = DateTime.Now;
-                                _context.HostelAllocations.Add(haa);
+                                await _context.HostelAllocations.AddAsync(haa);
+                                item.BedSpacesCount -= 1;
+                                _context.HostelRoomDetails.Update(item);
+                                availableHostel.BedspacesCount -= 1;
+                                _context.Hostels.Update(availableHostel);
                                 await _context.SaveChangesAsync();
+
+
                                 break;
                             }
 
