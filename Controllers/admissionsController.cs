@@ -53,7 +53,6 @@ namespace EDSU_SYSTEM.Controllers
             {
                 return RedirectToAction("pagenotfound", "error");
             }
-
             return View(wallet);
 
         }
@@ -1483,7 +1482,10 @@ namespace EDSU_SYSTEM.Controllers
                 var clearance = (from s in _context.BursaryClearancesFreshers where s.ClearanceId == student.UTMENumber && s.SessionId == session.Id select s)
                     .Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
                 //var hostel = (from s in _context.HostelPayments where s.)
-
+                var walletId = await _context.UgMainWallets.Where(x => x.WalletId == utme).FirstOrDefaultAsync();
+                var room = await _context.HostelAllocations.Where(x => x.WalletId == walletId.Id).Include(x => x.HostelRooms).Include(x => x.Hostels).FirstOrDefaultAsync();
+                ViewBag.hostel = room.Hostels.Name;
+                ViewBag.room = room.HostelRooms.RoomNo;
                 if (clearance.Count() == 0)
                 {
                     return RedirectToAction("resourcenotfound", "error");
