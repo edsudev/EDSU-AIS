@@ -340,7 +340,42 @@ namespace EDSU_SYSTEM.Controllers
             ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Name");
             return View();
         }
+        [Authorize(Roles = "busaryAdmin, superAdmin")]
+        public IActionResult Allocations()
+        {
+            var all = (from s in _context.HostelAllocations select s).Include(x => x.Hostels).Include(s => s.HostelRooms).ToList();
+            return View(all);
+        }
+        [Authorize(Roles = "busaryAdmin, superAdmin")]
+        // GET: Hostels/Create
+        public IActionResult Back()
+        {
+            ViewData["hostel"] = new SelectList(_context.Hostels, "Id", "Name");
+            ViewData["room"] = new SelectList(_context.HostelRoomDetails, "Id", "RoomNo");
+            ViewData["wallet"] = new SelectList(_context.UgMainWallets, "Id", "Name");
+            return View();
+        }
+        [Authorize(Roles = "busaryAdmin, superAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Back(HostelAllocation hostel)
+        {
+            hostel.CreatedAt = DateTime.Now;
+            _context.Add(hostel);
+            var hall = (from h in _context.Hostels where h.Id == hostel.HostelId select h).FirstOrDefault();
+            var hallRoom = (from h in _context.HostelRoomDetails where h.RoomNo == hostel.HostelRooms.RoomNo select h).FirstOrDefault();
+            hall.BedspacesCount -= 1;
+            _context.Hostels.Update(hall);
 
+            hallRoom.BedSpacesCount -= 1;
+            _context.HostelRoomDetails.Update(hallRoom);
+
+            await _context.SaveChangesAsync();
+
+            
+           
+            return RedirectToAction(nameof(Allocations));
+        }
         // POST: Hostels/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
