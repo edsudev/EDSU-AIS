@@ -68,25 +68,18 @@ var app = builder.Build();
 
 
 //Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-//app.UseDeveloperExceptionPage();
-//app.UseMigrationsEndPoint();
-//}
-//else
-//{
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseMigrationsEndPoint();
+}
+else
+{
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios.
     app.UseHsts();
-    //builder.Services.AddHsts(options =>
-    //{
-    //    options.Preload = true;
-    //    options.IncludeSubDomains = true;
-    //    options.MaxAge = TimeSpan.FromDays(60);
-    //    //options.ExcludedHosts.Add("example.com");
-    //    //options.ExcludedHosts.Add("www.example.com");
-    //});
- //}
+   
+ }
 
 
 

@@ -806,7 +806,6 @@ namespace EDSU_SYSTEM.Controllers
             if (await TryUpdateModelAsync<Payment>(payments, ""))
             {
                 payments.Status = "Approved";
-                Console.WriteLine("got here");
                 switch (payments.Type)
                 {
                     case "Tuition(Transfer)":
@@ -821,6 +820,7 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.Tuition2 = 0;
+                            await _context.SaveChangesAsync();
                         }
                         break;
                     case "Tuition":
@@ -838,6 +838,7 @@ namespace EDSU_SYSTEM.Controllers
 
                             wallet.SixtyPercent = 0;
                             wallet.FortyPercent = 0;
+                            await _context.SaveChangesAsync();
                         }
                         break;
                     case "Tuition(60%)":
@@ -852,6 +853,7 @@ namespace EDSU_SYSTEM.Controllers
 
                             wallet.SixtyPercent = 0;
                             wallet.Tuition = 0;
+                            await _context.SaveChangesAsync();
                         }
                         break;
                     case "Tuition(40%)":
@@ -866,6 +868,7 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.FortyPercent = 0;
+                            await _context.SaveChangesAsync();
                         }
                         break;
                     case "EDHIS":
@@ -879,6 +882,7 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.EDHIS = 0;
+                            await _context.SaveChangesAsync();
                         }
                         break;
                     case "LMS":
@@ -893,6 +897,7 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.LMS = 0;
+                            await _context.SaveChangesAsync();
                         }
                         break;
                     case "SRC":
@@ -907,6 +912,7 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.SRC = 0;
+                            await _context.SaveChangesAsync();
                         }
                         break;
                     case "Acceptance":
@@ -921,10 +927,10 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.AcceptanceFee = 0;
-                            Console.WriteLine("got here"+ wallet.AcceptanceFee);
+                            await _context.SaveChangesAsync();
                         }
                         break;
-                    await _context.SaveChangesAsync();
+                    
                  }
                 var session = (from s in _context.Sessions where s.Id == payments.SessionId select s).FirstOrDefault();
                 var wlt = (from e in _context.UgSubWallets where e.Id == payments.WalletId select e).FirstOrDefault();
@@ -1005,10 +1011,9 @@ namespace EDSU_SYSTEM.Controllers
             return RedirectToAction("receipt", new { id });
             //return View(payment);
         }
-        [AllowAnonymous]
-
+        
         //Payment Receipt
-        public IActionResult Summary()
+        public async Task<IActionResult> Summary()
         {
             ViewBag.Name = TempData["PaymentName"];
             ViewBag.Email = TempData["PaymentEmail"];
@@ -1024,7 +1029,7 @@ namespace EDSU_SYSTEM.Controllers
            
             ViewBag.debit = debit.BulkDebitBalanace;
             var applicationDbContext = (from pt in _context.Payments where pt.WalletId == wallet.Id && pt.Status == "Approved" select pt).Include(i => i.Wallets).Include(i => i.Wallets.Levels).Include(i => i.Sessions).Include(i => i.OtherFees);
-            return View(applicationDbContext.ToList());
+            return View(await applicationDbContext.ToListAsync());
             //var payment = (from pt in _context.Payments where pt.WalletId == wallet.Id && pt.Status == "Approved" select pt).ToList();
             //return View(applicationDbContext);
         }
