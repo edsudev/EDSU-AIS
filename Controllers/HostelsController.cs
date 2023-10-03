@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
-   [Authorize(Roles = "superAdmin")]
+   //[Authorize(Roles = "superAdmin")]
     public class HostelsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -307,13 +307,13 @@ namespace EDSU_SYSTEM.Controllers
         {
             utme = (int)TempData["walletId"];
             Console.Write("utme number" + utme);
-            var walletid = await _context.UgSubWallets.Where(x => x.Id == utme).FirstOrDefaultAsync();
-            var main = await _context.UgMainWallets.Where(x => x.WalletId == walletid.WalletId).FirstOrDefaultAsync();
-            var room = await _context.HostelAllocations.Where(s => s.WalletId == main.Id) 
+            var walletid = _context.UgSubWallets.Where(x => x.Id == utme).FirstOrDefault();
+            var main = _context.UgMainWallets.Where(x => x.WalletId == walletid.WalletId).FirstOrDefault();
+            var room = _context.HostelAllocations.Where(s => s.WalletId == main.Id) 
                 .Include(x => x.Hostels)
                 .Include(x => x.HostelRooms)
                 .Include(x => x.UgMainWallets)
-                .FirstOrDefaultAsync();
+                .FirstOrDefault();
             return View(room);
         }
         // GET: Hostels/Details/5
@@ -344,7 +344,7 @@ namespace EDSU_SYSTEM.Controllers
         [Authorize(Roles = "busaryAdmin, superAdmin")]
         public async Task<IActionResult> Allocations()
         {
-            var all = _context.HostelAllocations.Include(x => x.Hostels).Include(s => s.HostelRooms).ToList();
+            var all = _context.HostelAllocations.Include(x => x.Hostels).Include(s => s.HostelRooms).Include(x => x.UgMainWallets).ToList();
             return View(all);
         }
         [Authorize(Roles = "busaryAdmin, superAdmin")]

@@ -52,35 +52,22 @@
         <div class="row" id="printableContent">
             <div class="col-md-6 mx-auto my-auto text-center">
                 <span class="display-4"></span>
-                <h3 class="mt-3">Your room details are below</h3>
-                <div class="mt-4">
+                @*<div class="mt-4">
                     <p><strong>Hostel Name:</strong>@Model.Hostels.Name</p>
                     <p><strong>Student Name:</strong> @Model.UgMainWallets.Name</p>
                     <p><strong>Room Number:</strong> @Model.HostelRooms.RoomNo</p>
                     <p><strong>Date:</strong> @Model.CreatedAt</p>
-                </div>
-                <p class="mt-4"><a href="/" class="btn btn-primary">Go Back to the University Website</a></p>
+                </div>*@
+                
                 <div class="col-xl-10 col-lg-10 col-sm-10 mx-auto alert alert-secondary border-0" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="alert"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-                    <p>You will find your allocation details on your clearance slip.</p>
+                    <p>Check you dashboard to view your room allocation details</p>
                 </div>
+                <p class="mt-4"><a href="/" class="btn btn-primary">Go Back to the University Website</a></p>
             </div>
         </div>
     </div>
 </div>
-<script>
-    function printPage() {
-        var printContents = document.getElementById("printableContent").innerHTML;
-        var originalContents = document.body.innerHTML;
-
-        document.body.innerHTML = printContents;
-
-        window.print();
-
-        // Restore the original content after printing
-        document.body.innerHTML = originalContents;
-    }
-</script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

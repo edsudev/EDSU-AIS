@@ -1476,20 +1476,20 @@ namespace EDSU_SYSTEM.Controllers
                 ViewBag.name = student.Surname + " " + student.FirstName + " " + student.OtherName;
                 ViewBag.email = student.Email;
                 ViewBag.dept = student.Departments.Name;
-                //ViewBag.programme = student.Programs.NameOfProgram;
+                ViewBag.utme = student.UTMENumber;
                 ViewBag.session = session.Name;
                 ViewBag.level = student.Levels.Name;
                 var clearance = (from s in _context.BursaryClearancesFreshers where s.ClearanceId == student.UTMENumber && s.SessionId == session.Id select s)
                     .Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
                 //var hostel = (from s in _context.HostelPayments where s.)
-                var walletId = await _context.UgMainWallets.Where(x => x.WalletId == utme).FirstOrDefaultAsync();
-                var room = await _context.HostelAllocations.Where(x => x.WalletId == walletId.Id).Include(x => x.HostelRooms).Include(x => x.Hostels).FirstOrDefaultAsync();
-                ViewBag.hostel = room.Hostels.Name;
+                var walletId = await _context.UgSubWallets.Where(x => x.WalletId == utme).FirstOrDefaultAsync();
+                var room = await _context.HostelAllocations.Where(x => x.WalletId == walletId.Id).Include(x => x.HostelRooms).ThenInclude(x => x.Hostels).FirstOrDefaultAsync();
+                ViewBag.hostel = room.HostelRooms.Hostels.Name;
                 ViewBag.room = room.HostelRooms.RoomNo;
-                if (clearance.Count() == 0)
-                {
-                    return RedirectToAction("resourcenotfound", "error");
-                }
+                //if (clearance.Count() == 0)
+                //{
+                //    return RedirectToAction("resourcenotfound", "error");
+                //}
 
 
                 return View(clearance);

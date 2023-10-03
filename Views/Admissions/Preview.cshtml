@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<EDSU_SYSTEM.Models.BursaryClearanceFresher>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Clearance Slip - ";
 }
 
 <div class="main-container" id="container">
@@ -33,7 +33,8 @@
                                                             </div>
                                                             <div class="">
                                                                 <div class="">
-                                                                    <h2 class="in-heading">EDO STATE UNIVERSITY UZAIRUE</h2><br />
+                                                                    <h3 class="in-heading">EDO STATE UNIVERSITY UZAIRUE</h3><br />
+                                                                    <p>Only the stamped clearance slip gives access to university facilities</p>
                                                                 </div>
                                                             </div>
                                                             <div class=" mx-auto">
@@ -74,13 +75,13 @@
                                                              <div class="col-md-5 col-sm-4 col-6">
                                                                 <p><span class=" inv-subtitle">@ViewBag.name</span></p>
                                                                 <p><span class=" inv-subtitle">@ViewBag.email</span></p>
-                                                                @*<p><span class=" inv-subtitle">@ViewBag.mat</span></p>*@
+                                                                <p><span class=" inv-subtitle">@ViewBag.utme</span></p>
                                                                 <p><span class=" inv-subtitle">@ViewBag.dept</span></p>
                                                                 @*<p><span class=" inv-subtitle">@ViewBag.programme </span></p>*@
                                                                 <p><span class=" inv-subtitle">@ViewBag.level </span></p>
                                                             </div>
                                                              <div class="col-md-4 col-sm-4 col-6">
-                                                                <img src="~/images/bsa-1.png" />
+                                                                <img src="~/images/bsa-1.png"  style="width:250px; height:250px"/>
                                                             </div>
                                                         </div>
 

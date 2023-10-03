@@ -968,7 +968,7 @@ namespace EDSU_SYSTEM.Controllers
                 TempData["ReceiptNo"] = "BSA-" + payments.Id + "-" + DateTime.Now.Year;
                 TempData["PaymentDate"] = payments.PaymentDate;
                 TempData["PaymentDepartment"] = department;
-                TempData["PaymentUTME"] = wlt.RegNo;
+                TempData["PaymentUTME"] = wlt.WalletId;
                 TempData["PaymentName"] = wlt.Name;
                 TempData["PaymentEmail"] = payments.Email;
                 //Tempdata doesnt have the capability to accept objects or to serialize objects.
@@ -1017,21 +1017,20 @@ namespace EDSU_SYSTEM.Controllers
         {
             ViewBag.Name = TempData["PaymentName"];
             ViewBag.Email = TempData["PaymentEmail"];
-            ViewBag.UTME = TempData["PaymentUTME"];
+            ViewBag.UTME = TempData["walletId"];
             ViewBag.Department = TempData["PaymentDepartment"];
             ViewBag.Session = TempData["PaymentSession"];
-            ViewBag.WalletId = TempData["PaymentUTME"];
+            ViewBag.WalletId = TempData["walletId"];
 
-            string utme = (string)ViewBag.WalletId;
+            string utme = (string)TempData["walletId"];
            
-            var debit = (from w in _context.UgMainWallets where w.WalletId == utme select w).FirstOrDefault();
+           
             var wallet = (from w in _context.UgSubWallets where w.WalletId == utme select w).FirstOrDefault();
            
-            ViewBag.debit = debit.BulkDebitBalanace;
+            ViewBag.debit = wallet.Debit;
             var applicationDbContext = (from pt in _context.Payments where pt.WalletId == wallet.Id && pt.Status == "Approved" select pt).Include(i => i.Wallets).Include(i => i.Wallets.Levels).Include(i => i.Sessions).Include(i => i.OtherFees);
             return View(await applicationDbContext.ToListAsync());
-            //var payment = (from pt in _context.Payments where pt.WalletId == wallet.Id && pt.Status == "Approved" select pt).ToList();
-            //return View(applicationDbContext);
+           
         }
 
     }
