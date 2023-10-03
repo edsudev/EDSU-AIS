@@ -271,9 +271,10 @@ namespace EDSU_SYSTEM.Controllers
 
                             if (!allocationsToAdd.Any(allocatedLevel => allocatedLevel == applicantLevel))
                             {
+                                var ugmainwallet = _context.UgMainWallets.Where(dt => dt.WalletId == wlt.WalletId).FirstOrDefault();
+
                                 // If no existing allocations are found in the same department or level, add a new allocation.
-                                
-                                haa.WalletId = wlt.Id;
+                                haa.WalletId = ugmainwallet.Id;
                                 haa.RoomId = item.Id;
                                 haa.HostelId = item.HostelId;
                                 haa.CreatedAt = DateTime.Now;
@@ -721,8 +722,10 @@ namespace EDSU_SYSTEM.Controllers
 
                             if (!allocationsToAdd.Any(allocatedLevel => allocatedLevel == applicantLevel))
                             {
+                                var ugmainwallet = _context.UgMainWallets.Where(dt => dt.WalletId == wlt.WalletId).FirstOrDefault();
+
                                 // If no existing allocations are found in the same department or level, add a new allocation.
-                                haa.WalletId = wlt.Id;
+                                haa.WalletId = ugmainwallet.Id;
                                 haa.RoomId = item.Id;
                                 haa.HostelId = item.HostelId;
                                 haa.CreatedAt = DateTime.Now;
