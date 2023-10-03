@@ -14,6 +14,7 @@
 
              <div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
                 <div class="widget widget-chart-one">
+                        <a asp-action="index" asp-controller="student_affairs" class="btn btn-secondary">Submit an appeal</a>
                     <div class="widget-content widget-content-area br-6">
                         <table id="example" class="table" style="width:100%">
                             <thead>
@@ -189,7 +190,7 @@
 
                                         </td>
                                     </tr>
-                                        <tr>
+                                       @* <tr>
                                             <td>
                                                 <label>Hostel Application</label>
                                             </td>
@@ -199,7 +200,7 @@
                                                 <a asp-action="choice" asp-controller="hostels" asp-route-utme="@item.WalletId" class="btn btn-primary">Proceed</a>
                                             </td>
 
-                                        </tr>
+                                        </tr>*@
                                 }
 
 

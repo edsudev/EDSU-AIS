@@ -23,6 +23,10 @@
                         <form>
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group">
+                                <label class="control-label">Payer Name</label>
+                                <input disabled value="@Model.Wallets.Name" id="name" class="form-control" />
+                            </div>
+                            <div class="form-group">
                                 <label asp-for="Email" class="control-label"></label>
                                 <input asp-for="Email" disabled id="email" class="form-control" />
                                 <span asp-validation-for="Email" class="text-danger"></span>
@@ -63,11 +67,12 @@
 <script>
     function Checkout() {
 
-        const publicKey = 'FLWPUBK-d7425a3b40b1a193a9eb77e2ec32a3de-X'//document.querySelector('input[name="public_key"]').value;
+        const publicKey = 'FLWPUBK-d7425a3b40b1a193a9eb77e2ec32a3de-X'
         const email = document.getElementById('email').value;
         console.log(email, publicKey)
         const amount = parseFloat(document.getElementById('amount').value) / 100;
         const ref = document.getElementById('ref').value;
+        const name = document.getElementById('name').value;
 
         const paymentData = {
             public_key: publicKey,
@@ -78,6 +83,7 @@
             redirect_url: "https://edouniversity.edu.ng/hostels/rave",
             customer: {
                 email: email,
+                name: name,
             },
             customizations: {
                 title: "Edo State University, Uzairue",

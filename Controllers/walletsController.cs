@@ -811,11 +811,11 @@ namespace EDSU_SYSTEM.Controllers
                     case "Tuition(Transfer)":
                         if (payments.Status == "Approved")
                         {
-                            var wallet = await _context.UgSubWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var wallet = _context.UgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newDebit = wallet.Debit - wallet.Tuition2;
                             wallet.Debit = newDebit;
 
-                            var bulkwallet = await _context.UgMainWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var bulkwallet = _context.UgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.Tuition2;
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
@@ -826,11 +826,11 @@ namespace EDSU_SYSTEM.Controllers
                     case "Tuition":
                         if (payments.Status == "Approved")
                         {
-                            var wallet = await _context.UgSubWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var wallet = _context.UgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newDebit = wallet.Debit - wallet.Tuition;
                             wallet.Debit = newDebit;
 
-                            var bulkwallet = await _context.UgMainWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var bulkwallet = _context.UgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.Tuition;
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
@@ -844,10 +844,10 @@ namespace EDSU_SYSTEM.Controllers
                     case "Tuition(60%)":
                         if (payments.Status == "Approved")
                         {
-                            var wallet = await _context.UgSubWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var wallet = _context.UgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newDebit = wallet.Debit - wallet.SixtyPercent;
                             wallet.Debit = newDebit;
-                            var bulkwallet = await _context.UgMainWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var bulkwallet = _context.UgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.SixtyPercent;
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
@@ -859,11 +859,11 @@ namespace EDSU_SYSTEM.Controllers
                     case "Tuition(40%)":
                         if (payments.Status == "Approved")
                         {
-                            var wallet = await _context.UgSubWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var wallet = _context.UgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newDebit = wallet.Debit - wallet.FortyPercent;
                             wallet.Debit = newDebit;
 
-                            var bulkwallet = await _context.UgMainWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var bulkwallet = _context.UgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.FortyPercent;
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
@@ -874,10 +874,10 @@ namespace EDSU_SYSTEM.Controllers
                     case "EDHIS":
                         if (payments.Status == "Approved")
                         {
-                            var wallet = await _context.UgSubWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var wallet = _context.UgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newDebit = wallet.Debit - wallet.EDHIS;
                             wallet.Debit = newDebit;
-                            var bulkwallet = await _context.UgMainWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var bulkwallet = _context.UgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.EDHIS;
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
@@ -888,11 +888,11 @@ namespace EDSU_SYSTEM.Controllers
                     case "LMS":
                         if (payments.Status == "Approved")
                         {
-                            var wallet = await _context.UgSubWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var wallet = _context.UgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newDebit = wallet.Debit - wallet.LMS;
                             wallet.Debit = newDebit;
 
-                            var bulkwallet = await _context.UgMainWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var bulkwallet = _context.UgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.LMS;
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
@@ -903,11 +903,11 @@ namespace EDSU_SYSTEM.Controllers
                     case "SRC":
                         if (payments.Status == "Approved")
                         {
-                            var wallet = await _context.UgSubWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var wallet = _context.UgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newDebit = wallet.Debit - wallet.SRC;
                             wallet.Debit = newDebit;
 
-                            var bulkwallet = await _context.UgMainWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var bulkwallet = _context.UgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.SRC;
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
@@ -918,11 +918,11 @@ namespace EDSU_SYSTEM.Controllers
                     case "Acceptance":
                         if (payments.Status == "Approved")
                         {
-                            var wallet = await _context.UgSubWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var wallet = _context.UgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newDebit = wallet.Debit - wallet.AcceptanceFee;
                             wallet.Debit = newDebit;
 
-                            var bulkwallet = await _context.UgMainWallets.FirstOrDefaultAsync(i => i.WalletId == walletId);
+                            var bulkwallet = _context.UgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
                             var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.AcceptanceFee;
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 

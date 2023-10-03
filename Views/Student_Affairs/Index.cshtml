@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Appeal - ";
+}
+<!--  BEGIN NAVBAR  -->
+<div class="header-container fixed-top">
+    <header class="header navbar navbar-expand-sm">
+
+        <ul class="navbar-item theme-brand flex-row  text-center">
+            <li class="nav-item theme-logo">
+                <a asp-action="index" asp-controller="home">
+
+                    <img src="~/logo.png" class="navbar-logo" alt="logo" />
+                </a>
+            </li>
+            <li class="nav-item theme-text">
+                <a asp-action="index" asp-controller="home"> EDO STATE UNIVERSITY UZAIRUE  </a>
+            </li>
+        </ul>
+
+    </header>
+</div>
+<!--  END NAVBAR  -->
+<!--  BEGIN NAVBAR  -->
+<div class="sub-header-container">
+    <header class="header navbar navbar-expand-sm">
+        <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
+
+        <ul class="navbar-nav flex-row">
+            <li>
+                <div class="page-header">
+
+                    <nav class="breadcrumb-one" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0);">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><span>Hostel Accommodation</span></li>
+                        </ol>
+                    </nav>
+
+                </div>
+            </li>
+        </ul>
+    </header>
+</div>
+<div class="main-container" id="container">
+    @*<partial name="_StudentDashboardPartial" />*@
+    <!--  BEGIN CONTENT AREA  -->
+    <div id="content">
+        <div class="row">
+           <div>
+               <h2>Guidlines on making an appeal for deferment of payments.</h2>
+                <p>For students who are unable to meet the minimum 60% payment requirement, an appeal process is in place.
+                    Students can write an appeal letter to the University Registrar signed by their parents, addressing the following points:</p>
+                    <p>1. How much they have paid (Students must pay some part of their fees before commencing the appeal process)</p>
+                <p>
+                    2. Reason(s) for being unable to pay up to 60% of the school fees</p>
+                    <p>3. A proposed payment plan outlining how they intend to defray the remaining fees</p>
+                    <p>
+                    The appeal letter should be signed by the parent, scanned, and uploaded through the appropriate link in the University portal.
+                    We understand that financial situations may vary, and we are committed to working with you to ensure that every student has the 
+                    opportunity to pursue their education. Should you have any questions or concerns, please do not hesitate to contact the 
+                    Student Affairs Office. We appreciate your attention to these guidelines and wish you a successful and productive academic year.)
+                </p>
+
+                <h4>Kindly scan and submit your letter as an attachment in the email below:</h4>
+                <p>-Copy the email address below or click on the button</p>
+                <i>studentappeal@edouniversity.edu.ng</i><br/>
+                <a href="mailto:studentappeal@edouniversity.edu.ng" class="btn btn-primary">Send Email</a>
+           </div>
+           
+        </div>
+    </div>
+    <!--  END CONTENT AREA  -->
+</div>
+<!-- END MAIN CONTAINER -->
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -61,6 +61,7 @@
 
                 <div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 col-12 mx-auto layout-spacing">
                     <div class="widget widget-chart-one">
+                        <a asp-action="index" asp-controller="student_affairs" class="btn btn-secondary">Submit an appeal</a>
                         <a asp-action="preview" asp-controller="admissions" asp-route-utme="@ViewBag.utme" class="btn btn-primary">Print Clearance Slip</a>
                          <div class="widget-content widget-content-area br-6">
                             <table id="example" class="table" style="width:100%">
@@ -238,7 +239,7 @@
                                             </td>
 
                                         </tr>
-                                        <tr>
+                                       @* <tr>
                                             <td>
                                                 <label>Hostel Application</label>
                                             </td>
@@ -249,7 +250,7 @@
 
                                             </td>
 
-                                        </tr>
+                                        </tr>*@
                                     }
 
                                     
