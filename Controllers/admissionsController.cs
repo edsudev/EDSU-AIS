@@ -1468,8 +1468,8 @@ namespace EDSU_SYSTEM.Controllers
         }
         public async Task<IActionResult> Preview(string? utme)
         {
-            try
-            {
+            //try
+            //{
                 var student = (from s in _context.UgApplicants where s.UTMENumber == utme select s)
                     .Include(c => c.Departments).Include(c => c.Levels).Include(c => c.Programs).FirstOrDefault();
                 var session = (from ses in _context.Sessions where ses.IsActive == true select ses).FirstOrDefault();
@@ -1482,7 +1482,7 @@ namespace EDSU_SYSTEM.Controllers
                 var clearance = (from s in _context.BursaryClearancesFreshers where s.ClearanceId == student.UTMENumber && s.SessionId == session.Id select s)
                     .Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
                 //var hostel = (from s in _context.HostelPayments where s.)
-                var walletId = await _context.UgSubWallets.Where(x => x.WalletId == utme).FirstOrDefaultAsync();
+                var walletId = await _context.UgMainWallets.Where(x => x.WalletId == utme).FirstOrDefaultAsync();
                 var room = await _context.HostelAllocations.Where(x => x.WalletId == walletId.Id).Include(x => x.HostelRooms).ThenInclude(x => x.Hostels).FirstOrDefaultAsync();
                 ViewBag.hostel = room.HostelRooms.Hostels.Name;
                 ViewBag.room = room.HostelRooms.RoomNo;
@@ -1493,12 +1493,12 @@ namespace EDSU_SYSTEM.Controllers
 
 
                 return View(clearance);
-            }
-            catch (Exception)
-            {
-                return RedirectToAction("badreq", "error");
-                throw;
-            }
+            //}
+            //catch (Exception)
+            //{
+            //    return RedirectToAction("badreq", "error");
+            //    throw;
+            //}
 
         }
         public async Task<IActionResult> History(string id)

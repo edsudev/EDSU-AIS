@@ -161,12 +161,14 @@ namespace EDSU_SYSTEM.Controllers
                 ViewBag.session = student.Sessions.Name;
                 ViewBag.level = student.Levels.Name;
                 var clearance = (from s in _context.BursaryClearances where s.StudentId == userId && s.Sessions.Name == id select s).Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
-                //var hostel = (from s in _context.HostelPayments where s.)
-               
-                if (clearance.Count() == 0)
-                {
-                    return RedirectToAction("resourcenotfound", "error");
-                }
+                var walletId = await _context.UgMainWallets.Where(x => x.WalletId == student.UTMENumber).FirstOrDefaultAsync();
+                var room = await _context.HostelAllocations.Where(x => x.WalletId == walletId.Id).Include(x => x.HostelRooms).ThenInclude(x => x.Hostels).FirstOrDefaultAsync();
+                ViewBag.hostel = room.HostelRooms.Hostels.Name;
+                ViewBag.room = room.HostelRooms.RoomNo;
+                //if (clearance.Count() == 0)
+                //{
+                //    return RedirectToAction("resourcenotfound", "error");
+                //}
                 return View(clearance);
             }
             catch (Exception)

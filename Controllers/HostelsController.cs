@@ -364,6 +364,7 @@ namespace EDSU_SYSTEM.Controllers
         {
             hostel.CreatedAt = DateTime.Now;
             _context.Add(hostel);
+            await _context.SaveChangesAsync();
             var hall = (from h in _context.Hostels where h.Id == hostel.HostelId select h).FirstOrDefault();
             var hallRoom = (from h in _context.HostelRoomDetails where h.RoomNo == hostel.HostelRooms.RoomNo select h).FirstOrDefault();
             hall.BedspacesCount -= 1;
