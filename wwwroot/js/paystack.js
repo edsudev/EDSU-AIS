@@ -30,7 +30,7 @@ function payWithPaystack(e) {
                             url: '/wallets/UpdatePayment',
                             data: { data: data },
                             success: function () {
-                               // window.location = "https://localhost:2222/wallets/summary?data=" + encodeURIComponent(JSON.stringify(data));
+                              //  window.location = "https://localhost:2222/wallets/summary";
                                window.location = "https://edouniversity.edu.ng/wallets/summary"
                                 alert('Transaction Successful');
                             },

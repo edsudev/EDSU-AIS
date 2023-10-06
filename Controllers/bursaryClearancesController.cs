@@ -13,7 +13,7 @@ using static EDSU_SYSTEM.Models.Enum;
 
 namespace EDSU_SYSTEM.Controllers
 {
-    [Authorize]
+   // [Authorize]
     public class BursaryClearancesController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -226,7 +226,23 @@
                                                 </td>
                                             </tr>
                                         }
-                                     
+                                      <tr>
+                                        <td>
+                                            <label>Tuition Custom Payment</label>
+                                        </td>
+                                        <form asp-action="Custom" method="post">
+                                            <td>
+                                                <input name="amount" class="form-control" />
+                                                <input asp-for="@item.WalletId" name="id" hidden class="form-control" />
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.Sessions.Name</h6>
+                                            </td>
+                                            <td>
+                                                <input type="submit" class="btn btn-primary" value="Proceed" />
+                                            </td>
+                                        </form>
+                                    </tr>
                                         <tr>
                                             <td>
                                                 <label>Other(s)</label>
@@ -243,12 +259,14 @@
                                             <td>
                                                 <label>Hostel Application</label>
                                             </td>
-                                            <td>Select hostel type to continue</td>
+                                            <td>Hostel is being worked on, Check back in 24hrs</td>
+                                            <td>No need to panick! There's still space in all the hostels</td>
+                                            @*<td>Select hostel type to continue</td>
                                             <td>👉</td>
                                             <td>
-                                                <a asp-action="applicantchoice" asp-controller="hostels" asp-route-utme="@item.WalletId" class="btn btn-primary">Proceed</a>
+                                               <a asp-action="applicantchoice" asp-controller="hostels" asp-route-utme="@item.WalletId" class="btn btn-primary">Proceed</a>
 
-                                            </td>
+                                            </td>*@
 
                                         </tr>
                                     }

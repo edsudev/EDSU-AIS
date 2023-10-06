@@ -802,9 +802,9 @@ namespace EDSU_SYSTEM.Controllers
             var walletId = TempData["walletId"];
             //var paymentDescription = payments.Type;
 
-            var payments = await _context.Payments.FirstOrDefaultAsync(c => c.Ref == data);
-            if (await TryUpdateModelAsync<Payment>(payments, ""))
-            {
+            var payments = _context.Payments.FirstOrDefault(c => c.Ref == data);
+            //if (await TryUpdateModelAsync<Payment>(payments, ""))
+            //{
                 payments.Status = "Approved";
                 switch (payments.Type)
                 {
@@ -930,6 +930,24 @@ namespace EDSU_SYSTEM.Controllers
                             await _context.SaveChangesAsync();
                         }
                         break;
+                    case "Tuition Custom":
+                        if (payments.Status == "Approved")
+                        {
+                            decimal amount = (decimal)(payments.Amount - 300);
+                            var wallet = _context.UgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
+                            var newDebit = wallet.Debit - amount;
+                            wallet.Debit = newDebit;
+
+                            var bulkwallet = _context.UgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
+                            var newBulkDebit = bulkwallet.BulkDebitBalanace - amount;
+                            bulkwallet.BulkDebitBalanace = newBulkDebit;
+
+                            wallet.Tuition = 0;
+                            wallet.SixtyPercent -= amount;
+                            await _context.SaveChangesAsync();
+                        }
+                    
+                        break;
                     
                  }
                 var session = (from s in _context.Sessions where s.Id == payments.SessionId select s).FirstOrDefault();
@@ -961,23 +979,6 @@ namespace EDSU_SYSTEM.Controllers
                     await _context.SaveChangesAsync();
                 }
                 
-
-
-                TempData["PaymentSession"] = session.Name;
-                TempData["PaymentRef"] = payments.Ref;
-                TempData["ReceiptNo"] = "BSA-" + payments.Id + "-" + DateTime.Now.Year;
-                TempData["PaymentDate"] = payments.PaymentDate;
-                TempData["PaymentDepartment"] = department;
-                TempData["PaymentUTME"] = wlt.WalletId;
-                TempData["PaymentName"] = wlt.Name;
-                TempData["PaymentEmail"] = payments.Email;
-                //Tempdata doesnt have the capability to accept objects or to serialize objects.
-                //As a result, you need to do this yourself
-                TempData["PaymentAmount"] = JsonConvert.SerializeObject(payments.Amount);
-                //TempData["PaymentDescription"] = TempData["PaymentDescription1"];
-                TempData["PaymentWalletId"] = wlt.WalletId;
-            }
-
             return RedirectToAction("summary", "wallets");
         }
 
@@ -1015,23 +1016,44 @@ namespace EDSU_SYSTEM.Controllers
         //Payment Receipt
         public async Task<IActionResult> Summary()
         {
-            ViewBag.Name = TempData["PaymentName"];
-            ViewBag.Email = TempData["PaymentEmail"];
-            ViewBag.UTME = TempData["walletId"];
-            ViewBag.Department = TempData["PaymentDepartment"];
-            ViewBag.Session = TempData["PaymentSession"];
-            ViewBag.WalletId = TempData["walletId"];
-
-            string utme = (string)TempData["walletId"];
-           
-           
-            var wallet = (from w in _context.UgSubWallets where w.WalletId == utme select w).FirstOrDefault();
-           
-            ViewBag.debit = wallet.Debit;
-            var applicationDbContext = (from pt in _context.Payments where pt.WalletId == wallet.Id && pt.Status == "Approved" select pt).Include(i => i.Wallets).Include(i => i.Wallets.Levels).Include(i => i.Sessions).Include(i => i.OtherFees);
-            return View(await applicationDbContext.ToListAsync());
+            return View();
            
         }
+        ////////////////////////////////////////
+        /// TUITION CUSTOM
+        ///////////////////////////////////////
+        /// [Authorize(Roles = "student, superAdmin")]
+        //Initiating Custom payment
+        public async Task<IActionResult> Custom(string id, double amount, Payment payment)
+        {
+            Console.WriteLine("got here");
+            var wallet = _context.UgSubWallets
+                 .FirstOrDefault(m => m.WalletId == id);
 
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = amount + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Tuition Custom";
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = _context.Payments
+                .Find(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
     }
 }
