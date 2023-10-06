@@ -161,8 +161,8 @@ namespace EDSU_SYSTEM.Controllers
                 ViewBag.session = student.Sessions.Name;
                 ViewBag.level = student.Levels.Name;
                 var clearance = (from s in _context.BursaryClearances where s.StudentId == userId && s.Sessions.Name == id select s).Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
-                var walletId = await _context.UgMainWallets.Where(x => x.WalletId == student.UTMENumber).FirstOrDefaultAsync();
-                var room = await _context.HostelAllocations.Where(x => x.WalletId == walletId.Id).Include(x => x.HostelRooms).ThenInclude(x => x.Hostels).FirstOrDefaultAsync();
+                var walletId = _context.UgMainWallets.Where(x => x.WalletId == student.UTMENumber).FirstOrDefault();
+                var room = _context.HostelAllocations.Where(x => x.WalletId == walletId.Id).Include(x => x.HostelRooms).ThenInclude(x => x.Hostels).FirstOrDefault();
                 ViewBag.hostel = room.HostelRooms.Hostels.Name;
                 ViewBag.room = room.HostelRooms.RoomNo;
                 //if (clearance.Count() == 0)
@@ -171,8 +171,9 @@ namespace EDSU_SYSTEM.Controllers
                 //}
                 return View(clearance);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                TempData["err"] = e.Message;
                 return RedirectToAction("badreq", "error");
                 throw;
             }
