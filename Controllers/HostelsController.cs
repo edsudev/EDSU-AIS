@@ -260,18 +260,18 @@ namespace EDSU_SYSTEM.Controllers
                         {
                            
                             var roomFound = false;
-                            var eligible4room = _context.HostelAllocations.Where(er => er.RoomId == item.Id).Include(x => x.UgMainWallets).ToList();
+                           // var eligible4room = _context.HostelAllocations.Where(er => er.RoomId == item.Id).Include(x => x.UgMainWallets).ToList();
                             var allocationsToAdd = new List<int?>();
-                            foreach (var i in eligible4room)
-                            {
-                                var studentDept = _context.UgSubWallets.Where( dt =>dt.WalletId == wlt.WalletId).FirstOrDefault();
-                                allocationsToAdd.Add(studentDept.Level);
+                            //foreach (var i in eligible4room)
+                            //{
+                            //    var studentDept = _context.UgSubWallets.Where( dt =>dt.WalletId == wlt.WalletId).FirstOrDefault();
+                            //    allocationsToAdd.Add(studentDept.Level);
 
-                            }
-                            var applicantLevel = hostelApplicant.LevelAdmittedTo;
+                            //}
+                           // var applicantLevel = hostelApplicant.LevelAdmittedTo;
 
-                            if (!allocationsToAdd.Any(allocatedLevel => allocatedLevel == applicantLevel))
-                            {
+                            //if (!allocationsToAdd.Any(allocatedLevel => allocatedLevel == applicantLevel))
+                            //{
                                 var ugmainwallet = _context.UgMainWallets.Where(dt => dt.WalletId == wlt.WalletId).FirstOrDefault();
 
                                 // If no existing allocations are found in the same department or level, add a new allocation.
@@ -285,8 +285,8 @@ namespace EDSU_SYSTEM.Controllers
                                 availableHostel.BedspacesCount -= 1;
                                 _context.Hostels.Update(availableHostel);
                                 await _context.SaveChangesAsync();
-                                break;
-                            }
+                                
+                            //}
 
                         }
                     }
@@ -716,16 +716,16 @@ namespace EDSU_SYSTEM.Controllers
                             var roomFound = false;
                             var eligible4room = _context.HostelAllocations.Where(er => er.RoomId == item.Id).Include(x => x.UgMainWallets).ToList();
                             var allocationsToAdd = new List<int?>();
-                            foreach (var i in eligible4room)
-                            {
-                                var studentDept =  _context.UgSubWallets.Where(dt => dt.WalletId == wlt.WalletId).FirstOrDefault();
-                                allocationsToAdd.Add(studentDept.Level);
+                            //foreach (var i in eligible4room)
+                            //{
+                            //    var studentDept =  _context.UgSubWallets.Where(dt => dt.WalletId == wlt.WalletId).FirstOrDefault();
+                            //    allocationsToAdd.Add(studentDept.Level);
 
-                            }
-                            var applicantLevel = hostelApplicant.Level;
+                            //}
+                            //var applicantLevel = hostelApplicant.Level;
 
-                            if (!allocationsToAdd.Any(allocatedLevel => allocatedLevel == applicantLevel))
-                            {
+                            //if (!allocationsToAdd.Any(allocatedLevel => allocatedLevel == applicantLevel))
+                            //{
                                 var ugmainwallet = _context.UgMainWallets.Where(dt => dt.WalletId == wlt.WalletId).FirstOrDefault();
 
                                 // If no existing allocations are found in the same department or level, add a new allocation.
@@ -740,8 +740,8 @@ namespace EDSU_SYSTEM.Controllers
                                 _context.Hostels.Update(availableHostel);
                                 await _context.SaveChangesAsync();
 
-                                break;
-                            }
+                                
+                           // }
 
 
                         }
