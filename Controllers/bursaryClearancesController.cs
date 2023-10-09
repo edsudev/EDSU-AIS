@@ -161,14 +161,37 @@ namespace EDSU_SYSTEM.Controllers
                 ViewBag.session = student.Sessions.Name;
                 ViewBag.level = student.Levels.Name;
                 var clearance = (from s in _context.BursaryClearances where s.StudentId == userId && s.Sessions.Name == id select s).Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
-                var walletId = _context.UgMainWallets.Where(x => x.WalletId == student.UTMENumber).FirstOrDefault();
-                var room = _context.HostelAllocations.Where(x => x.WalletId == walletId.Id).Include(x => x.HostelRooms).ThenInclude(x => x.Hostels).FirstOrDefault();
-                ViewBag.hostel = room.HostelRooms.Hostels.Name;
-                ViewBag.room = room.HostelRooms.RoomNo;
-                //if (clearance.Count() == 0)
-                //{
-                //    return RedirectToAction("resourcenotfound", "error");
-                //}
+                var wallet = _context.UgMainWallets.Where(x => x.WalletId == student.UTMENumber).FirstOrDefault();
+                var hostelPayment = (from hostel in _context.HostelPayments where hostel.WalletId == wallet.Id && hostel.Status != "Pending" select hostel).Include(x => x.HostelFees).FirstOrDefault();
+                if (hostelPayment != null)
+                {
+                    ViewBag.hostelName = hostelPayment.HostelFees.Name;
+                    ViewBag.hostelAmount = hostelPayment.Amount;
+                    ViewBag.hostelMode = hostelPayment.Mode;
+                    ViewBag.hostelDate = hostelPayment.PaymentDate;
+                    ViewBag.hostelStatus = hostelPayment.Status;
+                }
+                else
+                {
+                    ViewBag.hostelName = "NIL";
+                    ViewBag.hostelAmount = "NIL";
+                    ViewBag.hostelMode = "NIL";
+                    ViewBag.hostelDate = "NIL";
+                    ViewBag.hostelStatus = "NIL";
+                }
+
+
+                var room = _context.HostelAllocations.Where(x => x.WalletId == wallet.Id).Include(x => x.HostelRooms).ThenInclude(x => x.Hostels).FirstOrDefault();
+                if (room != null)
+                {
+                    ViewBag.hostel = room.HostelRooms.Hostels.Name;
+                    ViewBag.room = room.HostelRooms.RoomNo;
+                }
+                else
+                {
+                    ViewBag.hostel = "No Hostel Found";
+                    ViewBag.room = "No Room Found";
+                }
                 return View(clearance);
             }
             catch (Exception e)

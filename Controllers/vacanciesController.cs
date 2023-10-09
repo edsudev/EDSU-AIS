@@ -101,7 +101,7 @@ namespace EDSU_SYSTEM.Controllers
 
                     }
                 }
-                _context.Add(vacancy);
+                _context.VcApplicationUploads.Add(upload);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -188,6 +188,10 @@ namespace EDSU_SYSTEM.Controllers
             var email = (from s in _context.VcApplications where s.Email == application.Email select s.Email).FirstOrDefault();
             if(email == null)
             {
+                ViewData["LGAId"] = new SelectList(_context.Lgas, "Id", "Id");
+                ViewData["NationalityId"] = new SelectList(_context.Countries, "Id", "Id");
+                ViewData["StateId"] = new SelectList(_context.States, "Id", "Id");
+
                 Random r = new();
                 application.ApplicantId = "EDSU-VC-" + r.Next(1000) + DateTime.Now.Millisecond; ;
                 application.CreatedAt = DateTime.Now;

@@ -10,6 +10,7 @@ using EDSU_SYSTEM.Models;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Routing.Template;
 
 namespace EDSU_SYSTEM.Controllers
 {
@@ -222,7 +223,7 @@ namespace EDSU_SYSTEM.Controllers
         {
             try
             {
-                var payment = await _context.HostelPayments.Where(x => x.Ref == tx_ref).FirstOrDefaultAsync();
+                var payment = _context.HostelPayments.Where(x => x.Ref == tx_ref).FirstOrDefault();
                 TempData["walletId"] = payment.WalletId;
                 if (payment != null)
                 {
@@ -232,22 +233,22 @@ namespace EDSU_SYSTEM.Controllers
                     await _context.SaveChangesAsync();
 
 
-                    var wlt = await _context.UgSubWallets.Where(e => e.Id == payment.WalletId).FirstOrDefaultAsync();
+                    var wlt = _context.UgSubWallets.Where(e => e.Id == payment.WalletId).FirstOrDefault();
 
                     //Get the student making payment
-                    var hostelApplicant = await _context.UgApplicants.Where(ha => ha.UTMENumber == wlt.WalletId).FirstOrDefaultAsync();
+                    var hostelApplicant = _context.UgApplicants.Where(ha => ha.UTMENumber == wlt.WalletId).FirstOrDefault();
 
-                    var availableHostel = await _context.Hostels.Where(hostel => hostel.Id == payment.HostelType).FirstOrDefaultAsync();
+                    var availableHostel = _context.Hostels.Where(hostel => hostel.Id == payment.HostelType).FirstOrDefault();
 
                     if (availableHostel.BedspacesCount > 0)
                     {
-                        var availableRooms = await _context.HostelRoomDetails.Where(rm => rm.HostelId == payment.HostelType && rm.BedSpacesCount > 0).ToListAsync();
+                        var availableRooms = _context.HostelRoomDetails.Where(rm => rm.HostelId == payment.HostelType && rm.BedSpacesCount > 0).ToList();
 
                         var random = new Random();
                         var shuffledRooms = availableRooms.OrderBy(x => random.Next()).ToList();
 
 
-                        var alreadyPaid = await _context.HostelAllocations.Where(sd => sd.WalletId == wlt.Id).FirstOrDefaultAsync();
+                        var alreadyPaid = _context.HostelAllocations.Where(sd => sd.WalletId == wlt.Id).FirstOrDefault();
                         if (alreadyPaid != null)
                         {
                             ViewBag.ErrorMessage = "Check your clearance slip for your room details. For further complaints, contact the ICT";
@@ -259,11 +260,11 @@ namespace EDSU_SYSTEM.Controllers
                         {
                            
                             var roomFound = false;
-                            var eligible4room = await _context.HostelAllocations.Where(er => er.RoomId == item.Id).Include(x => x.UgMainWallets).ToListAsync();
+                            var eligible4room = _context.HostelAllocations.Where(er => er.RoomId == item.Id).Include(x => x.UgMainWallets).ToList();
                             var allocationsToAdd = new List<int?>();
                             foreach (var i in eligible4room)
                             {
-                                var studentDept = await _context.UgSubWallets.Where( dt =>dt.WalletId == wlt.WalletId).FirstOrDefaultAsync();
+                                var studentDept = _context.UgSubWallets.Where( dt =>dt.WalletId == wlt.WalletId).FirstOrDefault();
                                 allocationsToAdd.Add(studentDept.Level);
 
                             }
@@ -292,13 +293,14 @@ namespace EDSU_SYSTEM.Controllers
                 }
                 else
                 {
+                    
                     return RedirectToAction("badreq", "error");
                 }
                 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                TempData["err"] = e.Message;
                 throw;
             }
            
@@ -365,8 +367,9 @@ namespace EDSU_SYSTEM.Controllers
             hostel.CreatedAt = DateTime.Now;
             _context.Add(hostel);
             await _context.SaveChangesAsync();
+
             var hall = (from h in _context.Hostels where h.Id == hostel.HostelId select h).FirstOrDefault();
-            var hallRoom = (from h in _context.HostelRoomDetails where h.RoomNo == hostel.HostelRooms.RoomNo select h).FirstOrDefault();
+            var hallRoom = (from h in _context.HostelRoomDetails where h.Id == hostel.RoomId select h).FirstOrDefault();
             hall.BedspacesCount -= 1;
             _context.Hostels.Update(hall);
 
@@ -627,7 +630,7 @@ namespace EDSU_SYSTEM.Controllers
             Console.Write(reference);
             try
             {
-                var PaymentToUpdate = await _context.HostelPayments.FirstOrDefaultAsync(i => i.Ref == reference);
+                var PaymentToUpdate = _context.HostelPayments.FirstOrDefault(i => i.Ref == reference);
 
                 if (await TryUpdateModelAsync<HostelPayment>(PaymentToUpdate, "", c => c.Email))
                 {
@@ -674,7 +677,7 @@ namespace EDSU_SYSTEM.Controllers
         {
             try
             {
-                var payment = await _context.HostelPayments.Where(x => x.Ref == tx_ref).FirstOrDefaultAsync();
+                var payment = _context.HostelPayments.Where(x => x.Ref == tx_ref).FirstOrDefault();
                 TempData["walletId"] = payment.WalletId;
                 if (payment != null)
                 {
@@ -684,23 +687,23 @@ namespace EDSU_SYSTEM.Controllers
                     await _context.SaveChangesAsync();
 
 
-                    var wlt = await _context.UgSubWallets.Where(e => e.Id == payment.WalletId).FirstOrDefaultAsync();
+                    var wlt = _context.UgSubWallets.Where(e => e.Id == payment.WalletId).FirstOrDefault();
 
                     //Get the student making payment
-                    var hostelApplicant = await _context.Students.Where(ha=> ha.UTMENumber == wlt.WalletId).FirstOrDefaultAsync();
+                    var hostelApplicant = _context.Students.Where(ha=> ha.UTMENumber == wlt.WalletId).FirstOrDefault();
 
-                    var availableHostel = await _context.Hostels.Where(hostel => hostel.Id == payment.HostelType).FirstOrDefaultAsync();
+                    var availableHostel = _context.Hostels.Where(hostel => hostel.Id == payment.HostelType).FirstOrDefault();
 
                     if (availableHostel.BedspacesCount > 0)
                     {
-                        var availableRooms = await _context.HostelRoomDetails.Where(rm=> rm.HostelId == payment.HostelType && rm.BedSpacesCount > 0).ToListAsync();
+                        var availableRooms = _context.HostelRoomDetails.Where(rm=> rm.HostelId == payment.HostelType && rm.BedSpacesCount > 0).ToList();
 
 
 
                         var random = new Random();
                         var shuffledRooms = availableRooms.OrderBy(x => random.Next()).ToList();
 
-                        var alreadyPaid = await _context.HostelAllocations.Where(sd => sd.WalletId == wlt.Id).FirstOrDefaultAsync();
+                        var alreadyPaid = _context.HostelAllocations.Where(sd => sd.WalletId == wlt.Id).FirstOrDefault();
                         if (alreadyPaid != null)
                         {
                             ViewBag.ErrorMessage = "Check your clearance slip for your room details. For further complaints, contact the ICT";
@@ -711,11 +714,11 @@ namespace EDSU_SYSTEM.Controllers
                         {
 
                             var roomFound = false;
-                            var eligible4room = await _context.HostelAllocations.Where(er => er.RoomId == item.Id).Include(x => x.UgMainWallets).ToListAsync();
+                            var eligible4room = _context.HostelAllocations.Where(er => er.RoomId == item.Id).Include(x => x.UgMainWallets).ToList();
                             var allocationsToAdd = new List<int?>();
                             foreach (var i in eligible4room)
                             {
-                                var studentDept = await _context.UgSubWallets.Where(dt => dt.WalletId == wlt.WalletId).FirstOrDefaultAsync();
+                                var studentDept =  _context.UgSubWallets.Where(dt => dt.WalletId == wlt.WalletId).FirstOrDefault();
                                 allocationsToAdd.Add(studentDept.Level);
 
                             }

@@ -1315,34 +1315,41 @@ namespace EDSU_SYSTEM.Controllers
         //Initiating Custom payment
         public async Task<IActionResult> Custom(string id, double amount, Payment payment)
         {
-            Console.WriteLine("got here");
             var wallet = _context.UgSubWallets
                  .FirstOrDefault(m => m.WalletId == id);
-
-            Random r = new();
-            //Payment is created just before it returns the view
-            ViewBag.Name = wallet.Name;
-            payment.SessionId = wallet.SessionId;
-            payment.WalletId = wallet.Id;
-            payment.Amount = amount + 300;
-            payment.Status = "Pending";
-            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
-            payment.PaymentDate = DateTime.Now;
-            payment.Type = "Tuition Custom";
-            _context.Payments.Add(payment);
-            await _context.SaveChangesAsync();
-
-            //Get the payment to return
-            var paymentToGet = _context.Payments
-                .Find(payment.Id);
-            if (paymentToGet == null)
+            if (amount <= (double)wallet.SixtyPercent)
             {
-                return NotFound();
+                Random r = new();
+                //Payment is created just before it returns the view
+                ViewBag.Name = wallet.Name;
+                payment.SessionId = wallet.SessionId;
+                payment.WalletId = wallet.Id;
+                payment.Amount = amount + 300;
+                payment.Status = "Pending";
+                payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+                payment.PaymentDate = DateTime.Now;
+                payment.Type = "Tuition Custom";
+                _context.Payments.Add(payment);
+                await _context.SaveChangesAsync();
+
+                //Get the payment to return
+                var paymentToGet = _context.Payments
+                    .Find(payment.Id);
+                if (paymentToGet == null)
+                {
+                    return NotFound();
+                }
+                //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+                TempData["PaymentId"] = payment.Wallets.WalletId;
+                TempData["walletId"] = id;
+                return View(paymentToGet);
             }
-            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
-            TempData["PaymentId"] = payment.Wallets.WalletId;
-            TempData["walletId"] = id;
-            return View(paymentToGet);
+            else
+            {
+                TempData["err"] = "You cannot make custom payment above 60%.";
+                return RedirectToAction("badreq", "error");
+                
+            }
         }
         //Initiating EDHIS payment
         public async Task<IActionResult> EDHIS(string id, Payment payment, Student student)
@@ -1383,8 +1390,8 @@ namespace EDSU_SYSTEM.Controllers
             {
                 //var order = (from x in _context.Payments where x.Ref == Ref select x.Wallets.WalletId).FirstOrDefault();
 
-                var PaymentToUpdate = await _context.Payments
-               .FirstOrDefaultAsync(c => c.Ref == Ref);
+                var PaymentToUpdate = _context.Payments
+               .FirstOrDefault(c => c.Ref == Ref);
                 var orderid = Ref;
                 if (await TryUpdateModelAsync<Payment>(PaymentToUpdate, "", c => c.Email))
                 {
@@ -1517,18 +1524,40 @@ namespace EDSU_SYSTEM.Controllers
                 ViewBag.level = student.Levels.Name;
                 var clearance = (from s in _context.BursaryClearancesFreshers where s.ClearanceId == student.UTMENumber && s.SessionId == session.Id select s)
                     .Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
-                //var hostel = (from s in _context.HostelPayments where s.)
-                var walletId = await _context.UgMainWallets.Where(x => x.WalletId == utme).FirstOrDefaultAsync();
-                var room = await _context.HostelAllocations.Where(x => x.WalletId == walletId.Id).Include(x => x.HostelRooms).ThenInclude(x => x.Hostels).FirstOrDefaultAsync();
+               
+            var wallet = await _context.UgMainWallets.Where(x => x.WalletId == utme).FirstOrDefaultAsync();
+            
+            var hostelPayment = (from hostel in _context.HostelPayments where hostel.WalletId == wallet.Id && hostel.Status != "Pending" select hostel).Include(x => x.HostelFees).FirstOrDefault();
+            if (hostelPayment != null)
+            {
+                ViewBag.hostelName = hostelPayment.HostelFees.Name;
+                ViewBag.hostelAmount = hostelPayment.Amount;
+                ViewBag.hostelMode = hostelPayment.Mode;
+                ViewBag.hostelDate = hostelPayment.PaymentDate;
+                ViewBag.hostelStatus = hostelPayment.Status;
+            }
+            else
+            {
+                ViewBag.hostelName = "NIL";
+                ViewBag.hostelAmount = "NIL";
+                ViewBag.hostelMode = "NIL";
+                ViewBag.hostelDate = "NIL";
+                ViewBag.hostelStatus = "NIL";
+            }
+
+            var room = await _context.HostelAllocations.Where(x => x.WalletId == wallet.Id).Include(x => x.HostelRooms).ThenInclude(x => x.Hostels).FirstOrDefaultAsync();
+
+            if (room != null)
+            {
                 ViewBag.hostel = room.HostelRooms.Hostels.Name;
                 ViewBag.room = room.HostelRooms.RoomNo;
-                //if (clearance.Count() == 0)
-                //{
-                //    return RedirectToAction("resourcenotfound", "error");
-                //}
-
-
-                return View(clearance);
+            }
+            else
+            {
+                ViewBag.hostel = "No Hostel Found";
+                ViewBag.room = "No Room Found";
+            }
+            return View(clearance);
             //}
             //catch (Exception)
             //{
