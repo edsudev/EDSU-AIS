@@ -161,8 +161,10 @@ namespace EDSU_SYSTEM.Controllers
                 ViewBag.session = student.Sessions.Name;
                 ViewBag.level = student.Levels.Name;
                 var clearance = (from s in _context.BursaryClearances where s.StudentId == userId && s.Sessions.Name == id select s).Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
+                
                 var wallet = _context.UgMainWallets.Where(x => x.WalletId == student.UTMENumber).FirstOrDefault();
-                var hostelPayment = (from hostel in _context.HostelPayments where hostel.WalletId == wallet.Id && hostel.Status != "Pending" select hostel).Include(x => x.HostelFees).FirstOrDefault();
+                var subwallet = _context.UgSubWallets.Where(x => x.WalletId == student.UTMENumber).FirstOrDefault();
+                var hostelPayment = (from hostel in _context.HostelPayments where hostel.WalletId == subwallet.Id && hostel.Status != "Pending" select hostel).Include(x => x.HostelFees).FirstOrDefault();
                 if (hostelPayment != null)
                 {
                     ViewBag.hostelName = hostelPayment.HostelFees.Name;
@@ -192,6 +194,17 @@ namespace EDSU_SYSTEM.Controllers
                     ViewBag.hostel = "No Hostel Found";
                     ViewBag.room = "No Room Found";
                 }
+
+                var clearedStatus = _context.BursaryClearedStudents.Where(x => x.StudentId == userId).FirstOrDefault();
+                if(clearedStatus != null)
+                {
+                    ViewBag.status = clearedStatus.Remark;
+                }
+                else
+                {
+                    ViewBag.status = "Pending";
+                }
+                
                 return View(clearance);
             }
             catch (Exception e)

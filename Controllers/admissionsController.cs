@@ -1526,8 +1526,8 @@ namespace EDSU_SYSTEM.Controllers
                     .Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
                
             var wallet = await _context.UgMainWallets.Where(x => x.WalletId == utme).FirstOrDefaultAsync();
-            
-            var hostelPayment = (from hostel in _context.HostelPayments where hostel.WalletId == wallet.Id && hostel.Status != "Pending" select hostel).Include(x => x.HostelFees).FirstOrDefault();
+            var subwallet = _context.UgSubWallets.Where(x => x.WalletId == student.UTMENumber).FirstOrDefault();
+            var hostelPayment = (from hostel in _context.HostelPayments where hostel.WalletId == subwallet.Id && hostel.Status != "Pending" select hostel).Include(x => x.HostelFees).FirstOrDefault();
             if (hostelPayment != null)
             {
                 ViewBag.hostelName = hostelPayment.HostelFees.Name;
@@ -1557,14 +1557,17 @@ namespace EDSU_SYSTEM.Controllers
                 ViewBag.hostel = "No Hostel Found";
                 ViewBag.room = "No Room Found";
             }
-            return View(clearance);
-            //}
-            //catch (Exception)
-            //{
-            //    return RedirectToAction("badreq", "error");
-            //    throw;
-            //}
 
+            //var clearedStatus = _context.BursaryClearancesFreshers.Where(x => x.ClearanceId == utme).ToList();
+            //if (clearedStatus != null)
+            //{
+            //    ViewBag.status = clearedStatus.Remark;
+            //}
+            //else
+            //{
+            //    ViewBag.status = "Pending";
+            //}
+            return View(clearance);
         }
         public async Task<IActionResult> History(string id)
         {
