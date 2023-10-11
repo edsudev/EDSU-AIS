@@ -160,11 +160,11 @@ namespace EDSU_SYSTEM.Controllers
                 //ViewBag.programme = student.Programs.NameOfProgram;
                 ViewBag.session = student.Sessions.Name;
                 ViewBag.level = student.Levels.Name;
-                var clearance = (from s in _context.BursaryClearances where s.StudentId == userId && s.Sessions.Name == id select s).Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
+               // var clearance = (from s in _context.BursaryClearances where s.StudentId == userId && s.Sessions.Name == id select s).Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
                 
                 var wallet = _context.UgMainWallets.Where(x => x.WalletId == student.UTMENumber).FirstOrDefault();
                 var subwallet = _context.UgSubWallets.Where(x => x.WalletId == student.UTMENumber).FirstOrDefault();
-                var hostelPayment = (from hostel in _context.HostelPayments where hostel.WalletId == subwallet.Id && hostel.Status != "Pending" select hostel).Include(x => x.HostelFees).FirstOrDefault();
+                var hostelPayment = (from hostel in _context.HostelPayments where (hostel.WalletId == subwallet.Id || hostel.WalletId == wallet.Id) && hostel.Status != "Pending" select hostel).Include(x => x.HostelFees).FirstOrDefault();
                 if (hostelPayment != null)
                 {
                     ViewBag.hostelName = hostelPayment.HostelFees.Name;
@@ -205,7 +205,7 @@ namespace EDSU_SYSTEM.Controllers
                     ViewBag.status = "Pending";
                 }
                 
-                return View(clearance);
+                return View();
             }
             catch (Exception e)
             {

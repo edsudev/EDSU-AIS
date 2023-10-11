@@ -788,6 +788,7 @@
     <Folder Include="wwwroot\files\latestNews\" />
     <Folder Include="wwwroot\files\mails\" />
     <Folder Include="wwwroot\files\Ugprojectprogress\" />
+    <Folder Include="wwwroot\files\vacancyUploads\passport\" />
     <Folder Include="wwwroot\files\vacancyUploads\vc\" />
     <Folder Include="wwwroot\portal\images\activity\" />
     <Folder Include="wwwroot\portal\images\event\" />

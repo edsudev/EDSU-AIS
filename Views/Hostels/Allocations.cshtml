@@ -28,7 +28,9 @@
                                     <th>
                                         Student
                                     </th>
-                                   
+                                    <th>
+                                        Action
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -44,7 +46,9 @@
                                         <td>
                                             @Html.DisplayFor(modelItem => item.UgMainWallets.Name)
                                         </td>
-                                        
+                                        <td>
+                                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>

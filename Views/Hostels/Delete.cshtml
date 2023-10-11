@@ -1,4 +1,4 @@
-﻿@model EDSU_SYSTEM.Models.Hostel
+﻿@model EDSU_SYSTEM.Models.HostelAllocation
 
 @{
     ViewData["Title"] = "Delete";
@@ -12,29 +12,18 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+          Room
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.HostelRooms.RoomNo)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Type)
+           Student
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Type)
+            @Html.DisplayFor(model => model.UgMainWallets.Name)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Amount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Amount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Sessions)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Sessions.Id)
-        </dd>
+       
     </dl>
     
     <form asp-action="Delete">

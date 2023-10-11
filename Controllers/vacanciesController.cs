@@ -18,12 +18,13 @@ namespace EDSU_SYSTEM.Controllers
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly UserManager<ApplicationUser> userManager;
-        public vacanciesController(ApplicationDbContext context, RoleManager<IdentityRole> roleManager,
+        public vacanciesController(ApplicationDbContext context, IWebHostEnvironment hostingEnvironment, RoleManager<IdentityRole> roleManager,
                                         UserManager<ApplicationUser> userManager)
         {
             _context = context;
             this.roleManager = roleManager;
             this.userManager = userManager;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: vacancies
@@ -86,7 +87,9 @@ namespace EDSU_SYSTEM.Controllers
                 var vacancy = (from a in _context.VcApplications where a.ApplicantId == id select a).FirstOrDefault();
                 if (pdf != null && pdf.Length > 0)
                 {
-                    var uploadDir = @"/var/www/EDSU-SYSTEM/files/vacancyUploads/vc";
+                    var uploadDir = @"files/vacancyUploads/vc";
+                    Console.Write(uploadDir);
+                    //var uploadDir = @"~/files/vacancyUploads/vc";
                     var fileName = Path.GetFileNameWithoutExtension(pdf.FileName);
                     var extension = Path.GetExtension(pdf.FileName);
                     var webRootPath = _hostingEnvironment.WebRootPath;

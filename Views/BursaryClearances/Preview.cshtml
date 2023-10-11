@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EDSU_SYSTEM.Models.BursaryClearance>
+﻿@*@model IEnumerable<EDSU_SYSTEM.Models.BursaryClearance>*@
 
 @{
     ViewData["Title"] = "Index";
@@ -55,7 +55,7 @@
                                                                 <p><span class=" inv-subtitle">DATE: @DateTime.Now.ToLongDateString().ToUpper()</span></p>
                                                             </div>
                                                             <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-sm-4 col-6">
-                                                                <p><span style="font-weight: extra-bold; font-size: larger;">STATUS: @ViewBag.status</span></p>
+                                                                <p><span style="font-weight:bold; font-size: larger;">STATUS: @ViewBag.status</span></p>
 
                                                             </div>
                                                         </div>
@@ -92,9 +92,8 @@
                                                         </div>
                                                         <div class="table-responsive">
                                                             <table class="table">
-                                                                <thead class="">
+                                                                @*<thead class="">
                                                                     <tr>
-                                                                        @*<th scope="col">S.No</th>*@
                                                                         <th scope="col">Transaction ID</th>
                                                                         <th scope="col">Payment Type</th>
                                                                         <th scope="col">Date of Payment</th>
@@ -107,9 +106,7 @@
                                                                     @foreach (var item in Model)
                                                                     {
                                                                         <tr>
-                                                                           @* <td>
-                                                                                ViewBag.n
-                                                                            </td>*@
+                                                                          
                                                                             <td>
                                                                                 @Html.DisplayFor(modelItem => item.Payments.Ref)
                                                                             </td>
@@ -146,7 +143,7 @@
                                                                            
                                                                         </tr>
                                                                     }
-                                                                </tbody>
+                                                                </tbody>*@
                                                                 <thead class="">
                                                                     <tr>
                                                                         <th scope="col">Hostel Type</th>

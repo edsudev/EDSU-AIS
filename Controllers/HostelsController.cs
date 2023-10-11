@@ -32,6 +32,74 @@ namespace EDSU_SYSTEM.Controllers
             var applicationDbContext = _context.Hostels.Include(h => h.Sessions);
             return View(await applicationDbContext.ToListAsync());
         }
+        //[HttpGet]
+        //public IActionResult GetRoomsList(int hostelId)
+        //{
+        //    // Query your database or data source to get the rooms for the selected hostel
+        //    // Replace this with your actual data retrieval logic
+        //    var rooms = GetRoomsForHostel(hostelId);
+
+        //    // Create a JSON response with room options
+        //    var roomOptions = rooms.Select(r => new { Value = r.Id, Text = r.Name });
+
+        //    return Json(roomOptions);
+        //}
+
+        public async Task<IActionResult> GetRoom(string? utme, HostelAllocation hostel)
+        {
+            ViewBag.success = TempData["success"];
+            ViewBag.error = TempData["error"];
+            var wallet = (from s in _context.UgMainWallets where s.WalletId == utme select s).FirstOrDefault();
+            var subwallet = (from s in _context.UgSubWallets where s.WalletId == utme select s).FirstOrDefault();
+            var allocation = (from s in _context.HostelAllocations where s.WalletId == wallet.Id select s).FirstOrDefault();
+            if(allocation != null)
+            {
+                TempData["error"] = "Chief, You already have a room";
+                return View();
+            }
+            else
+            {
+
+                var pmt = _context.HostelPayments.Where(hostel => (hostel.WalletId == wallet.Id || hostel.WalletId == subwallet.Id) && hostel.Status != "Pending").FirstOrDefault();
+                if (pmt == null)
+                {
+                    TempData["error"] = "You must make hostel payment to get a room. If you already paid, contact the ICT";
+                    return View();
+                }
+                var availableHostel = _context.Hostels.Where(hostel => hostel.Id == pmt.HostelType).FirstOrDefault();
+
+                if (availableHostel.BedspacesCount > 0)
+                {
+                    var availableRooms = _context.HostelRoomDetails.Where(rm => rm.HostelId == pmt.HostelType && rm.BedSpacesCount > 0).ToList();
+
+                    var random = new Random();
+                    var shuffledRooms = availableRooms.OrderBy(x => random.Next()).ToList();
+
+                    foreach (var item in shuffledRooms)
+                    {
+                       
+                        hostel.WalletId = wallet.Id;
+                        hostel.RoomId = item.Id;
+                        hostel.HostelId = item.HostelId;
+                        hostel.CreatedAt = DateTime.Now;
+                        _context.HostelAllocations.Add(hostel);
+                        item.BedSpacesCount -= 1;
+                        _context.HostelRoomDetails.Update(item);
+                        availableHostel.BedspacesCount -= 1;
+                        _context.Hostels.Update(availableHostel);
+                        await _context.SaveChangesAsync();
+                        TempData["Success"] = "Your room has been allocated to you! Check you clearance slip";
+                        return RedirectToAction("getroom", "hostels", new {utme});
+                        //break;
+
+                    }
+                }
+                
+            }
+             //ViewBag.success = TempData["Success"];
+             //   ViewBag.error = TempData["error"];
+            return View();
+        }
         public IActionResult RoomDetails()
         {
             ViewData["HostelId"] = new SelectList(_context.Hostels, "Id", "Name");
@@ -457,13 +525,14 @@ namespace EDSU_SYSTEM.Controllers
         [Authorize(Roles = "busaryAdmin, superAdmin")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Hostels == null)
+            if (id == null || _context.HostelAllocations == null)
             {
                 return NotFound();
             }
 
-            var hostel = await _context.Hostels
-                .Include(h => h.Sessions)
+            var hostel = await _context.HostelAllocations
+                .Include(h => h.HostelRooms)
+                .Include(h => h.UgMainWallets)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (hostel == null)
             {
@@ -478,18 +547,18 @@ namespace EDSU_SYSTEM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Hostels == null)
+            if (_context.HostelAllocations == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Hostels'  is null.");
             }
-            var hostel = await _context.Hostels.FindAsync(id);
+            var hostel = await _context.HostelAllocations.FindAsync(id);
             if (hostel != null)
             {
-                _context.Hostels.Remove(hostel);
+                _context.HostelAllocations.Remove(hostel);
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Allocations));
         }
 
         private bool HostelExists(int? id)

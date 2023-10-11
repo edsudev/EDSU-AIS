@@ -59,8 +59,8 @@ namespace EDSU_SYSTEM.Controllers
 
             var student = (from s in _context.Students where s.Id == user select s).FirstOrDefault();
             var wallet = (from s in _context.UgSubWallets where s.WalletId == student.StudentId select s).Include(c => c.Sessions).ToList();
-            
-            
+
+            ViewBag.utme = student.UTMENumber;
             if (wallet == null)
             {
                 return RedirectToAction("pagenotfound", "error");
