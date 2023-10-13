@@ -1,5 +1,5 @@
 ﻿@model EDSU_SYSTEM.Models.UgSubWallet
-
+@using static EDSU_SYSTEM.Models.Enum
 @{
     ViewData["Title"] = "Wallet - ";
 }
@@ -83,7 +83,14 @@
                                 <select asp-for="Department" class="form-control" asp-items="ViewBag.DepartmentId"></select>
                             </div>
                             <div class="form-group">
-                                <input type="submit" value="Create" class="btn btn-primary" />
+                                <label asp-for="Waiver" class="control-label"></label>
+                                <select asp-for="Waiver" class="form-control">
+                                    <option value="true">Activate</option>
+                                    <option value="false">De-Activate</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Submit" class="btn btn-primary" />
                             </div>
                         </form>
                     </div>

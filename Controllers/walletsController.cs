@@ -245,6 +245,7 @@ namespace EDSU_SYSTEM.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
         public async Task<IActionResult> Info()
         {
             return View();

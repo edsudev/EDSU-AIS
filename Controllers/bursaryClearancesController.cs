@@ -99,7 +99,7 @@ namespace EDSU_SYSTEM.Controllers
 
                 if (await TryUpdateModelAsync<UgSubWallet>(record, "", c => c.Name, c => c.WalletId, c => c.CreditBalance, 
                     c => c.Tuition, c => c.Tuition2, c => c.FortyPercent, c => c.SixtyPercent, c => c.LMS, 
-                    c => c.AcceptanceFee, c => c.SRC, c => c.EDHIS, c => c.SessionId, c => c.Level, c => c.Department))
+                    c => c.AcceptanceFee, c => c.SRC, c => c.EDHIS, c => c.SessionId, c => c.Level, c => c.Department, c => c.Waiver))
                 {
                     record.SixtyPercent = record.Tuition * 60 / 100;
                     record.FortyPercent = record.Tuition * 40 / 100;
