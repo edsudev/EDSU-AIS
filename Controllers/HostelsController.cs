@@ -386,7 +386,7 @@ namespace EDSU_SYSTEM.Controllers
                 .FirstOrDefault();
             return View(room);
         }
-        // GET: Hostels/Details/5
+        // GET: Hostels/Details/\
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Hostels == null)
@@ -780,8 +780,6 @@ namespace EDSU_SYSTEM.Controllers
 
                         foreach (var item in shuffledRooms)
                         {
-
-                            var roomFound = false;
                             var eligible4room = _context.HostelAllocations.Where(er => er.RoomId == item.Id).Include(x => x.UgMainWallets).ToList();
                             var allocationsToAdd = new List<int?>();
                             //foreach (var i in eligible4room)
