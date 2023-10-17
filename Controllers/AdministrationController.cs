@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -187,47 +188,49 @@ namespace EDSU_SYSTEM.Controllers
 
             return RedirectToAction("Index", "administration"); // Replace with appropriate redirect action and controller
         }
+        public IActionResult Back()
+        {
+            ViewBag.Users = new SelectList(userManager.Users.Where(x => x.StaffId != null), "Id", "UserName");
+            ViewBag.Roles = new SelectList(roleManager.Roles, "Name", "Name");
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddUserToRole(string userId, string roleName)
+        {
+            // Retrieve the user and role using the provided userId and roleName.
+            var user = await userManager.FindByIdAsync(userId);
+            var role = await roleManager.FindByNameAsync(roleName);
 
-        //public async Task<IActionResult> EditUserRole(List<UserRoleVM> model)
-        //{
-        //    string roleId = (string)TempData["roleId"];
-        //    var role = await roleManager.FindByIdAsync(roleId);
+            if (user == null || role == null)
+            {
+                ModelState.AddModelError("", "User or role not found.");
+                return View(); // Return to the form with an error message.
+            }
 
-        //    if (role == null)
-        //    {
-        //        ViewBag.ErrorMessage = $"Role with Id = {roleId} cannot be found";
-        //        return View("NotFound");
-        //    }
+            // Add the user to the role.
+            var result = await userManager.AddToRoleAsync(user, role.Name);
 
-        //    for (int i = 0; i < model.Count; i++)
-        //    {
-        //        var user = await userManager.FindByIdAsync(model[i].UserId);
+            if (result.Succeeded)
+            {
+                // Redirect to a success page or display a success message.
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return View(); // Return to the form with an error message.
+            }
+        }
+        public IActionResult List()
+        {
+            // Retrieve the user roles from your context or database.
+           // List<IdentityUserRole<string>> userRoles = userManager.userr.Where(x => x.StaffId != null).ToList();
 
-        //        IdentityResult result = null;
+            return View();
+        }
 
-        //        if (model[i].IsSelected && !(await userManager.IsInRoleAsync(user, role.Name)))
-        //        {
-        //            result = await userManager.AddToRoleAsync(user, role.Name);
-        //        }
-        //        else if (!model[i].IsSelected && await userManager.IsInRoleAsync(user, role.Name))
-        //        {
-        //            result = await userManager.RemoveFromRoleAsync(user, role.Name);
-        //        }
-        //        else
-        //        {
-        //            continue;
-        //        }
-
-        //        if (result.Succeeded)
-        //        {
-        //            if (i < (model.Count - 1))
-        //                continue;
-        //            else
-        //                return RedirectToAction("EditRole", new { Id = roleId });
-        //        }
-        //    }
-
-        //    return RedirectToAction("EditRole", new { Id = roleId });
-        //}
     }
 }

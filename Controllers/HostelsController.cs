@@ -127,7 +127,7 @@ namespace EDSU_SYSTEM.Controllers
             var Subwallet = (from sf in _context.UgSubWallets where sf.WalletId == utme select sf).FirstOrDefault();
             if (Subwallet != null)
             {
-                if((Subwallet.Tuition2 > 0 || Subwallet.SixtyPercent > 0 || Subwallet.LMS > 0 || Subwallet.EDHIS > 0 || Subwallet.SRC > 0) && Subwallet.Waiver == false)
+                if((Subwallet.Tuition > 0 || Subwallet.SixtyPercent > 0 || Subwallet.LMS > 0 || Subwallet.EDHIS > 0 || Subwallet.SRC > 0) && Subwallet.Waiver == false)
                 {
                     ViewBag.ErrorMessage = "Kindly clear all outstanding debts and try again. For further complaints, contact the ICT";
                     return View();
@@ -575,7 +575,7 @@ namespace EDSU_SYSTEM.Controllers
             var Subwallet = (from sf in _context.UgSubWallets where sf.WalletId == utme select sf).FirstOrDefault();
             if (Subwallet != null)
             {
-                if (Subwallet.Tuition2 > 0 || Subwallet.SixtyPercent > 0 || Subwallet.LMS > 0 || Subwallet.EDHIS > 0 || Subwallet.SRC > 0 && Subwallet.Waiver == false)
+                if ((Subwallet.Tuition > 0 || Subwallet.SixtyPercent > 0 || Subwallet.LMS > 0 || Subwallet.EDHIS > 0 || Subwallet.SRC > 0) && Subwallet.Waiver == false)
                 {
                     ViewBag.ErrorMessage = "Kindly clear all outstanding debts and try again. For further complaints, contact the ICT";
                     return View();
