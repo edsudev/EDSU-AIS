@@ -1,0 +1,76 @@
+﻿@model EDSU_SYSTEM.Models.HostelReceipt
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="main-container" id="container">
+    <!--  BEGIN CONTENT AREA  -->
+    <div id="content" class="main-content">
+        <div class="layout-px-spacing">
+            <div class="row layout-spacing">
+                <!-- Content -->
+              
+                
+               <div class="widget-content widget-content-area br-6 p-3">
+                    @if (!string.IsNullOrEmpty(ViewBag.Success))
+                    {
+                        <div class="col-xl-4 col-lg-4 col-sm-10 mx-auto alert alert-success border-0" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="alert"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                            <strong>@ViewBag.Success</strong>
+                        </div>
+
+                    }
+                    <h2>Room Allocation Complaints</h2>
+                    <form asp-action="Receipts">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="Name" class="control-label"></label>
+                                <input asp-for="Name" class="form-control" placeholder="Heuye Freeman" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Email" class="control-label"></label>
+                                <input asp-for="Email" class="form-control" placeholder="rick.sanchez@exaple.com" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="HostelId" class="control-label">Hostel Category</label>
+                                <select asp-for="HostelId" class="form-control basic" asp-items="ViewBag.HostelId">
+                                    <option>-- Select --</option>
+                                </select>
+                                <span asp-validation-for="HostelId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="TransactionID" class="control-label">Transaction ID</label>
+                                <input asp-for="TransactionID" class="form-control" placeholder="EDSU-1234567"/>
+                                <span asp-validation-for="TransactionID" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="HasRoom" class="control-label">Where you allocated a wrong room?</label>
+                                <select asp-for="HasRoom" class="form-control basic">
+                                    <option>-- Select --</option>
+                                    <option value="true">YES</option>
+                                    <option value="false">NO</option>
+                                </select>
+                                <span asp-validation-for="HasRoom" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Submit" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  END CONTENT AREA  -->
+</div>
+<!-- END MAIN CONTAINER -->
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

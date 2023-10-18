@@ -1,0 +1,70 @@
+﻿@model IEnumerable<EDSU_SYSTEM.Models.HostelReceipt>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<div class="main-container" id="container">
+    <partial name="_StaffDashboardPartial" />
+    <!--  BEGIN CONTENT AREA  -->
+    <div id="content" class="main-content">
+        <div class="layout-px-spacing">
+            <div class="row layout-spacing">
+                <!-- Content -->
+                <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 mx-auto layout-top-spacing">
+                   
+                    <h2>Hostels Receipts</h2>
+                    <div class="widget-content widget-content-area br-6">
+                        <table id="html5-extension" class="table table-hover non-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Name)
+                                    </th>
+                                    <th>
+                                       Email
+                                    </th>
+                                    <th>
+                                       Hostel
+                                    </th>
+                                    <th>
+                                       TransactionID
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Email)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Hostels.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.TransactionID)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.HasRoom)
+                                        </td>
+                                       
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!--  END CONTENT AREA  -->
+</div>
+<!-- END MAIN CONTAINER -->

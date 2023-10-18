@@ -16,7 +16,7 @@ namespace EDSU_SYSTEM.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.18")
+                .HasAnnotation("ProductVersion", "6.0.23")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Activities", b =>
@@ -2291,6 +2291,34 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasIndex("WalletId");
 
                     b.ToTable("HostelPayments");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.HostelReceipt", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool?>("HasRoom")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int?>("HostelId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TransactionID")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HostelId");
+
+                    b.ToTable("HostelReceipts");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.HostelRoomDetails", b =>
@@ -6498,6 +6526,15 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Navigation("Sessions");
 
                     b.Navigation("Wallets");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.HostelReceipt", b =>
+                {
+                    b.HasOne("EDSU_SYSTEM.Models.Hostel", "Hostels")
+                        .WithMany()
+                        .HasForeignKey("HostelId");
+
+                    b.Navigation("Hostels");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.HostelRoomDetails", b =>

@@ -32,6 +32,27 @@ namespace EDSU_SYSTEM.Controllers
             var applicationDbContext = _context.Hostels.Include(h => h.Sessions);
             return View(await applicationDbContext.ToListAsync());
         }
+        public async Task<IActionResult> Receiptlist()
+        {
+            var applicationDbContext = _context.HostelReceipts.Include(h => h.Hostels);
+            return View(await applicationDbContext.ToListAsync());
+        }
+        public IActionResult Receipts()
+        {
+            ViewBag.Success = TempData["success"];
+            ViewData["HostelId"] = new SelectList(_context.Hostels, "Id", "Name");
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Receipts(HostelReceipt receipt)
+        {
+            _context.Add(receipt);
+            await _context.SaveChangesAsync();
+            TempData["success"] = "Your Complaint has been submitted succesful, Kindly check your dashboard Later";
+            return RedirectToAction(nameof(Receipts));
+
+        }
         //[HttpGet]
         //public IActionResult GetRoomsList(int hostelId)
         //{
@@ -100,6 +121,7 @@ namespace EDSU_SYSTEM.Controllers
              //   ViewBag.error = TempData["error"];
             return View();
         }
+
         public IActionResult RoomDetails()
         {
             ViewData["HostelId"] = new SelectList(_context.Hostels, "Id", "Name");

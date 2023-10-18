@@ -141,6 +141,7 @@ namespace EDSU_SYSTEM.Data
         public DbSet<EDSU_SYSTEM.Models.HostelStaff>? HostelStaffs { get; set; }
         public DbSet<EDSU_SYSTEM.Models.VcApplication>? VcApplications { get; set; }
         public DbSet<EDSU_SYSTEM.Models.VcApplicationUpload>? VcApplicationUploads { get; set; }
+        public DbSet<EDSU_SYSTEM.Models.HostelReceipt>? HostelReceipts { get; set; }
 
 
     }

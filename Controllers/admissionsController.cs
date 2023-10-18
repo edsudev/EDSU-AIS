@@ -794,7 +794,8 @@ namespace EDSU_SYSTEM.Controllers
                 student.StudentStatus = 1;
                 foreach (var item in Session)
                 {
-                    student.SchoolEmailAddress = applicant.Surname + item.suffix + "." + applicant.FirstName + "@edouniversity.edu.ng";
+                    var edsumail= applicant.Surname + item.suffix + "." + applicant.FirstName + "@edouniversity.edu.ng";
+                    student.SchoolEmailAddress = edsumail.ToLower();
                     student.YearOfAdmission = item.Id;
                     student.CurrentSession = item.Id;
                 }
@@ -822,7 +823,18 @@ namespace EDSU_SYSTEM.Controllers
                     EmailConfirmed = true
                 };
                 var r = await userManager.CreateAsync(user, student.Phone);
+                try
+                {
+                    var roleId = "4e8c6adc-ae5c-46e4-8618-e0b18f0841ba";
+                    var role = await roleManager.FindByIdAsync(roleId);
+                    await userManager.AddToRoleAsync(user, role.Name);
+                    
+                }
+                catch (Exception)
+                {
 
+                    throw;
+                }
                 return RedirectToAction("index", "admissions");
             }
             catch (Exception)

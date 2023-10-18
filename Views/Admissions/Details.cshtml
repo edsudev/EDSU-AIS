@@ -139,11 +139,11 @@
                                 </div>
                             </div><hr />
                             <div class="row">
-                                <div class="col-md-2">
+                               @* <div class="col-md-2">
                                     <a class="btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Accept Application" data-url="@Url.Action($"Admit/{Model.Id}")">
                                         Accept
                                     </a>
-                                </div>
+                                </div>*@
                                 @if (Model.Status == EDSU_SYSTEM.Models.Enum.MainStatus.Approved)
                                 {
                                 <div class="col-md-2">
@@ -152,17 +152,17 @@
                                             <h6>Cleared</h6>
                                         }else
                                         {
-                                            <a class="btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Clear Applicant" data-url="@Url.Action($"ClearApplicant/{Model.ApplicantId}")">
-                                                Clearance
+                                            <a class="btn btn-outline-primary bs-tooltip" asp-action="clearapplicant" asp-route-id="@Model.ApplicantId">
+                                                Clear Student
                                             </a>
                                         }
                                         
                                 </div>
-                                <div class="col-md-2">
+                                @*<div class="col-md-2">
                                     <a class="btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Activate Wallet" data-url="@Url.Action($"ActivateWallet/{Model.UTMENumber}")">
                                         Wallet
                                     </a>
-                                </div>
+                                </div>*@
                                 }
                                 
                                 <div class="col-md-2">
