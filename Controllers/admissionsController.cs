@@ -116,7 +116,7 @@ namespace EDSU_SYSTEM.Controllers
             //return RedirectToAction(nameof(Dashboard));
         }
         // GET: admissions/Details/5
-        [Authorize(Roles = "superAdmin")]
+        [Authorize(Roles = "superAdmin, ugAdmission")]
         public async Task<IActionResult> Details(string? id)
         {
             if (id == null || _context.UgApplicants == null)
