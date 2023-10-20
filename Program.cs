@@ -68,22 +68,24 @@ var app = builder.Build();
 
 
 //Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
+if (app.Environment.IsDevelopment())
+{
     app.UseDeveloperExceptionPage();
     app.UseMigrationsEndPoint();
-//}
-//else
-//{
-    //app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios.
-   //app.UseHsts();
-   
- //}
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    //The default HSTS value is 30 days.You may want to change this for production scenarios.
+
+  app.UseHsts();
+
+
+ }
 
 
 
-    app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
