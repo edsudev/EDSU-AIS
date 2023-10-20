@@ -53,8 +53,17 @@ namespace EDSU_SYSTEM.Controllers
         [Authorize(Roles = "bursaryAdmin, superAdmin")]
         public async Task<IActionResult> Mainwallets()
         {
-            var mainwallets = _context.UgMainWallets.Where(x => x.StudentType == Models.Enum.StudentType.Fee_Paying).ToList();
-            return View(mainwallets);
+            try
+            {
+                var mainwallets = _context.UgMainWallets.Where(x => x.StudentType == Models.Enum.StudentType.Fee_Paying).ToList();
+                return View(mainwallets);
+            }
+            catch (Exception e)
+            {
+                ViewBag.err = e.Message;
+                throw;
+            }
+            
         }
         [Authorize(Roles = "bursaryAdmin, superAdmin")]
         public async Task<IActionResult> Scholarshipwallets()
