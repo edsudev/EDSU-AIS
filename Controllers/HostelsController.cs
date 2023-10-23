@@ -434,6 +434,12 @@ namespace EDSU_SYSTEM.Controllers
             return View();
         }
         [Authorize(Roles = "busaryAdmin, superAdmin")]
+        public async Task<IActionResult> Payments()
+        {
+            var all = _context.HostelPayments.Include(x => x.HostelFees).ToList();
+            return View(all);
+        }
+        [Authorize(Roles = "busaryAdmin, superAdmin")]
         public async Task<IActionResult> Allocations()
         {
             var all = _context.HostelAllocations.Include(x => x.Hostels).Include(s => s.HostelRooms).Include(x => x.UgMainWallets).ToList();

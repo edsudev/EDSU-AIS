@@ -224,6 +224,12 @@ namespace EDSU_SYSTEM.Controllers
                 return View(); // Return to the form with an error message.
             }
         }
+        public IActionResult Students()
+        {
+            ViewBag.Users = new SelectList(userManager.Users.Where(x => x.StudentsId != null), "Id", "UserName");
+            ViewBag.Roles = new SelectList(roleManager.Roles, "Name", "Name");
+            return View();
+        }
         public IActionResult List()
         {
             // Retrieve the user roles from your context or database.
