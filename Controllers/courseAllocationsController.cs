@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace EDSU_SYSTEM.Controllers
 {
@@ -15,16 +16,20 @@ namespace EDSU_SYSTEM.Controllers
     public class courseAllocationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public courseAllocationsController(ApplicationDbContext context)
+        public courseAllocationsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
-
         // GET: courseAllocations
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.CourseAllocations.Include(c => c.Courses).Include(c => c.Staff);
+            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var user = loggedInUser.StaffId;
+            var staff = (from x in _context.Staffs where x.Id == user select x).FirstOrDefault();
+            var applicationDbContext = _context.CourseAllocations.Where(x => x.Courses.DepartmentId == staff.DepartmentId).Include(c => c.Courses).Include(c => c.Staff);
             return View(await applicationDbContext.ToListAsync());
         }
 
