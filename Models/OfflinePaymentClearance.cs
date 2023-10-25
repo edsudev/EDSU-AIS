@@ -14,6 +14,7 @@ namespace EDSU_SYSTEM.Models
         public DateTime PaymentDate { get; set; }
         public MainStatus? Status { get; set; }
         public string? OrderId { get; set; }
+        public string? PaymentType { get; set; }
         public Session? Sessions { get; set; }
         [ForeignKey("Sessions")]
         public int? SessionId { get; set; }

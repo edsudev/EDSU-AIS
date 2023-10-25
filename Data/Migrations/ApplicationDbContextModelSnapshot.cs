@@ -3342,6 +3342,9 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("PaymentType")
+                        .HasColumnType("longtext");
+
                     b.Property<int?>("SessionId")
                         .HasColumnType("int");
 

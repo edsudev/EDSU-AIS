@@ -27,7 +27,10 @@ namespace EDSU_SYSTEM.Controllers
         // GET: courses
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Courses.Include(c => c.Departments).Include(c => c.Levels).Include(c => c.Semesters);
+            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var user = loggedInUser.StaffId;
+            var staff = (from x in _context.Staffs where x.Id == user select x).FirstOrDefault();
+            var applicationDbContext = _context.Courses.Where(x => x.DepartmentId == staff.DepartmentId).Include(c => c.Departments).Include(c => c.Levels).Include(c => c.Semesters);
             return View(await applicationDbContext.ToListAsync());
         }
         public async Task<IActionResult> MyCourses()

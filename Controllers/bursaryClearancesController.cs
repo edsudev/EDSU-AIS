@@ -204,10 +204,10 @@ namespace EDSU_SYSTEM.Controllers
                     ViewBag.room = "No Room Found";
                 }
 
-                var clearedStatus = _context.BursaryClearedStudents.Where(x => x.StudentId == userId).FirstOrDefault();
+                var clearedStatus = _context.OfflinePaymentClearances.Where(x => x.StudentId == userId).FirstOrDefault();
                 if(clearedStatus != null)
                 {
-                    ViewBag.status = clearedStatus.Remark;
+                    ViewBag.status = clearedStatus.Status;
                 }
                 else
                 {
@@ -313,7 +313,7 @@ namespace EDSU_SYSTEM.Controllers
         }
         // GET: busaryClearances/Create
         //  [Authorize(Roles = "student")]
-        public IActionResult Offline()
+        public IActionResult Eclearance()
         {
             ViewBag.success = TempData["success"];
             ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Name");
@@ -326,7 +326,7 @@ namespace EDSU_SYSTEM.Controllers
         // [Authorize(Roles = "student")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Offline(OfflinePaymentClearance offlinePayment)
+        public async Task<IActionResult> Eclearance(OfflinePaymentClearance offlinePayment)
         {
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             var user = loggedInUser.StudentsId;
@@ -334,8 +334,8 @@ namespace EDSU_SYSTEM.Controllers
             offlinePayment.CreatedAt = DateTime.Now;
            _context.Add(offlinePayment);
             await _context.SaveChangesAsync();
-            TempData["success"] = "Offline Payment Added succesfully.";
-            return RedirectToAction(nameof(Offline));
+            TempData["success"] = "Clearance.";
+            return RedirectToAction(nameof(Eclearance));
           
         }
 

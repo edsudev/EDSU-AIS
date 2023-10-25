@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace EDSU_SYSTEM.Controllers
 {
@@ -15,19 +16,28 @@ namespace EDSU_SYSTEM.Controllers
     public class levelAdvisersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public levelAdvisersController(ApplicationDbContext context)
+        public levelAdvisersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: levelAdvisers
         public async Task<IActionResult> Index()
         {
+            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var user = loggedInUser.StaffId;
+            var staff = (from x in _context.Staffs where x.Id == user select x).FirstOrDefault();
+            var applicationDbContext = _context.LevelAdvisers.Where(x => x.Staffs.DepartmentId == staff.DepartmentId).Include(l => l.Levels).Include(l => l.Staffs);
+            return View(await applicationDbContext.ToListAsync());
+        }
+        public async Task<IActionResult> List()
+        {
             var applicationDbContext = _context.LevelAdvisers.Include(l => l.Levels).Include(l => l.Staffs);
             return View(await applicationDbContext.ToListAsync());
         }
-
         // GET: levelAdvisers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
