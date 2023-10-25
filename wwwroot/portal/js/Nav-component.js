@@ -74,7 +74,6 @@ class Navigatione extends HTMLElement {
                         </a>
 
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink7">
-                            <a class="dropdown-item" href="/vacancies/vc">VC Vacancy</a>
                             <a class="dropdown-item" href="/vacancies/academic">Academic</a>
                             <a class="dropdown-item" href="/vacancies/nonacademic">Non Academic</a>
                             <a class="dropdown-item" href="/entreprenureships/create">Entrepreunership</a>
@@ -224,7 +223,6 @@ class Navigatione extends HTMLElement {
                         </a>
 
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink7">
-                            <a class="dropdown-item" href="/vacancies/vc">VC Vacancy</a>
                             <a class="dropdown-item" href="/vacancies/academic">Academic</a>
                             <a class="dropdown-item" href="/vacancies/nonacademic">Non Academic</a>
                             <a class="dropdown-item" href="/entreprenureships/create">Entrepreunership</a>
