@@ -30,6 +30,34 @@ namespace EDSU_SYSTEM.Controllers
         {
             return View();
         }
+        public async Task<IActionResult> MigrateStaff(string email)
+        {
+            try
+            {
+                var staff = (from s in _context.Staffs where s.SchoolEmail == email select s).FirstOrDefault();
+
+                var user = new ApplicationUser
+                {
+                    Email = staff.SchoolEmail,
+                    UserName = staff.SchoolEmail,
+                    StaffId = staff.Id,
+                    PhoneNumber = staff.Phone,
+                    PhoneNumberConfirmed = true,
+                    Type = 2,
+                    EmailConfirmed = true
+                };
+                var r = await _userManager.CreateAsync(user, staff.Phone);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
         [Authorize(Roles = "staff, superAdmin")]
         // GET: staffs
         public async Task<IActionResult> Index()

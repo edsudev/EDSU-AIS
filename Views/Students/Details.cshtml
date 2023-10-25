@@ -134,9 +134,10 @@
                                     </a>
                                 </div>
                                 <div class="col-md-2">
-                                    <a class="btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Print ID card" data-url="@Url.Action($"setwallet/{Model.SchoolEmailAddress}")">
-                                        Create and activate wallet
+                                    <a class="btn btn-outline-primary bs-tooltip" data-placement="top" data-original-title="Create and activate wallet" asp-action="setwallet" asp-route-email="@Model.SchoolEmailAddress">
+                                        Wallet
                                     </a>
+                                    
                                 </div>
                                 @if (Model.StudentStatus == 1)
                                 {

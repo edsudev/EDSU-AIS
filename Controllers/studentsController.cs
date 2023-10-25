@@ -117,7 +117,7 @@ namespace EDSU_SYSTEM.Controllers
         public async Task<IActionResult> Setwallet(string? id, UgSubWallet subWallet, UgMainWallet ugmain)
         {
             var student = (from st in _context.Students where st.SchoolEmailAddress == id select st).FirstOrDefault();
-            var hasMainWallet = (from main in _context.UgMainWallets where main.WalletId == id select main.WalletId).FirstOrDefault();
+            var hasMainWallet = (from main in _context.UgMainWallets where main.WalletId == student.UTMENumber select main.WalletId).FirstOrDefault();
             if(hasMainWallet == null)
             {
                 ugmain.UTME = student.UTMENumber;
@@ -162,16 +162,16 @@ namespace EDSU_SYSTEM.Controllers
                // newSubWallet.Debit = 
                 var sr = newSubWallet.Tuition + newSubWallet.Tuition2 + newSubWallet.LMS
                                     + newSubWallet.EDHIS + newSubWallet.SRC + newSubWallet.AcceptanceFee;
-                Console.Write(sr);
+                
                 newSubWallet.Level = student.Level;
                 newSubWallet.Department = student.Department;
 
                 _context.UgSubWallets.Add(newSubWallet);
                 await _context.SaveChangesAsync();
 
-                //var main = (from m in _context.UgMainWallets where m.WalletId == newSubWallet.WalletId select m).FirstOrDefault();
-                //main.BulkDebitBalanace = newSubWallet.Debit;
-                //await _context.SaveChangesAsync();
+                var main = (from m in _context.UgMainWallets where m.WalletId == newSubWallet.WalletId select m).FirstOrDefault();
+                main.BulkDebitBalanace = newSubWallet.Debit;
+                await _context.SaveChangesAsync();
             }
             catch (Exception)
             {

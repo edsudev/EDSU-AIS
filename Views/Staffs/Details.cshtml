@@ -124,6 +124,11 @@
                             </div>
                             <hr />
                             <div class="row">
+                            <div class="col-md-2">
+                                <a class="btn btn-outline-primary bs-tooltip" data-placement="top" data-original-title="Create User Account" asp-action="MigrateStaff" asp-route-email="@Model.SchoolEmail">
+                                    Create Account
+                                </a>
+                            </div>
                                 <div class="col-md-2">
                                     <a class="btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Accept Application" data-url="@Url.Action($"Employ/{Model.Id}")">
                                         Employ
