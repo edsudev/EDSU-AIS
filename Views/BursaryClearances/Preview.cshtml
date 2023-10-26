@@ -1,4 +1,4 @@
-﻿@*@model IEnumerable<EDSU_SYSTEM.Models.BursaryClearance>*@
+﻿@model IEnumerable<EDSU_SYSTEM.Models.OfflinePaymentClearance>
 
 @{
     ViewData["Title"] = "Index";
@@ -92,14 +92,15 @@
                                                         </div>
                                                         <div class="table-responsive">
                                                             <table class="table">
-                                                                @*<thead class="">
+                                                                <thead class="">
                                                                     <tr>
-                                                                        <th scope="col">Transaction ID</th>
                                                                         <th scope="col">Payment Type</th>
-                                                                        <th scope="col">Date of Payment</th>
-                                                                        <th scope="col">Payment Mode</th>
                                                                         <th scope="col">Amount</th>
+                                                                        <th scope="col">Ref</th>
+                                                                        <th scope="col">Payment Mode</th>
+                                                                        <th scope="col">Date of Payment</th>
                                                                         <th scope="col">Session</th>
+                                                                        <th scope="col">Action</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -108,42 +109,32 @@
                                                                         <tr>
                                                                           
                                                                             <td>
-                                                                                @Html.DisplayFor(modelItem => item.Payments.Ref)
+                                                                                @Html.DisplayFor(modelItem => item.PaymentType)
                                                                             </td>
-                                                                            @if (item.Payments.Type == null)
-                                                                            {
-                                                                                <td>
-                                                                                    @Html.DisplayFor(modelItem => item.Payments.OtherFees.Name)
-                                                                                </td>
-                                                                            }
-                                                                            else if (item.Payments.OtherFeesDesc == null)
-                                                                            {
-                                                                               <td>
-                                                                                    @Html.DisplayFor(modelItem => item.Payments.Type)
-                                                                                </td>     
-                                                                            }else
-                                                                            {
-                                                                                <td>
-                                                                                    @Html.DisplayFor(modelItem => item.Hostels.HostelType)
-                                                                                </td>
-                                                                            }
                                                                             
                                                                             <td>
-                                                                                @Html.DisplayFor(modelItem => item.Payments.PaymentDate)
+                                                                                @Html.DisplayFor(modelItem => item.Amount)
+                                                                            </td>
+                                                                           
+                                                                            <td>
+                                                                                @Html.DisplayFor(modelItem => item.OrderId)
                                                                             </td>
                                                                             <td>
-                                                                                @Html.DisplayFor(modelItem => item.Payments.Mode)
+                                                                                @Html.DisplayFor(modelItem => item.Mode)
                                                                             </td>
                                                                             <td>
-                                                                                @Html.DisplayFor(modelItem => item.Payments.Amount)
+                                                                                @Html.DisplayFor(modelItem => item.PaymentDate)
                                                                             </td>
                                                                             <td>
-                                                                                @Html.DisplayFor(modelItem => item.Payments.Sessions.Name)
+                                                                                @Html.DisplayFor(modelItem => item.Sessions.Name)
+                                                                            </td>
+                                                                            <td>
+                                                                                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> 
                                                                             </td>
                                                                            
                                                                         </tr>
                                                                     }
-                                                                </tbody>*@
+                                                                </tbody>
                                                                 <thead class="">
                                                                     <tr>
                                                                         <th scope="col">Hostel Type</th>

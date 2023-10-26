@@ -204,7 +204,7 @@ namespace EDSU_SYSTEM.Controllers
                     ViewBag.room = "No Room Found";
                 }
 
-                var clearedStatus = _context.OfflinePaymentClearances.Where(x => x.StudentId == userId).FirstOrDefault();
+                var clearedStatus = _context.OfflinePaymentClearances.Where(x => x.StudentId == userId).Include(x => x.Sessions).FirstOrDefault();
                 if(clearedStatus != null)
                 {
                     ViewBag.status = clearedStatus.Status;
@@ -214,7 +214,7 @@ namespace EDSU_SYSTEM.Controllers
                     ViewBag.status = "Pending";
                 }
                 
-                return View();
+                return View(clearedStatus);
             }
             catch (Exception e)
             {
@@ -334,7 +334,7 @@ namespace EDSU_SYSTEM.Controllers
             offlinePayment.CreatedAt = DateTime.Now;
            _context.Add(offlinePayment);
             await _context.SaveChangesAsync();
-            TempData["success"] = "Clearance.";
+            TempData["success"] = "Record added successfully.";
             return RedirectToAction(nameof(Eclearance));
           
         }
@@ -423,17 +423,16 @@ namespace EDSU_SYSTEM.Controllers
         }
 
         // GET: busaryClearances/Delete/5
-        [Authorize(Roles = "bursaryClearance, bursaryAdmin, superAdmin")]
+        [Authorize(Roles = "student, bursaryClearance, bursaryAdmin, superAdmin")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.BursaryClearances == null)
+            if (id == null || _context.OfflinePaymentClearances == null)
             {
                 return NotFound();
             }
 
-            var busaryClearance = await _context.BursaryClearances
-                .Include(b => b.Payments)
-                .Include(b => b.Students)
+            var busaryClearance = await _context.OfflinePaymentClearances
+                .Include(b => b.Sessions)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (busaryClearance == null)
             {
@@ -448,14 +447,14 @@ namespace EDSU_SYSTEM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.BursaryClearances == null)
+            if (_context.OfflinePaymentClearances == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.BusaryClearances'  is null.");
             }
-            var busaryClearance = await _context.BursaryClearances.FindAsync(id);
+            var busaryClearance = await _context.OfflinePaymentClearances.FindAsync(id);
             if (busaryClearance != null)
             {
-                _context.BursaryClearances.Remove(busaryClearance);
+                _context.OfflinePaymentClearances.Remove(busaryClearance);
             }
             
             await _context.SaveChangesAsync();
