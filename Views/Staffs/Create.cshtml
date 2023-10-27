@@ -16,7 +16,7 @@
                     <h4 class="text-center">EDO STATE UNIVERSITY UZAIRUE, EDO STATE.</h4>
                     <div class="widget-content widget-content-area br-6">
                         <div class="widget-one p-3">
-                             <form class="needs-validation" novalidate asp-action="step1">
+                             <form class="needs-validation" novalidate asp-action="Create">
                             <div class="form-row">
                                 <div class="col-md-4 mb-4">
                                     <div class="form-group">
@@ -124,15 +124,15 @@
                                 <div class="col-md-4 mb-4">
                                     <div class="form-group">
                                         <label asp-for="FacultyId" class="control-label"></label>
-                                        <input asp-for="FacultyId" class="form-control" />
+                                            <select asp-for="NationalityId" class="form-control basic" asp-items="ViewBag.FacultyId"></select>
                                         <span asp-validation-for="FacultyId" class="text-danger"></span>
                                     </div>
                                 </div>
                                     <div class="col-md-4 mb-4">
                                         <div class="form-group">
-                                            <label asp-for="FacultyId" class="control-label"></label>
-                                            <input asp-for="FacultyId" class="form-control" />
-                                            <span asp-validation-for="FacultyId" class="text-danger"></span>
+                                            <label asp-for="DepartmentId" class="control-label"></label>
+                                            <select asp-for="NationalityId" class="form-control basic" asp-items="ViewBag.DepartmentId"></select>    
+                                            <span asp-validation-for="DepartmentId" class="text-danger"></span>
                                         </div>
                                     </div>
                             </div>
