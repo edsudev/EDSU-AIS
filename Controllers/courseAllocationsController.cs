@@ -57,7 +57,8 @@ namespace EDSU_SYSTEM.Controllers
         public IActionResult Create()
         {
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Code");
-            ViewData["LecturerId"] = new SelectList(_context.Staffs, "Id", "SchoolEmail");
+            ViewData["LecturerId"] = new SelectList(_context.Staffs.Select(s => new { Id = s.Id, Fullname = $" {s.Surname} {s.FirstName} {s.MiddleName}" }), "Id", "Fullname");
+
             return View();
         }
 

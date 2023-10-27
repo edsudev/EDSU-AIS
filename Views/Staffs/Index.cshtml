@@ -1,4 +1,4 @@
-﻿
+﻿@model StaffDashboardVM
 @{
     ViewData["Title"] = "";
 }
@@ -15,8 +15,31 @@
                     <div class="widget widget-chart-one">
                         <h5 class="">Time Table</h5>
                        
-                        <div>
+                        <div class="widget-content">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th><div class="th-content">Title</div></th>
+                                            <th><div class="th-content">Code</div></th>
+                                            <th><div class="th-content">Status</div></th>
+                                            <th><div class="th-content th-heading">Unit</div></th>
+                                        </tr>
+                                    </thead>
+                                    @*<tbody>
+                                        @foreach (var item in Model.TimeTables)
+                                        {
+                                            <tr>
+                                                <td><div class="td-content product-brand text-primary">@item.Courses.Courses.Title</div></td>
+                                                <td><div class="td-content product-invoice">@item.Courses.Courses.Code</div></td>
+                                                <td><div class="td-content pricing"><span class="">@item.Courses.Courses.Status</span></div></td>
+                                                <td><div class="td-content"><span class="badge badge-success">@item.Courses.Courses.CreditUnit</span></div></td>
+                                            </tr>
+                                        }
 
+                                    </tbody>*@
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -57,7 +57,7 @@ namespace EDSU_SYSTEM.Controllers
             var courses = (from d in _context.CourseAllocations select d.Courses).ToList();
             var lecturer = (from d in _context.CourseAllocations select d.Staff).ToList();
            
-            ViewData["CourseId"] = new SelectList(courses, "Id", "Title"); 
+            ViewData["CourseId"] = new SelectList(courses, "Id", "Code"); 
             ViewData["LecturerId"] = new SelectList(lecturer, "Id", "SchoolEmail");
             return View();
         }

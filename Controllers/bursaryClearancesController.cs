@@ -169,7 +169,7 @@ namespace EDSU_SYSTEM.Controllers
                 //ViewBag.programme = student.Programs.NameOfProgram;
                 ViewBag.session = student.Sessions.Name;
                 ViewBag.level = student.Levels.Name;
-               // var clearance = (from s in _context.BursaryClearances where s.StudentId == userId && s.Sessions.Name == id select s).Include(i => i.Hostels).Include(i => i.Payments).ThenInclude(i => i.OtherFees).ThenInclude(i => i.Sessions).ToList();
+                var clearance = (from s in _context.OfflinePaymentClearances where s.StudentId == userId && s.Sessions.Name == id select s).Include(i => i.Sessions).ToList();
                 
                 var wallet = _context.UgMainWallets.Where(x => x.WalletId == student.UTMENumber).FirstOrDefault();
                 var subwallet = _context.UgSubWallets.Where(x => x.WalletId == student.UTMENumber).FirstOrDefault();
@@ -204,17 +204,27 @@ namespace EDSU_SYSTEM.Controllers
                     ViewBag.room = "No Room Found";
                 }
 
-                var clearedStatus = _context.OfflinePaymentClearances.Where(x => x.StudentId == userId).Include(x => x.Sessions).FirstOrDefault();
-                if(clearedStatus != null)
+                var clearedStatus = _context.OfflinePaymentClearances
+                 .Where(x => x.StudentId == userId)
+                 .Include(x => x.Sessions)
+                 .ToList();
+
+                if (clearedStatus != null)
                 {
-                    ViewBag.status = clearedStatus.Status;
+                    if (clearedStatus.Any(item => item.Status != MainStatus.Approved))
+                    {
+                        ViewBag.status = "Pending";
+                    }
+                    else
+                    {
+                        ViewBag.status = "Approved";
+                    }
                 }
                 else
                 {
                     ViewBag.status = "Pending";
                 }
-                
-                return View(clearedStatus);
+                return View(clearance);
             }
             catch (Exception e)
             {
