@@ -820,13 +820,13 @@ namespace EDSU_SYSTEM.Controllers
         // GET: students/Create
         public IActionResult Create()
         {
-            ViewData["Department"] = new SelectList(_context.Departments, "Id", "Id");
-            ViewData["Faculty"] = new SelectList(_context.Faculties, "Id", "Id");
-            ViewData["LGAId"] = new SelectList(_context.Lgas, "Id", "Id");
-            ViewData["Level"] = new SelectList(_context.Levels, "Id", "Id");
-            ViewData["NationalityId"] = new SelectList(_context.Countries, "Id", "Id");
-            ViewData["CurrentSession"] = new SelectList(_context.Sessions, "Id", "Id");
-            ViewData["StateOfOriginId"] = new SelectList(_context.States, "Id", "Id");
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
+            ViewData["FacultyId"] = new SelectList(_context.Faculties, "Id", "Name");
+            ViewData["LGAId"] = new SelectList(_context.Lgas, "Id", "Name");
+            ViewData["Level"] = new SelectList(_context.Levels, "Id", "Name");
+            ViewData["NationalityId"] = new SelectList(_context.Countries, "Id", "Name");
+            ViewData["CurrentSession"] = new SelectList(_context.Sessions, "Id", "Name");
+            ViewData["StateOfOriginId"] = new SelectList(_context.States, "Id", "Name");
             return View();
         }
         [Authorize(Roles = "superAdmin")]
@@ -835,14 +835,13 @@ namespace EDSU_SYSTEM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Picture,Fullname,Sex,DOB,Religion,Phone,AltPhoneNumber,Email,NationalityId,StateOfOriginId,LGAId,PlaceOfBirth,PermanentHomeAddress,ContactAddress,MaritalStatus,ParentName,ParentOccupation,ParentPhone,ParentAltPhone,ParentEmail,ParentAddress,SchoolEmailAddress,UTMENumber,MatNumber,Faculty,Level,ModeOfAdmission,YearOfAdmission,Department,CurrentSession,CreatedAt,Cleared,ClearedBy")] Student student)
+        public async Task<IActionResult> Create(Student student)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(student);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+           
+            _context.Add(student);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+           
             ViewData["Department"] = new SelectList(_context.Departments, "Id", "Id", student.Department);
             ViewData["Faculty"] = new SelectList(_context.Faculties, "Id", "Id", student.Faculty);
             ViewData["LGAId"] = new SelectList(_context.Lgas, "Id", "Id", student.LGAId);

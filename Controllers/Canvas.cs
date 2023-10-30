@@ -170,7 +170,8 @@ namespace EDSU_SYSTEM.Controllers
                     }
                 }
             }
-        }public async Task EnrollStaff(string id)
+        }
+        public async Task EnrollStaff(string id)
         {
             var users = await GetAllUsers();
             var canvasCourses = await GetAllCourses();

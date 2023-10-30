@@ -244,7 +244,7 @@ namespace EDSU_SYSTEM.Controllers
         [Authorize(Roles = "superAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Type,Position,FacultyId,DepartmentId,FirstName,LastName,OtherName,Email,SchoolEmail,DOB,Sex,NationalityId,StateId,LGAId,Phone,ContactAddress,HighestQualification,FieldOfStudy,AreaOfSpecialization,WorkedInHigherInstuition,CurrentPlaceOfWork,PositionAtCurrentPlaceOfWork,YearsOfExperience,CertUpload,CVUpload,Picture,CreatedAt,UpdatedAt,IsEmployed,EmployedBy,ORCID,ResearcherId,GoogleScholar,ResearchGate,Academia,LinkedIn,Mendeley,Scopus")] Staff staff)
+        public async Task<IActionResult> Create(Staff staff)
         {
             if (ModelState.IsValid)
             {
