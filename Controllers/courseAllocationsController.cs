@@ -69,13 +69,11 @@ namespace EDSU_SYSTEM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CourseAllocation courseAllocation)
         {
-            if (ModelState.IsValid)
-            {
-                courseAllocation.CreatedAt = DateTime.Now;
-                _context.Add(courseAllocation);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            
+            courseAllocation.CreatedAt = DateTime.Now;
+            _context.Add(courseAllocation);
+            await _context.SaveChangesAsync();
+            
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", courseAllocation.CourseId);
             ViewData["LecturerId"] = new SelectList(_context.Staffs, "Id", "Id", courseAllocation.LecturerId);
             return View(courseAllocation);
