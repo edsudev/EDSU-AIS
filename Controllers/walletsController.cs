@@ -821,7 +821,7 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.Tuition2 = 0;
-                            await _context.SaveChangesAsync();
+                           _context.SaveChanges();
                         }
                         break;
                     case "Tuition":
@@ -839,7 +839,7 @@ namespace EDSU_SYSTEM.Controllers
 
                             wallet.SixtyPercent = 0;
                             wallet.FortyPercent = 0;
-                            await _context.SaveChangesAsync();
+                            _context.SaveChanges();
                         }
                         break;
                     case "Tuition(60%)":
@@ -854,7 +854,7 @@ namespace EDSU_SYSTEM.Controllers
 
                             wallet.SixtyPercent = 0;
                             wallet.Tuition = 0;
-                            await _context.SaveChangesAsync();
+                            _context.SaveChanges();
                         }
                         break;
                     case "Tuition(40%)":
@@ -869,7 +869,7 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.FortyPercent = 0;
-                            await _context.SaveChangesAsync();
+                            _context.SaveChanges();
                         }
                         break;
                     case "EDHIS":
@@ -883,7 +883,7 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.EDHIS = 0;
-                            await _context.SaveChangesAsync();
+                           _context.SaveChanges();
                         }
                         break;
                     case "LMS":
@@ -898,7 +898,7 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.LMS = 0;
-                            await _context.SaveChangesAsync();
+                            _context.SaveChanges();
                         }
                         break;
                     case "SRC":
@@ -913,7 +913,7 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.SRC = 0;
-                            await _context.SaveChangesAsync();
+                            _context.SaveChanges();
                         }
                         break;
                     case "Acceptance":
@@ -928,7 +928,7 @@ namespace EDSU_SYSTEM.Controllers
                             bulkwallet.BulkDebitBalanace = newBulkDebit;
 
                             wallet.AcceptanceFee = 0;
-                            await _context.SaveChangesAsync();
+                            _context.SaveChanges();
                         }
                         break;
                     case "Tuition Custom":
@@ -945,7 +945,7 @@ namespace EDSU_SYSTEM.Controllers
 
                             wallet.Tuition = 0;
                             wallet.SixtyPercent -= amount;
-                            await _context.SaveChangesAsync();
+                            _context.SaveChanges();
                         }
                     
                         break;
@@ -1015,7 +1015,7 @@ namespace EDSU_SYSTEM.Controllers
         }
         
         //Payment Receipt
-        public async Task<IActionResult> Summary()
+        public IActionResult Summary()
         {
             return View();
            

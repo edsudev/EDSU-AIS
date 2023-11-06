@@ -195,7 +195,7 @@ namespace EDSU_SYSTEM.Controllers
                         enrollment = new
                         {
                             user_id = staff,
-                            type = "StudentEnrollment",
+                            type = "StaffEnrollment",
                             enrollment_state = "active"
                         }
                     };

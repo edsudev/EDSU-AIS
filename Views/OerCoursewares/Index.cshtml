@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<EDSU_SYSTEM.Models.OerCourseware>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "";
 }
 
 <div class="nav row">
@@ -13,7 +13,7 @@
         <div class="widget-header">
             <div class="row">
                 <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                    <h4 class="text-center">Coursewares</h4>
+                    <h2 class="text-center">Coursewares</h2>
                 </div>
             </div>
 
@@ -24,7 +24,7 @@
                     <div class="widget-content widget-content-area">
 
                         <div class="card component-card_9">
-                            <img src="assets/img/400x300.jpg" class="card-img-top" alt="widget-card-2">
+                            <img src="~/assets/img/400x300.jpg" class="card-img-top" alt="widget-card-2">
                             <div class="card-body">
                                 <p class="meta-date">@item.CreatedAt.ToLongDateString()</p>
 
@@ -38,7 +38,7 @@
 
                                     <div class="meta-action">
                                         <div class="meta-likes">
-                                            @*@item.Faculty.Name, @item.Department.ShortCode, @item.Level*@
+                                            @item.Faculty.Name, @item.Department.ShortCode, @item.Level
                                         </div>
                                         <div class="meta-view bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="Download">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>

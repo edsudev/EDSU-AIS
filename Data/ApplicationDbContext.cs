@@ -142,6 +142,10 @@ namespace EDSU_SYSTEM.Data
         public DbSet<EDSU_SYSTEM.Models.VcApplication>? VcApplications { get; set; }
         public DbSet<EDSU_SYSTEM.Models.VcApplicationUpload>? VcApplicationUploads { get; set; }
         public DbSet<EDSU_SYSTEM.Models.HostelReceipt>? HostelReceipts { get; set; }
+        public DbSet<EDSU_SYSTEM.Models.EuslAssests>? EuslAssests { get; set; }
+        public DbSet<EDSU_SYSTEM.Models.EuslP>? EuslPs { get; set; }
+        public DbSet<EDSU_SYSTEM.Models.StudentManuals>? StudentManuals { get; set; }
+        public DbSet<EDSU_SYSTEM.Models.AssetFinance>? AssetFinances { get; set; }
 
 
     }

@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
-    [Authorize(Roles = "hod, superAdmin")]
+    [Authorize(Roles = "hod, academic, superAdmin")]
     public class CoursesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -37,7 +37,7 @@ namespace EDSU_SYSTEM.Controllers
         {
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             var staff = loggedInUser.StaffId;
-            var courses = (from s in _context.CourseAllocations where s.LecturerId == staff && s.Courses.Semesters.IsActive == true select s).Include(x => x.Courses).ThenInclude(s => s.Semesters).ToList();
+            var courses = (from s in _context.CourseAllocations where s.LecturerId == staff && s.Courses.Semesters.IsActive == true select s).Include(x => x.Courses).ThenInclude(s => s.Semesters).Include(n => n.Staff).ToList();
             return View(courses);
         }
 

@@ -636,6 +636,85 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("EDSU_SYSTEM.Models.AssetFinance", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("AccountNo")
+                        .HasColumnType("longtext");
+
+                    b.Property<double?>("AmountOfDeposit")
+                        .HasColumnType("double");
+
+                    b.Property<double>("AmountRequired")
+                        .HasColumnType("double");
+
+                    b.Property<string>("Bank")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("DeductionStartDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("DeductionStartMonth")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Department")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("GuarantorAddress")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("GuarantorDepartment")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("GuarantorName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("GuarantorPhone")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("GuarantorSalaryId")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("MaxMonthForDeduction")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaxPeriod")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("longtext");
+
+                    b.Property<double>("PriceOfAsset")
+                        .HasColumnType("double");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SalaryId")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TypeOfAsset")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TypeOfAsset");
+
+                    b.ToTable("AssetFinances");
+                });
+
             modelBuilder.Entity("EDSU_SYSTEM.Models.BursaryClearance", b =>
                 {
                     b.Property<int?>("Id")
@@ -1832,6 +1911,64 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ENTVacancies");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.EuslAssests", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Quantity")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EuslAssests");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.EuslP", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Mode")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("PayerName")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("PaymentDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ReceiptNo")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Ref")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EuslPs");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Evaluation", b =>
@@ -4760,6 +4897,31 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.ToTable("Students");
                 });
 
+            modelBuilder.Entity("EDSU_SYSTEM.Models.StudentManuals", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SessionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SessionId");
+
+                    b.ToTable("StudentManuals");
+                });
+
             modelBuilder.Entity("EDSU_SYSTEM.Models.SubDepartment", b =>
                 {
                     b.Property<int?>("Id")
@@ -5893,6 +6055,15 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Navigation("Staffs");
 
                     b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.AssetFinance", b =>
+                {
+                    b.HasOne("EDSU_SYSTEM.Models.EuslAssests", "EuslAssests")
+                        .WithMany()
+                        .HasForeignKey("TypeOfAsset");
+
+                    b.Navigation("EuslAssests");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.BursaryClearance", b =>
@@ -7153,6 +7324,15 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Navigation("States");
 
                     b.Navigation("YearOfAdmissions");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.StudentManuals", b =>
+                {
+                    b.HasOne("EDSU_SYSTEM.Models.Session", "Sessions")
+                        .WithMany()
+                        .HasForeignKey("SessionId");
+
+                    b.Navigation("Sessions");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.SubDepartment", b =>

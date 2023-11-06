@@ -29,8 +29,8 @@ namespace EDSU_SYSTEM.Controllers
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             var user = loggedInUser.StaffId;
             var staff = (from x in _context.Staffs where x.Id == user select x).FirstOrDefault();
-            var applicationDbContext = _context.CourseAllocations.Where(x => x.Courses.DepartmentId == staff.DepartmentId).Include(c => c.Courses).Include(c => c.Staff);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext = _context.CourseAllocations.Where(x => x.Courses.DepartmentId == staff.DepartmentId).Include(c => c.Courses).Include(c => c.Staff).ToList();
+            return View(applicationDbContext);
         }
 
         // GET: courseAllocations/Details/5
@@ -54,9 +54,12 @@ namespace EDSU_SYSTEM.Controllers
         }
 
         // GET: courseAllocations/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Code");
+            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var user = loggedInUser.StaffId;
+            var staff = (from x in _context.Staffs where x.Id == user select x).FirstOrDefault();
+            ViewData["CourseId"] = new SelectList(_context.Courses.Where(x => x.DepartmentId == staff.DepartmentId), "Id", "Code");
             ViewData["LecturerId"] = new SelectList(_context.Staffs.Select(s => new { Id = s.Id, Fullname = $" {s.Surname} {s.FirstName} {s.MiddleName}" }), "Id", "Fullname");
 
             return View();
@@ -76,7 +79,7 @@ namespace EDSU_SYSTEM.Controllers
             
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", courseAllocation.CourseId);
             ViewData["LecturerId"] = new SelectList(_context.Staffs, "Id", "Id", courseAllocation.LecturerId);
-            return View(courseAllocation);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: courseAllocations/Edit/5
@@ -92,7 +95,10 @@ namespace EDSU_SYSTEM.Controllers
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Code", courseAllocation.CourseId);
+            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var user = loggedInUser.StaffId;
+            var staff = (from x in _context.Staffs where x.Id == user select x).FirstOrDefault();
+            ViewData["CourseId"] = new SelectList(_context.Courses.Where(x => x.DepartmentId == staff.DepartmentId), "Id", "Code");
             ViewData["LecturerId"] = new SelectList(_context.Staffs, "Id", "SchoolEmail", courseAllocation.LecturerId);
             return View(courseAllocation);
         }
@@ -102,7 +108,7 @@ namespace EDSU_SYSTEM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CourseId,LecturerId,CourseLecturerRole,CreatedAt,UpdatedAt")] CourseAllocation courseAllocation)
+        public async Task<IActionResult> Edit(int id,CourseAllocation courseAllocation)
         {
             if (id != courseAllocation.Id)
             {
@@ -113,6 +119,7 @@ namespace EDSU_SYSTEM.Controllers
             {
                 try
                 {
+                    courseAllocation.UpdatedAt = DateTime.Now;
                     _context.Update(courseAllocation);
                     await _context.SaveChangesAsync();
                 }
@@ -129,8 +136,6 @@ namespace EDSU_SYSTEM.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", courseAllocation.CourseId);
-            ViewData["LecturerId"] = new SelectList(_context.Staffs, "Id", "Id", courseAllocation.LecturerId);
             return View(courseAllocation);
         }
 
@@ -150,7 +155,6 @@ namespace EDSU_SYSTEM.Controllers
             {
                 return NotFound();
             }
-
             return PartialView("_delete",courseAllocation);
         }
 
