@@ -6,7 +6,9 @@ namespace EDSU_SYSTEM.Models
     {
         public int? Id { get; set; }
         public string? Ref { get; set; }
-        public string? Type { get; set; }
+        [ForeignKey("StudentManuals")]
+        public int? Type { get; set; }
+        public StudentManuals? StudentManuals { get; set; }
         public string? PayerName { get; set; }
         public string? Email { get; set; }
         public string? Mode { get; set; }

@@ -54,6 +54,7 @@ namespace EDSU_SYSTEM.Controllers
             Random r = new();
             payment.Email = email;
             payment.PayerName = name;
+            payment.Type = item;
             payment.PaymentDate = DateTime.Now;
             payment.Status = "Pending";
             payment.Mode = "Paystack";
@@ -214,7 +215,7 @@ namespace EDSU_SYSTEM.Controllers
         }
         public IActionResult Summary(string data)
         {
-            var payment = (from s in _context.EuslPs where s.Ref == data && s.Status == "Approved" select s).FirstOrDefault();
+            var payment = (from s in _context.EuslPs where s.Ref == data && s.Status == "Approved" select s).Include(x => x.StudentManuals).FirstOrDefault();
             return View(payment);
         }
         private bool AssetFinanceExists(int id)

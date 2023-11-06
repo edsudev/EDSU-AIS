@@ -50,16 +50,17 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
+                        <th>Payer Name</th>
                         <th>Payment Description</th>
                         <th>Amount</th>
                         <th>Ref</th>
-                        <th>Session</th>
                         <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>@Model.PayerName</td>
+                        <td>@Model.StudentManuals.Name</td>
                         <td>@Model.Amount</td>
                         <td>@Model.Ref</td>
                         <td>@Model.PaymentDate</td>

@@ -1963,10 +1963,12 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("longtext");
+                    b.Property<int?>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Type");
 
                     b.ToTable("EuslPs");
                 });
@@ -6466,6 +6468,15 @@ namespace EDSU_SYSTEM.Data.Migrations
                         .HasForeignKey("FacultyId");
 
                     b.Navigation("Faculties");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.EuslP", b =>
+                {
+                    b.HasOne("EDSU_SYSTEM.Models.StudentManuals", "StudentManuals")
+                        .WithMany()
+                        .HasForeignKey("Type");
+
+                    b.Navigation("StudentManuals");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.Evaluation", b =>

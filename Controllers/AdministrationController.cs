@@ -234,7 +234,7 @@ namespace EDSU_SYSTEM.Controllers
         {
             // Retrieve the user roles from your context or database.
            // List<IdentityUserRole<string>> userRoles = userManager.userr.Where(x => x.StaffId != null).ToList();
-
+           //var staff = (from s in roleManager
             return View();
         }
 
