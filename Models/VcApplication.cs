@@ -1,4 +1,6 @@
-﻿namespace EDSU_SYSTEM.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EDSU_SYSTEM.Models
 {
     public class VcApplication
     {
@@ -12,9 +14,15 @@
         public string? Email { get; set; }
         public string? Password { get; set; }
         public DateTime? DOB { get; set; }
-        public States? State { get; set; }
-        public Lga? Lga { get; set; }
-        public Countries? Nationality { get; set; }
+        [ForeignKey("States")]
+        public int? State { get; set; }
+        public States? States { get; set; }
+        [ForeignKey("Lgas")]
+        public int? Lga { get; set; }
+        public Lga? Lgas { get; set; }
+        [ForeignKey("Nationalities")]
+        public int? Nationality { get; set; }
+        public Countries? Nationalities { get; set; }
         public DateTime? FirstAppointment { get; set; }
         public DateTime? ToProfessor { get; set; }
         public string? Institution { get; set; }

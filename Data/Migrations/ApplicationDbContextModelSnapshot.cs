@@ -5693,10 +5693,10 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<string>("Institution")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("LgaId")
+                    b.Property<int?>("Lga")
                         .HasColumnType("int");
 
-                    b.Property<int?>("NationalityId")
+                    b.Property<int?>("Nationality")
                         .HasColumnType("int");
 
                     b.Property<string>("Password")
@@ -5717,7 +5717,7 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Property<string>("Qualifications")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("StateId")
+                    b.Property<int?>("State")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ToProfessor")
@@ -5728,11 +5728,11 @@ namespace EDSU_SYSTEM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LgaId");
+                    b.HasIndex("Lga");
 
-                    b.HasIndex("NationalityId");
+                    b.HasIndex("Nationality");
 
-                    b.HasIndex("StateId");
+                    b.HasIndex("State");
 
                     b.ToTable("VcApplications");
                 });
@@ -7540,23 +7540,23 @@ namespace EDSU_SYSTEM.Data.Migrations
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.VcApplication", b =>
                 {
-                    b.HasOne("EDSU_SYSTEM.Models.Lga", "Lga")
+                    b.HasOne("EDSU_SYSTEM.Models.Lga", "Lgas")
                         .WithMany()
-                        .HasForeignKey("LgaId");
+                        .HasForeignKey("Lga");
 
-                    b.HasOne("EDSU_SYSTEM.Models.Countries", "Nationality")
+                    b.HasOne("EDSU_SYSTEM.Models.Countries", "Nationalities")
                         .WithMany()
-                        .HasForeignKey("NationalityId");
+                        .HasForeignKey("Nationality");
 
-                    b.HasOne("EDSU_SYSTEM.Models.States", "State")
+                    b.HasOne("EDSU_SYSTEM.Models.States", "States")
                         .WithMany()
-                        .HasForeignKey("StateId");
+                        .HasForeignKey("State");
 
-                    b.Navigation("Lga");
+                    b.Navigation("Lgas");
 
-                    b.Navigation("Nationality");
+                    b.Navigation("Nationalities");
 
-                    b.Navigation("State");
+                    b.Navigation("States");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

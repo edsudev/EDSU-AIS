@@ -1,4 +1,4 @@
-﻿@model EDSU_SYSTEM.Models.Vacancy
+﻿@model EDSU_SYSTEM.Models.VcApplication
 
 @{
     ViewData["Title"] = "Details";
@@ -19,130 +19,65 @@
                         <div class="widget-one p-3">
                             <div class="row">
                                 <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Name: </h6><small>@Model.LastName, @Model.FirstName @Model.OtherName</small>
+                                    <span style="font-weight:bold">Name:</span><br/> @Model.FullName
                                 </div>
                                 <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Email: </h6><small>@Model.Email</small>
+                                    <span style="font-weight:bold">Email:</span><br /> @Model.Email
                                 </div>
                                 <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Phone: </h6><small>@Model.Phone</small>
+                                    <span style="font-weight:bold">Phone:</span><br /> @Model.Phone
                                 </div>
                                 <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Gender: </h6><small>@Model.Sex</small>
+                                    <span style="font-weight:bold">Gender:</span><br /> @Model.Gender
                                 </div>
                             </div>
                             <hr/>
                             <div class="row">
                                 <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Address: </h6><small>@Model.ContactAddress </small>
-                                </div>
-                                @*<div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>State: </h6><small>@Model.States.Name </small>
+                                    <span style="font-weight:bold">P. Address:</span><br/> @Model.PermanentAddress
                                 </div>
                                 <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Nationality: </h6><small>@Model.Nationalities.Name </small>
+                                    <span style="font-weight:bold">C. Address:</span><br /> @Model.ContactAddress
+                                </div>
+                               <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
+                                    <span style="font-weight:bold">Nationality:</span><br /> @Model.Nationalities.Name
                                 </div>
                                 <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>LGA: </h6><small>@Model.LGAs.Name</small>
-                                </div>*@
-                                
-                            </div>
-                            <hr/>
-                            <div class="row">
-                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Type: </h6><small>@Model.Type</small>
+                                    <span style="font-weight:bold">State Of Origin:</span><br /> @Model.States.Name
                                 </div>
                                 <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Position: </h6><small>@Model.Positions.Name </small>
-                                </div>
-                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    @*<h6>LGA: </h6><small>@Model.LGAs.Name</small>*@
-                                </div>
-                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Type: </h6><small> @Model.Type</small>
+                                    <span style="font-weight:bold">LGA:</span><br /> @Model.Lgas.Name
                                 </div>
                             </div>
                             <hr/>
                             <div class="row">
                                 <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Highest Qualification: </h6><small>@Model.HighestQualification</small>
+                                    <span style="font-weight:bold">First Appointment Date:</span><br/> @Model.FirstAppointment
                                 </div>
                                 <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Field of Study: </h6><small>@Model.FieldOfStudy </small>
+                                    <span style="font-weight:bold">Became a Professor on:</span><br/> @Model.ToProfessor
                                 </div>
                                 <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Area of Specialization: </h6><small>@Model.AreaOfSpecialization</small>
-                                </div>
-                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Worked in Higher Institution: </h6><small> @Model.WorkedInHigherInstuition</small>
-                                </div>
-                            </div>
-                            <hr/>
-                            <div class="row">
-                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Current Place of work: </h6><small>@Model.CurrentPlaceOfWork</small>
-                                </div>
-                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Position at current Place of work: </h6><small>@Model.PositionAtCurrentPlaceOfWork </small>
-                                </div>
-                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Years of Experience: </h6><small>@Model.YearsOfExperience</small>
-                                </div>
-                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
-                                    <h6>Logins: </h6><small> @Model.Email<br/> @Model.Password</small>
-                                </div>
-                            </div>
-                            <hr />
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <a href="~/files/applicantUploads/jamb/">
-                                        <span class="badge badge-success"> Highest Degree</span>
-                                    </a>
-                                </div>
-                                <div class="col-md-2">
-                                    <a href="~/files/ca.xlsx">
-                                        <span class="badge badge-success"> Application Letter</span>
-                                    </a>
-                                </div>
-                                <div class="col-md-2">
-                                    <a href="~/files/ca.xlsx">
-                                        <span class="badge badge-success"> Birth Cert.</span>
-                                    </a>
+                                    <span style="font-weight:bold">Institution:</span><br /> @Model.Institution
                                 </div>
                                 
-                                <div class="col-md-2">
-                                    <a href="~/files/ca.xlsx">
-                                        <span class="badge badge-success"> CV Upload</span>
-                                    </a>
+                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
+                                    <span style="font-weight:bold">Qualification:</span><br /> @Model.Qualifications
                                 </div>
+                            </div>
+                            <hr/>
+                           <div class="row">
+                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
+                                    <span style="font-weight:bold">Position:</span><br/> @Model.Position
                                 </div>
-                                <hr />
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <a class="btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Employ Applicant" data-url="@Url.Action($"Employ/{Model.ApplicantId}")">
-                                        Employ
-                                    </a>
+                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
+                                    <span style="font-weight:bold">Administrative Experience:</span><br/> @Model.AdministrativeExperiences
                                 </div>
-                                
-                                <div class="col-md-2">
-                                    <a class=" btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Reject Application" data-url="@Url.Action($"Reject/{Model.Id}")">
-                                        Reject
-                                    </a>
+                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
+                                    <span style="font-weight:bold">Professional Experience:</span><br/> @Model.ProfessionalExperiences
                                 </div>
-                                <div class="col-md-2">
-                                    <a class=" btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Cancel Application" data-url="@Url.Action($"Cancel/{Model.Id}")">
-                                        Cancel
-                                    </a>
-                                </div>
-                                <div class="col-md-2">
-                                    <a class=" btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Delete Application" data-url="@Url.Action($"Delete/{Model.Id}")">
-                                        Delete
-                                    </a>
-                                </div>
-                                <div class="col-md-2">
-                                    <a class="btn btn-outline-primary" asp-action="index">
-                                        Back to list
-                                    </a>
+                                <div class="col-md-3 col-xl-3 col-lg-3 col-12 col-sm-12">
+                                    <span style="font-weight:bold">Communication Skills:</span><br/> @Model.CommunicationSkills
                                 </div>
                             </div>
                         </div>

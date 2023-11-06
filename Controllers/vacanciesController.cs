@@ -9,6 +9,7 @@ using EDSU_SYSTEM.Models;
 using EDSU_SYSTEM.Data;
 using static EDSU_SYSTEM.Models.Enum;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
@@ -247,19 +248,15 @@ namespace EDSU_SYSTEM.Controllers
 
         }
         // GET: vacancies/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string? id)
         {
-            if (id == null || _context.Vacancies == null)
+            if (id == null || _context.VcApplications == null)
             {
                 return NotFound();
             }
 
-            var vacancy = await _context.Vacancies
-                .Include(v => v.Positions)
-                .Include(v => v.LGAs)
-                .Include(v => v.Nationalities)
-                .Include(v => v.States)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var vacancy = await _context.VcApplications.Include(x => x.Nationalities).Include(x => x.States).Include(x => x.Lgas)
+                .FirstOrDefaultAsync(m => m.ApplicantId == id);
             if (vacancy == null)
             {
                 return NotFound();
@@ -267,7 +264,13 @@ namespace EDSU_SYSTEM.Controllers
 
             return View(vacancy);
         }
+        [Authorize(Roles = "vcvacancy, superAdmin")]
+        public async Task<IActionResult> Vc_applicants()
+        {
+            var applicationDbContext = _context.VcApplications;
+            return View(await applicationDbContext.ToListAsync());
 
+        }
         // GET: vacancies/Create
         public async Task<IActionResult> Academic()
         {

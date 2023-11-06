@@ -128,6 +128,16 @@
                 </a>
             </li>
             }
+           @if (User.IsInRole("staff") && User.IsInRole("vcvacancy") || User.IsInRole("superAdmin"))
+            {
+                <li class="menu">
+                    <a asp-action="vc_applicants" asp-controller="vacancies" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <i data-feather="user-plus"></i><span>VC Vacancy</span>
+                    </div>
+                </a>
+            </li>
+            }
             @if (User.IsInRole("staff") && User.IsInRole("entreprenureship") || User.IsInRole("superAdmin"))
             {
                 <li class="menu">
