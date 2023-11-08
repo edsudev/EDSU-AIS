@@ -17,10 +17,11 @@ namespace EDSU_SYSTEM.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
-        public levelAdvisersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public levelAdvisersController(RoleManager<IdentityRole> roleManager, ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _roleManager = roleManager;
             _userManager = userManager;
         }
 
@@ -77,6 +78,22 @@ namespace EDSU_SYSTEM.Controllers
             {
                 _context.Add(levelAdviser);
                 await _context.SaveChangesAsync();
+                try
+                {
+                    var staff = (from x in _context.Staffs where x.Id == levelAdviser.StaffId select x.SchoolEmail).FirstOrDefault();
+                    var id = "90be5e60-4c7c-480d-9167-6427e7bfaec3";
+                    var users = _userManager.Users.Where(x => x.UserName == staff).ToList();
+                    var role = await _roleManager.FindByIdAsync(id);
+                    foreach (var item in users)
+                    {
+                        await _userManager.AddToRoleAsync(item, role.Name);
+                    }
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
                 return RedirectToAction(nameof(Index));
             }
             ViewData["LevelId"] = new SelectList(_context.Levels, "Id", "Name", levelAdviser.LevelId);

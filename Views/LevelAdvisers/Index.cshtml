@@ -38,7 +38,9 @@
                                 {
                                     <tr>
                                         <td>
-                                            @Html.DisplayFor(modelItem => item.Staffs.Surname)
+                                            @Html.DisplayFor(modelItem => item.Staffs.Surname),
+                                            @Html.DisplayFor(modelItem => item.Staffs.FirstName)
+                                            @Html.DisplayFor(modelItem => item.Staffs.MiddleName)
                                         </td>
                                         <td>
                                             @Html.DisplayFor(modelItem => item.Levels.Name)
