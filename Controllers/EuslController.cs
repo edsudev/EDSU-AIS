@@ -36,6 +36,11 @@ namespace EDSU_SYSTEM.Controllers
             var applicationDbContext = _context.EuslAssests;
             return View(await applicationDbContext.ToListAsync());
         }
+        public async Task<IActionResult> Studentitems()
+        {
+            var applicationDbContext = _context.StudentManuals;
+            return View(await applicationDbContext.ToListAsync());
+        }
         public async Task<IActionResult> Applications()
         {
             var applicationDbContext = _context.AssetFinances.Include(a => a.EuslAssests);

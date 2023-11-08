@@ -230,13 +230,12 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Roles = new SelectList(roleManager.Roles, "Name", "Name");
             return View();
         }
-        public IActionResult List()
-        {
-            // Retrieve the user roles from your context or database.
-           // List<IdentityUserRole<string>> userRoles = userManager.userr.Where(x => x.StaffId != null).ToList();
-           //var staff = (from s in roleManager
-            return View();
-        }
+        //public IActionResult UserRoles()
+        //{
+        //    //ViewBag.Users = new SelectList(userManager.role.Where(x => x.StaffId != null), "Id", "UserName");
+        //    //var userRoles = userManager.Users.SelectMany(u => userManager.GetRolesAsync(u).Result.Select(r => new UserRolesViewModel { UserId = u.Id, RoleId = r })).ToList();
+        //    //return View(userRoles);
+        //}
 
     }
 }
