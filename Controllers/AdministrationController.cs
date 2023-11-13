@@ -1,6 +1,8 @@
-﻿using EDSU_SYSTEM.Models;
+﻿using EDSU_SYSTEM.Data;
+using EDSU_SYSTEM.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,12 +15,13 @@ namespace EDSU_SYSTEM.Controllers
     {
         private readonly RoleManager<IdentityRole> roleManager;
         private readonly UserManager<ApplicationUser> userManager;
-
+        private readonly ApplicationDbContext _context;
         public AdministrationController(RoleManager<IdentityRole> roleManager,
-                                        UserManager<ApplicationUser> userManager)
+                                        UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             this.roleManager = roleManager;
             this.userManager = userManager;
+            _context = context;
         }
         [HttpGet]
         public IActionResult Create()
@@ -230,6 +233,25 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Roles = new SelectList(roleManager.Roles, "Name", "Name");
             return View();
         }
+        public async Task<ActionResult> Listroles()
+        {
+            var userRoles = new List<RolesViewModel>();
+            var users = await userManager.Users.Where(x => x.StaffId != null).ToListAsync(); // Assuming userManager is properly initialized
+
+            foreach (var user in users)
+            {
+                var r = new RolesViewModel
+                {
+                    UserName = user.UserName
+                };
+                r.RoleNames = await userManager.GetRolesAsync(user);
+                
+                userRoles.Add(r);
+            }
+            //Console.Write("this " + userRoles);
+            return View(userRoles);
+        }
+
         //public IActionResult UserRoles()
         //{
         //    //ViewBag.Users = new SelectList(userManager.role.Where(x => x.StaffId != null), "Id", "UserName");

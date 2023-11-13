@@ -49,38 +49,50 @@
                         <div class="widget widget-chart-one">
                             <h5>Notifications</h5>
                             <div class="widget-content">
-                                <div class="row mb-3">
-                                    <div class="col-8">Pending Works' Request</div>
-                                    <div class="col-4"><span class="badge badge-danger">@ViewBag.worksPending</span></div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-8">Works in progress</div>
-                                    <div class="col-4"><span class="badge badge-warning">@ViewBag.worksInProgress</span></div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-8">Pending Exeats (Chief Portal)</div>
-                                    <div class="col-4"><span class="badge badge-danger">@ViewBag.portalPending</span></div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-8">Pending Exeats (Dean/HM)</div>
-                                    <div class="col-4"><span class="badge badge-danger">@ViewBag.HMPending</span></div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-8">Pending Requests</div>
-                                    <div class="col-4"><span class="badge badge-danger">@ViewBag.ictPending</span></div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-8">Requests in progress</div>
-                                    <div class="col-4"><span class="badge badge-danger">@ViewBag.ictInProgress</span></div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-8">Unread Mails</div>
-                                    <div class="col-4"><span class="badge badge-danger">@ViewBag.exeat</span></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-8">Pending Course Reg.</div>
-                                    <div class="col-4"><span class="badge badge-danger">@ViewBag.pendingCourseReg</span></div>
-                                </div>
+                                @if (User.IsInRole("staff") && User.IsInRole("works") || User.IsInRole("superAdmin"))
+                                {
+                                    <div class="row mb-3">
+                                        <div class="col-8">Pending Works' Request</div>
+                                        <div class="col-4"><span class="badge badge-danger">@ViewBag.worksPending</span></div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-8">Works in progress</div>
+                                        <div class="col-4"><span class="badge badge-warning">@ViewBag.worksInProgress</span></div>
+                                    </div>
+                                }
+                                @if (User.IsInRole("staff") && User.IsInRole("dsa") || User.IsInRole("superAdmin"))
+                                {
+                                    <div class="row mb-3">
+                                        <div class="col-8">Pending Exeats (Chief Portal)</div>
+                                        <div class="col-4"><span class="badge badge-danger">@ViewBag.portalPending</span></div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-8">Pending Exeats (Dean/HM)</div>
+                                        <div class="col-4"><span class="badge badge-danger">@ViewBag.HMPending</span></div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-8">Unread Mails</div>
+                                        <div class="col-4"><span class="badge badge-danger">@ViewBag.exeat</span></div>
+                                    </div>
+                                }
+                                @if (User.IsInRole("staff") && User.IsInRole("works") || User.IsInRole("superAdmin"))
+                                {
+                                    <div class="row mb-3">
+                                        <div class="col-8">Pending Requests</div>
+                                        <div class="col-4"><span class="badge badge-danger">@ViewBag.ictPending</span></div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-8">Requests in progress</div>
+                                        <div class="col-4"><span class="badge badge-danger">@ViewBag.ictInProgress</span></div>
+                                    </div>
+                                }
+                                @if (User.IsInRole("staff") && User.IsInRole("levelAdviser") || User.IsInRole("superAdmin"))
+                                {
+                                    <div class="row">
+                                        <div class="col-8">Pending Course Reg.</div>
+                                        <div class="col-4"><span class="badge badge-danger">@ViewBag.pendingCourseReg</span></div>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>

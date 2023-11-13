@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+﻿@*@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
 <h4>List of Roles</h4>
 @if (Model.Any())
 {
@@ -10,4 +10,62 @@
 else
 {
     <h6>No Roles Yet</h6>
+}*@
+@model IEnumerable<EDSU_SYSTEM.Models.RolesViewModel>
+@foreach (var user in Model.ToList())
+{
+    <div> @user.UserName -- </div>
+    foreach (var role in user.RoleNames)
+    {
+        <div> @role </div>
+    }
+    <br />
 }
+
+<div class="main-container" id="container">
+    <partial name="_StaffDashboardPartial" />
+    <!--  BEGIN CONTENT AREA  -->
+    <div id="content" class="main-content">
+        <div class="layout-px-spacing">
+            <div class="row layout-spacing">
+                <!-- Content -->
+                <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 mx-auto">
+                    <a asp-action="create" class="btn btn-dark">Create</a>
+                    <a asp-action="back" class="btn btn-dark">Add user</a>
+                    
+                    <div class="widget-content widget-content-area br-6">
+                    <table id="html5-extension" class="table table-hover non-hover table-bordered">
+                    <thead>
+                    <tr>
+                    <th>User</th>
+                    <th>Role(s)</th>
+
+                    <th class="dt-no-sorting">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                                @foreach (var user in Model.ToList())
+                                {
+                                  
+                                    
+                                        <div> @user.UserName</div>
+                                   
+                               
+                                    foreach (var role in user.RoleNames)
+                                    {
+                                        <div> @role </div>
+                                    }
+                                       
+                                    
+                                }
+                    </tbody>
+                    </table>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<!--  END CONTENT AREA  -->
+</div>
+<!-- END MAIN CONTAINER -->

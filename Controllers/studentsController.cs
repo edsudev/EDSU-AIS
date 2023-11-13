@@ -35,10 +35,15 @@ namespace EDSU_SYSTEM.Controllers
             _roleManager = roleManager;
             _context = context;
         }
-        public async Task<IActionResult> studentRole()
+        public async Task<IActionResult> CreateApplicantAccount()
         {
             try
             {
+                var applicants = _context.UgApplicants.ToList();
+                foreach (var item in applicants)
+                {
+
+                }
                 var id = "c35a60d0-0ff8-46f3-afbc-9ba7eced4c5b";
                 var users = _userManager.Users.Where(x => x.Type == 2).ToList();
                 var role = await _roleManager.FindByIdAsync(id);
@@ -58,21 +63,21 @@ namespace EDSU_SYSTEM.Controllers
         {
             try
             {
-                var users = (from s in _context.ConversionStudents select s).ToList();
-               
-                    foreach (var item in users)
+                var applicants = _context.UgApplicants.ToList();
+
+                foreach (var item in applicants)
                     {
-                        var user = new ApplicationUser
-                        {
-                            Email = item.SchoolEmailAddress,
-                            UserName = item.SchoolEmailAddress,
-                            ConversionStudent = item.Id,
-                            PhoneNumber = item.Phone,
-                            PhoneNumberConfirmed = true,
-                            Type = 4,
-                            EmailConfirmed = true
-                        };
-                        var r = await _userManager.CreateAsync(user, item.Phone);
+                        //var user = new ApplicationUser
+                        //{
+                        //    Email = item.SchoolEmailAddress,
+                        //    UserName = item.SchoolEmailAddress,
+                        //    ConversionStudent = item.Id,
+                        //    PhoneNumber = item.Phone,
+                        //    PhoneNumberConfirmed = true,
+                        //    Type = 4,
+                        //    EmailConfirmed = true
+                        //};
+                        //var r = await _userManager.CreateAsync(user, item.Phone);
                     }
             }
             catch (Exception)
@@ -198,7 +203,7 @@ namespace EDSU_SYSTEM.Controllers
                         tuition = new Fee { Level1 = 0 };
                     }
                     Random r = new();
-                    string a = st.Id.ToString() + r.Next(10000);
+                   // string a = st.Id.ToString() + r.Next(10000);
 
                     // Create a new instance of UgSubWallet for each student
                     var newSubWallet = new UgSubWallet();
@@ -340,7 +345,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return View();
         }
-       [Authorize(Roles = "superAdmin")]
+       //[Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> CreateMainWalletUGA1(UgSubWallet subWallet, UgMainWallet ugmain)
         {
             var students = (from s in _context.UgApplicants select s).ToList();

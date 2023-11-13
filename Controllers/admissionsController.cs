@@ -65,7 +65,8 @@ namespace EDSU_SYSTEM.Controllers
         }
         public IActionResult Scholarships()
         {
-            return View();
+            string externalUrl = "https://old.edouniversity.edu.ng/scholarship";
+            return Redirect(externalUrl);
         }
         [Authorize(Roles = "staff, superAdmin, ugAdmission")]
         public async Task<IActionResult> List(string? id)
@@ -750,100 +751,99 @@ namespace EDSU_SYSTEM.Controllers
             return RedirectToAction("Index", "admissions");
 
         }
-        [Authorize(Roles = "staff, superAdmin, ugAdmission, ugClearance")]
+        //[Authorize(Roles = "staff, superAdmin, ugAdmission, ugClearance")]
         //[HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> ClearApplicant(string? id, Student student)
+        public async Task<IActionResult> ClearApplicant(Student Newstudent)
         {
             //Get the person who performed this action
-            var loggedInUser = await userManager.GetUserAsync(HttpContext.User);
-            var userId = loggedInUser.StaffId;
+            //var loggedInUser = await userManager.GetUserAsync(HttpContext.User);
+            //var userId = loggedInUser.StaffId;
 
-            try
+           // var applicants = await _context.UgApplicants.ToListAsync();
+            var applicants = (from s in _context.UgApplicants select s).ToList();
+            foreach (var item in applicants)
             {
-                var applicant = await _context.UgApplicants.FirstOrDefaultAsync(x => x.ApplicantId == id);
-                //change the cleared status to true in the applicants table
-                applicant.Cleared = true;
-                var Session = (from T in _context.Sessions
-                               where T.IsActive == true
-                               where T.IsActive == true
-                               select T).ToList();
-                var dept = (from g in _context.Departments where g.Id == applicant.AdmittedInto select g).ToList();
-                //Moving Applicant to student table
-                student.ApplicantId = applicant.Id;
-                student.StudentId = applicant.ApplicantId;
-                student.Fullname = applicant.Surname + " " + applicant.FirstName + " " + applicant.OtherName;
-                student.Picture = applicant.PassportUpload;
-                student.Sex = applicant.Sex;
-                student.DOB = applicant.DOB;
-                student.Phone = applicant.PhoneNumber;
-                student.Email = applicant.Email;
-                student.NationalityId = applicant.NationalityId;
-                student.StateOfOriginId = applicant.StateOfOriginId;
-                student.LGAId = applicant.LGAId;
-                student.PlaceOfBirth = applicant.PlaceOfBirth;
-                student.PermanentHomeAddress = applicant.PermanentHomeAddress;
-                student.ContactAddress = applicant.ContactAddress;
-                student.MaritalStatus = applicant.MaritalStatus;
-                student.ParentName = applicant.ParentFullName;
-                student.ParentOccupation = applicant.ParentOccupation;
-                student.ParentPhone = applicant.ParentPhoneNumber;
-                student.ParentAltPhone = applicant.ParentAlternatePhoneNumber;
-                student.ParentEmail = applicant.ParentEmail;
-                student.ParentAddress = applicant.ParentAddress;
-                student.StudentStatus = 1;
-                foreach (var item in Session)
-                {
-                    var edsumail= applicant.Surname + item.suffix + "." + applicant.FirstName + "@edouniversity.edu.ng";
-                    student.SchoolEmailAddress = edsumail.ToLower();
-                    student.YearOfAdmission = item.Id;
-                    student.CurrentSession = item.Id;
-                }
-                foreach (var item in dept)
-                {
-                    student.Department = item.Id;
-                }
-                student.UTMENumber = applicant.UTMENumber;
-                student.Level = applicant.LevelAdmittedTo;
-                student.ModeOfAdmission = applicant.ModeOfEntry;
-                student.Cleared = true;
-                student.ClearedBy = userId;
-                student.CreatedAt = DateTime.Now;
-                _context.Add(student);
-                await _context.SaveChangesAsync();
-
-                var user = new ApplicationUser
-                {
-                    Email = student.SchoolEmailAddress,
-                    UserName = student.SchoolEmailAddress,
-                    StudentsId = student.Id,
-                    PhoneNumber = student.Phone,
-                    PhoneNumberConfirmed = true,
-                    Type = 1,
-                    EmailConfirmed = true
-                };
-                var r = await userManager.CreateAsync(user, student.Phone);
                 try
                 {
-                    var roleId = "4e8c6adc-ae5c-46e4-8618-e0b18f0841ba";
-                    var role = await roleManager.FindByIdAsync(roleId);
-                    await userManager.AddToRoleAsync(user, role.Name);
+                    var student = new Student();
+                    item.Cleared = true;
+                    var Session = (from T in _context.Sessions
+                                   where T.IsActive == true
+                                   select T.suffix).FirstOrDefault();
+                    var dept = (from g in _context.Departments where g.Id == item.AdmittedInto select g.Id).FirstOrDefault();
+                    //Moving Applicant to student table
+                    //student.ApplicantId = item.Id;
+                    student.StudentId = item.UTMENumber;
+                    student.Fullname = item.Surname + " " + item.FirstName + " " + item.OtherName;
+                    student.Picture = item.PassportUpload;
+                    student.Sex = item.Sex;
+                    student.DOB = item.DOB;
+                    student.Phone = item.PhoneNumber;
+                    student.Email = item.Email;
+                    student.NationalityId = item.NationalityId;
+                    student.StateOfOriginId = item.StateOfOriginId;
+                    student.LGAId = item.LGAId;
+                    student.PlaceOfBirth = item.PlaceOfBirth;
+                    student.PermanentHomeAddress = item.PermanentHomeAddress;
+                    student.ContactAddress = item.ContactAddress;
+                    student.MaritalStatus = item.MaritalStatus;
+                    student.ParentName = item.ParentFullName;
+                    student.ParentOccupation = item.ParentOccupation;
+                    student.ParentPhone = item.ParentPhoneNumber;
+                    student.ParentAltPhone = item.ParentAlternatePhoneNumber;
+                    student.ParentEmail = item.ParentEmail;
+                    student.ParentAddress = item.ParentAddress;
+                    student.StudentStatus = 1;
                     
-                }
-                catch (Exception)
-                {
+                    var edsumail = item.Surname + Session + "." + item.FirstName + "@edouniversity.edu.ng";
+                    student.SchoolEmailAddress = edsumail.ToLower();
+                    student.YearOfAdmission = 9;
+                    student.CurrentSession = 9;
+                    
+                    student.Department = dept;
+                    
+                    student.UTMENumber = item.UTMENumber;
+                    student.Level = item.LevelAdmittedTo;
+                    student.ModeOfAdmission = item.ModeOfEntry;
+                    student.Cleared = true;
+                   // student.ClearedBy = userId;
+                    student.CreatedAt = DateTime.Now;
+                    _context.Students.Add(student);
+                    await _context.SaveChangesAsync();
 
+                    var user = new ApplicationUser
+                    {
+                        Email = student.SchoolEmailAddress,
+                        UserName = student.SchoolEmailAddress,
+                        StudentsId = student.Id,
+                        PhoneNumber = student.Phone,
+                        PhoneNumberConfirmed = true,
+                        Type = 1,
+                        EmailConfirmed = true
+                    };
+                    var r = await userManager.CreateAsync(user, student.Phone);
+                    try
+                    {
+                        var roleId = "4e8c6adc-ae5c-46e4-8618-e0b18f0841ba";
+                        var role = await roleManager.FindByIdAsync(roleId);
+                        await userManager.AddToRoleAsync(user, role.Name);
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        throw;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
                     throw;
                 }
+            }
+                //change the cleared status to true in the applicants table
                 return RedirectToAction("index", "admissions");
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-                
-          
         }
         [Authorize(Roles = "staff, superAdmin, ugAdmission, ugClearance")]
 

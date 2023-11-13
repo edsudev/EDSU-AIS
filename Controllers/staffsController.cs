@@ -64,6 +64,7 @@ namespace EDSU_SYSTEM.Controllers
         {
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             var userId = loggedInUser.StaffId;
+            var staff = (from s in _context.Staffs where s.Id == userId select s).FirstOrDefault();
             //Checks works table and get where status == pending or in progress   
             var worksPending = (from c in _context.Works where c.Status == Models.Enum.WorksStatus.Pending select c).ToList();
             var worksInProgress = (from c in _context.Works where c.Status == Models.Enum.WorksStatus.In_Progress select c).ToList();
@@ -84,7 +85,7 @@ namespace EDSU_SYSTEM.Controllers
             //Console.Write(LevelAdviser.Count());
             foreach (var item in LevelAdviser)
             {
-                var pendingCourseReg = (from s in _context.CourseRegistrations where s.Students.Level == item.LevelId && s.Status == Models.Enum.MainStatus.Pending select s).ToList();
+                var pendingCourseReg = (from s in _context.CourseRegistrations where s.Students.Level == item.LevelId && s.Status == Models.Enum.MainStatus.Pending && s.Students.Department == staff.DepartmentId select s).ToList();
                 ViewBag.pendingCourseReg = pendingCourseReg.Count();
                 Console.Write(item.StaffId);
             }

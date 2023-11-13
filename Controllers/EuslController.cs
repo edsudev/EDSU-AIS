@@ -57,13 +57,24 @@ namespace EDSU_SYSTEM.Controllers
         {
             var amount = (from s in _context.StudentManuals where s.Id == item select s.Amount).FirstOrDefault();
             Random r = new();
+
+            var percentage = (double?)amount * 1.5 / 100;
+            Console.Write("This is it" + percentage);
             payment.Email = email;
             payment.PayerName = name;
             payment.Type = item;
             payment.PaymentDate = DateTime.Now;
             payment.Status = "Pending";
             payment.Mode = "Paystack";
-            payment.Amount = (double?)amount;
+            if (percentage > 2000)
+            {
+                payment.Amount = (double?)amount + 2000;
+            }
+            else
+            {
+                payment.Amount = (double?)amount + percentage;
+            }
+            
             payment.Ref = "EUSL-" + r.Next(10000000) + DateTime.Now.Millisecond;
 
             _context.Add(payment);
