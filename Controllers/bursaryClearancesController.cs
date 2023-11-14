@@ -181,6 +181,7 @@ namespace EDSU_SYSTEM.Controllers
                     ViewBag.hostelMode = hostelPayment.Mode;
                     ViewBag.hostelDate = hostelPayment.PaymentDate;
                     ViewBag.hostelStatus = hostelPayment.Status;
+                    ViewBag.reference = hostelPayment.Ref;
                 }
                 else
                 {
@@ -189,6 +190,7 @@ namespace EDSU_SYSTEM.Controllers
                     ViewBag.hostelMode = "NIL";
                     ViewBag.hostelDate = "NIL";
                     ViewBag.hostelStatus = "NIL";
+                    ViewBag.reference = "NIL";
                 }
 
 

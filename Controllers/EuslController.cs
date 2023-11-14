@@ -138,7 +138,20 @@ namespace EDSU_SYSTEM.Controllers
             TempData["success"] = "You have succesfully applied for an asset finance. We will get back to you in no time.";
             return RedirectToAction(nameof(Index));
         }
+        public IActionResult CreateItem()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateItem(StudentManuals sm)
+        {
 
+            _context.Add(sm);
+            await _context.SaveChangesAsync();
+            TempData["success"] = "You have succesfully added an item";
+            return RedirectToAction(nameof(Index));
+        }
         // GET: Eusl/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -185,7 +198,51 @@ namespace EDSU_SYSTEM.Controllers
             //ViewData["TypeOfAsset"] = new SelectList(_context.EuslAssests, "Id", "Id", asset.TypeOfAsset);
             return View(asset);
         }
+        public async Task<IActionResult> Editstudentitem(int? id)
+        {
+            if (id == null || _context.StudentManuals == null)
+            {
+                return NotFound();
+            }
 
+            var assetFinance = await _context.StudentManuals.FindAsync(id);
+            if (assetFinance == null)
+            {
+                return NotFound();
+            }
+            //ViewData["TypeOfAsset"] = new SelectList(_context.EuslAssests, "Id", "Id", assetFinance.TypeOfAsset);
+            return View(assetFinance);
+        }
+
+        // POST: Eusl/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Editstudentitem(int? id, StudentManuals asset)
+        {
+            if (id != asset.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(asset);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+
+                    return NotFound();
+                }
+                return RedirectToAction(nameof(Studentitems));
+            }
+            //ViewData["TypeOfAsset"] = new SelectList(_context.EuslAssests, "Id", "Id", asset.TypeOfAsset);
+            return View(asset);
+        }
         // GET: Eusl/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
