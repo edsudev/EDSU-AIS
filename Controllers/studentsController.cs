@@ -61,33 +61,44 @@ namespace EDSU_SYSTEM.Controllers
         }
         public async Task<IActionResult> UsersMigrate()
         {
-            try
+            var students = (from s in _context.Students where s.Cleared == false select s).ToList();
+            foreach (var item in students)
             {
-                var applicants = _context.UgApplicants.ToList();
-
-                foreach (var item in applicants)
+                try
+                {
+                    var user = new ApplicationUser
                     {
-                        //var user = new ApplicationUser
-                        //{
-                        //    Email = item.SchoolEmailAddress,
-                        //    UserName = item.SchoolEmailAddress,
-                        //    ConversionStudent = item.Id,
-                        //    PhoneNumber = item.Phone,
-                        //    PhoneNumberConfirmed = true,
-                        //    Type = 4,
-                        //    EmailConfirmed = true
-                        //};
-                        //var r = await _userManager.CreateAsync(user, item.Phone);
+                        Email = item.SchoolEmailAddress,
+                        UserName = item.SchoolEmailAddress,
+                        StudentsId = item.Id,
+                        PhoneNumber = item.Phone,
+                        PhoneNumberConfirmed = true,
+                        Type = 1,
+                        EmailConfirmed = true
+                    };
+                    var r = await _userManager.CreateAsync(user, item.Phone);
+                    try
+                    {
+                        var roleId = "4e8c6adc-ae5c-46e4-8618-e0b18f0841ba";
+                        var role = await _roleManager.FindByIdAsync(roleId);
+                        await _userManager.AddToRoleAsync(user, role.Name);
+
                     }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                        throw;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                    throw;
+                }
             }
-            catch (Exception)
-            {
+            
 
-                throw;
-            }
-
-
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
         }
         public async Task<IActionResult> MigrateStudent(string email)
         {
@@ -345,7 +356,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return View();
         }
-       //[Authorize(Roles = "superAdmin")]
+       [Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> CreateMainWalletUGA1(UgSubWallet subWallet, UgMainWallet ugmain)
         {
             var students = (from s in _context.UgApplicants select s).ToList();

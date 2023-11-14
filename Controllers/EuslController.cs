@@ -66,9 +66,9 @@ namespace EDSU_SYSTEM.Controllers
             payment.PaymentDate = DateTime.Now;
             payment.Status = "Pending";
             payment.Mode = "Paystack";
-            if (percentage > 2000)
+            if (percentage > 2500)
             {
-                payment.Amount = (double?)amount + 2000;
+                payment.Amount = (double?)amount + percentage + 100;
             }
             else
             {

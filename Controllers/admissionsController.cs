@@ -751,7 +751,7 @@ namespace EDSU_SYSTEM.Controllers
             return RedirectToAction("Index", "admissions");
 
         }
-        //[Authorize(Roles = "staff, superAdmin, ugAdmission, ugClearance")]
+        [Authorize(Roles = "staff, superAdmin, ugAdmission, ugClearance")]
         //[HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> ClearApplicant(Student Newstudent)

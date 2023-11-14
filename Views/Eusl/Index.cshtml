@@ -49,17 +49,31 @@
 <!--  BEGIN CONTENT AREA  -->
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
-        <div class="row" id="printableContent">
-            <div class="col-md-6 mx-auto my-auto text-center">
-                <span class="display-4"></span>
-                @if (!string.IsNullOrEmpty(ViewBag.success))
-                {
-                    <div class="col-xl-4 col-lg-4 col-sm-4 mx-auto alert alert-success border-0 mb-4" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="alert"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+        @*<div class="row mt-4">
+            <div class="col-12" style="background-color:red">
+                <img src="~/images/eusl.jpg" class="img-fluid" alt="EUSL Image">
+            </div>
+        </div>*@
+
+        @if (!string.IsNullOrEmpty(ViewBag.success))
+        {
+            <div class="row mt-4">
+                <div class="col-xl-4 col-lg-4 col-sm-4 mx-auto">
+                    <div class="alert alert-success border-0" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="alert">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
                         <strong>@ViewBag.success</strong>
                     </div>
+                </div>
+            </div>
+        }
 
-                }
+        <div class="row mt-4">
+            <div class="col-md-6 mx-auto text-center">
                 <div class="mt-4"><a href="/eusl/assetfinanceform" class="btn btn-primary">Request Asset Finance</a></div>
                 <div class="mt-4"><a href="/eusl/manual" class="btn btn-primary">Purchase Departmental Materials</a></div>
             </div>
