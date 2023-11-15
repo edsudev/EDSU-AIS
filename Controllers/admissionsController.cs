@@ -1545,6 +1545,7 @@ namespace EDSU_SYSTEM.Controllers
                 ViewBag.hostelName = hostelPayment.HostelFees.Name;
                 ViewBag.hostelAmount = hostelPayment.Amount;
                 ViewBag.hostelMode = hostelPayment.Mode;
+                ViewBag.reference = hostelPayment.Ref;
                 ViewBag.hostelDate = hostelPayment.PaymentDate;
                 ViewBag.hostelStatus = hostelPayment.Status;
             }
@@ -1555,6 +1556,7 @@ namespace EDSU_SYSTEM.Controllers
                 ViewBag.hostelMode = "NIL";
                 ViewBag.hostelDate = "NIL";
                 ViewBag.hostelStatus = "NIL";
+                ViewBag.reference = "NIL";
             }
 
             var room = await _context.HostelAllocations.Where(x => x.WalletId == wallet.Id).Include(x => x.HostelRooms).ThenInclude(x => x.Hostels).FirstOrDefaultAsync();
