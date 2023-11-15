@@ -152,6 +152,20 @@ namespace EDSU_SYSTEM.Controllers
             TempData["success"] = "You have succesfully added an item";
             return RedirectToAction(nameof(Index));
         }
+        public IActionResult CreateAsset()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAsset(EuslAssests asset)
+        {
+
+            _context.Add(asset);
+            await _context.SaveChangesAsync();
+            TempData["success"] = "You have succesfully added an item";
+            return RedirectToAction(nameof(Index));
+        }
         // GET: Eusl/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

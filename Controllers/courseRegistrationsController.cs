@@ -329,9 +329,11 @@ namespace EDSU_SYSTEM.Controllers
                 ViewBag.ErrorMessage2 = errorMessage2;
                 return View(await courses.ToListAsync());
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                TempData["err"] = e.Message;
                 return RedirectToAction("badreq", "Error");
+
                 throw;
             }
             
@@ -381,7 +383,7 @@ namespace EDSU_SYSTEM.Controllers
             
         }
        
-        [Authorize(Roles = "student, superAdmin")]
+        [Authorize(Roles = "student, levelAdviser superAdmin")]
         // GET: courseRegistrations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -401,7 +403,7 @@ namespace EDSU_SYSTEM.Controllers
 
             return PartialView("_delete",courseRegistration);
         }
-        [Authorize(Roles = "student, superAdmin")]
+        [Authorize(Roles = "student, levelAdviser, superAdmin")]
         // POST: courseRegistrations/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -418,7 +420,8 @@ namespace EDSU_SYSTEM.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Approved));
+            var previousPage = Request.Headers["Referer"].ToString();
+            return Redirect(previousPage);
         }
 
         private bool CourseRegistrationExists(int? id)

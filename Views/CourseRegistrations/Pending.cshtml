@@ -35,10 +35,8 @@
                                         <td class="text-center">
                                             @*@if (SignInManager.IsSignedIn(User) && User.IsInRole("Level Adviser"))
                                         {*@
-                                            <a asp-action="pendingreg" asp-route-id="@item.SchoolEmailAddress" class="bs-tooltip" data-toggle="tooltip" data-placement="top" title="" data-original-title="View Courses">
-                                                <div class="icon-container">
-                                                    <i data-feather="eye"></i>
-                                                </div>
+                                            <a asp-action="pendingreg" asp-route-id="@item.SchoolEmailAddress" class="bs-tooltip btn btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="View Courses">
+                                                View
                                             </a>
                                             @*}*@
 
