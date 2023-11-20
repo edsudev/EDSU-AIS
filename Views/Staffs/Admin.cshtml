@@ -14,16 +14,13 @@
         <div class="layout-px-spacing">
             <div class="row layout-top-spacing">
                 <div class="col-xl-10 col-lg-10 col-md-10 col-10 mx-auto layout-spacing">
-                    <a asp-action="PopulateWallet" asp-controller="Students" class="btn btn-primary">Populate UG Applicant Sub Wallet</a>
-                </div>
-                <div class="col-xl-10 col-lg-10 col-md-10 col-10 mx-auto layout-spacing">
                     <a asp-action="UsersMigrate" asp-controller="Students" class="btn btn-success">Create account for new students</a>
                 </div>
                 <div class="col-xl-10 col-lg-10 col-md-10 col-10 mx-auto layout-spacing">
-                    <a asp-action="ClearApplicant" asp-controller="admissions" class="btn btn-warning">Clear all applicants and create accounts for them</a>
+                    <a asp-action="CreateJupebMainWallet" asp-controller="Students" class="btn btn-warning">Create MainWallet for JUPEB</a>
                 </div>
                 <div class="col-xl-10 col-lg-10 col-md-10 col-10 mx-auto layout-spacing">
-                    <a asp-action="CreateJupebMainWallet" asp-controller="Students" class="btn btn-warning">Create MainWallet for JUPEB</a>
+                    <a asp-action="CreateMainWalletUGA1" asp-controller="Students" class="btn btn-warning">Create MainWallet for UG Applicants</a>
                 </div>
                 <div class="col-xl-10 col-lg-10 col-md-10 col-10 mx-auto layout-spacing">
                     <a asp-action="allocations" asp-controller="hostels" class="btn btn-secondary">Add Allocation</a>

@@ -59,9 +59,12 @@
             
                             <td>
                                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                                <a class="" data-toggle="ajax-modal" data-url="@Url.Action($"Delete/{item.Id}")">
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="bs-tooltip btn btn-primary" data-toggle="tooltip" data-placement="top" title="" data-original-title="View Courses">
                                     Delete
                                 </a>
+                               @* <a class="" data-toggle="ajax-modal" data-url="@Url.Action($"Delete/{item.Id}")">
+                                    Delete
+                                </a>*@
                             </td>
                         </tr>
                     }

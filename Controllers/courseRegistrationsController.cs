@@ -150,6 +150,11 @@ namespace EDSU_SYSTEM.Controllers
             TempData["studentEmail"] = id;
             var student = _context.Students.Where(x => x.SchoolEmailAddress == id).Select(x => x.Id).FirstOrDefault();
             var studentCourses   = (from c in _context.CourseRegistrations where c.StudentId == student && c.Status == MainStatus.Pending select c).Include(c => c.Courses).ThenInclude(c => c.Semesters).Include(c => c.Students).ToList();
+            //foreach (var item in studentCourses)
+            //{
+            //    var s = item.Courses.CreditUnit;
+            //}
+            
             return View(studentCourses);
         }
         public IActionResult Approvedreg(int id)
@@ -294,7 +299,7 @@ namespace EDSU_SYSTEM.Controllers
             }
             catch (Exception)
             {
-                
+                TempData["err"] = "Kindly ask your HOD to set maximum credit unit for your level";
                 return RedirectToAction("badreq", "error");
                 throw;
             }
@@ -383,7 +388,7 @@ namespace EDSU_SYSTEM.Controllers
             
         }
        
-        [Authorize(Roles = "student, levelAdviser superAdmin")]
+        [Authorize(Roles = "student, levelAdviser, superAdmin")]
         // GET: courseRegistrations/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

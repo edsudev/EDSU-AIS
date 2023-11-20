@@ -1,4 +1,5 @@
 ﻿using EDSU_SYSTEM.Data;
+using EDSU_SYSTEM.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -119,7 +120,7 @@ namespace EDSU_SYSTEM.Controllers
                 }
             }
 
-            Console.WriteLine($"Retrieved {allCourses.Count} courses:");
+            //Console.WriteLine($"Retrieved {allCourses.Count} courses:");
 
             foreach (var course in allCourses)
             {
@@ -171,43 +172,101 @@ namespace EDSU_SYSTEM.Controllers
                 }
             }
         }
+        //public async Task EnrollStaff(string id)
+        //{
+        //    var users = await GetAllUsers();
+        //    var canvasCourses = await GetAllCourses();
+
+        //    var currentSession = _context.Sessions.FirstOrDefault(x => x.IsActive == true);
+        //    var courses = (from s in _context.CourseAllocations where s.Staff.SchoolEmail == id && s.Courses.SessionId == currentSession.Id  select s.Courses.Code).ToList();
+        //    var staff = (from x in users where x.Email == id select x.Id).FirstOrDefault();
+
+        //    using (var client = new HttpClient())
+        //    {
+        //        client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("CANVAS_BASE_URL"));
+        //        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("CANVAS_TOKEN"));
+
+        //        foreach (var item in courses)
+        //        {
+
+        //            var course_id = (from s in canvasCourses where s.Sis_course_id == item select s.Id).FirstOrDefault();
+
+        //            var enrollment = new
+        //            {
+        //                enrollment = new
+        //                {
+        //                    user_id = staff,
+        //                    type = "StaffEnrollment",
+        //                    enrollment_state = "active"
+        //                }
+        //            };
+
+        //            var json = JsonConvert.SerializeObject(enrollment);
+        //            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        //            var response = await client.PostAsync($"/api/v1/courses/{course_id}/enrollments", content);
+
+        //            if (!response.IsSuccessStatusCode)
+        //            {
+        //                throw new Exception($"Failed to enroll user in course: {response.StatusCode}");
+        //            }
+        //        }
+        //    }
+        //}
         public async Task EnrollStaff(string id)
         {
-            var users = await GetAllUsers();
-            var canvasCourses = await GetAllCourses();
-            
+            //var users = await GetAllUsers();
+            //var canvasCourses = await GetAllCourses();
+
             var currentSession = _context.Sessions.FirstOrDefault(x => x.IsActive == true);
-            var courses = (from s in _context.CourseAllocations where s.Staff.SchoolEmail == id && s.Courses.SessionId == currentSession.Id  select s.Courses.Code).ToList();
-            var staff = (from x in users where x.Email == id select x.Id).FirstOrDefault();
-            
+            var courses = (from allocation in _context.CourseAllocations
+                           where allocation.Staff.SchoolEmail == id &&
+                                 allocation.Courses.SessionId == currentSession.Id
+                           select allocation.Courses.Code).ToList();
+            //var staffId = (from user in users where user.Email == id select user.Id).FirstOrDefault();
+
+            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CANVAS_BASE_URL")) ||
+                string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CANVAS_TOKEN")))
+            {
+                throw new Exception("Canvas base URL or token is missing.");
+            }
+
             using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("CANVAS_BASE_URL"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("CANVAS_TOKEN"));
 
-                foreach (var item in courses)
+                foreach (var courseCode in courses)
                 {
-                   
-                    var course_id = (from s in canvasCourses where s.Sis_course_id == item select s.Id).FirstOrDefault();
-                    
+                    //var courseId = (from canvasCourse in canvasCourses
+                    //                where canvasCourse.Sis_course_id == courseCode
+                    //                select canvasCourse.Id).FirstOrDefault();
+
                     var enrollment = new
                     {
+
                         enrollment = new
                         {
-                            user_id = staff,
-                            type = "StaffEnrollment",
+                            user_id = "2086",
+                            type = "StudentEnrollment",
                             enrollment_state = "active"
+                            //user_id = 1574,
+                            //type = "TeacherEnrollment",
+                            //enrollment_state = "active"
                         }
                     };
 
                     var json = JsonConvert.SerializeObject(enrollment);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    var response = await client.PostAsync($"/api/v1/courses/{course_id}/enrollments", content);
-
+                    var response = await client.PostAsync($"/api/v1/courses/616/enrollments", content);
+                    Console.Write("this is response"+response);
                     if (!response.IsSuccessStatusCode)
                     {
-                        throw new Exception($"Failed to enroll user in course: {response.StatusCode}");
+
+                        // Log the details for debugging
+                        //Console.WriteLine($"Failed to enroll user {staffId} in course {courseId}: {response.StatusCode}");
+                        // You can choose to continue the loop or break here based on your requirements.
                     }
                 }
             }

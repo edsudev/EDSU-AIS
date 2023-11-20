@@ -30,8 +30,8 @@ function payWithPaystackEusl(e) {
                             url: '/eusl/UpdatePayment',
                             data: { data: data },
                             success: function () {
-                                //window.location = `https://localhost:2222/eusl/summary?data=${data}`;
-                                window.location = `https://edouniversity.edu.ng/wallets/summary?data=${data}`
+                               // window.location = `https://localhost:2222/eusl/summary?data=${data}`;
+                              window.location = `https://edouniversity.edu.ng/eusl/summary?data=${data}`
                                 alert('Transaction Successful');
                             },
                             error: function () {

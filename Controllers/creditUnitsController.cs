@@ -124,7 +124,7 @@ namespace EDSU_SYSTEM.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Max,Min,LevelId,SemesterId,DepartmentId,SessionId")] CreditUnit creditUnit)
+        public async Task<IActionResult> Edit(int id, CreditUnit creditUnit)
         {
             if (id != creditUnit.Id)
             {
@@ -135,6 +135,8 @@ namespace EDSU_SYSTEM.Controllers
             {
                 try
                 {
+                    var departmentId = (from s in _context.CreditUnits where s.Id == id select s.DepartmentId).FirstOrDefault();
+                    creditUnit.DepartmentId = departmentId;
                     _context.Update(creditUnit);
                     await _context.SaveChangesAsync();
                 }
