@@ -352,13 +352,14 @@ namespace EDSU_SYSTEM.Controllers
             try
             {
                 var userId = await _userManager.GetUserAsync(HttpContext.User);
+                var student = (from s in _context.Students where s.Id == userId.StudentsId select s).FirstOrDefault();
                 if (id == null || _context.CourseRegistrations == null)
                 {
                     return NotFound();
                 }
 
                 var course = await _context.Courses
-                    .FirstOrDefaultAsync(m => m.Code == id);
+                    .FirstOrDefaultAsync(m => m.Code == id && m.DepartmentId == student.Department);
                 if (course == null)
                 {
                     return NotFound();
