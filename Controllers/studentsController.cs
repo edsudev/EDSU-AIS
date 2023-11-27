@@ -359,7 +359,7 @@ namespace EDSU_SYSTEM.Controllers
        //[Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> CreateMainWalletUGA1(UgSubWallet subWallet, UgMainWallet ugmain)
         {
-            var students = (from s in _context.UgApplicants where s.ApplicantionId != "90" select s).ToList();
+            var students = (from s in _context.UgApplicants where s.ApplicantionId == "24" select s).ToList();
 
             foreach (var st in students)
             {
@@ -369,7 +369,7 @@ namespace EDSU_SYSTEM.Controllers
                     try
                     {
                         var newUgMain = new UgMainWallet();
-                        newUgMain.ApplicantId = 16;
+                        newUgMain.ApplicantId = 24;
                         //ugmain.Id = int.Parse(p);
                         newUgMain.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
                         newUgMain.WalletId = st.UTMENumber;
@@ -377,6 +377,7 @@ namespace EDSU_SYSTEM.Controllers
                         newUgMain.BulkDebitBalanace = 0;
                         newUgMain.CreditBalance = 0;
                         newUgMain.Status = true;
+                        ugmain.StudentType = 0;
                         newUgMain.DateCreated = DateTime.Now;
                         _context.UgMainWallets.Add(newUgMain);
                         await _context.SaveChangesAsync();
@@ -395,6 +396,7 @@ namespace EDSU_SYSTEM.Controllers
                         newSubWallet.RegNo = st.UTMENumber;
                         newSubWallet.CreditBalance = 0;
                         newSubWallet.Status = true;
+                        newSubWallet.Waiver = false;
                         newSubWallet.DateCreated = DateTime.Now;
 
                         if (st.ModeOfEntry == "3" && (st.AdmittedInto == 38 || st.AdmittedInto == 24 || st.AdmittedInto == 1))
