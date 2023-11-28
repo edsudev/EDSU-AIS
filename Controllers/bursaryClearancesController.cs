@@ -219,7 +219,7 @@ namespace EDSU_SYSTEM.Controllers
                     }
                     else
                     {
-                        ViewBag.status = "Approved";
+                        ViewBag.status = " ";
                     }
                 }
                 else

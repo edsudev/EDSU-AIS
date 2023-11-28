@@ -3942,6 +3942,48 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.ToTable("PgApplicants");
                 });
 
+            modelBuilder.Entity("EDSU_SYSTEM.Models.PgClearance", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Mode")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("OrderId")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("PaymentType")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("SessionId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SessionId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("PgClearances");
+                });
+
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgCourse", b =>
                 {
                     b.Property<int?>("Id")
@@ -7079,6 +7121,21 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Navigation("States");
 
                     b.Navigation("YearOfAdmissions");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.PgClearance", b =>
+                {
+                    b.HasOne("EDSU_SYSTEM.Models.Session", "Sessions")
+                        .WithMany()
+                        .HasForeignKey("SessionId");
+
+                    b.HasOne("EDSU_SYSTEM.Models.PgStudent", "Students")
+                        .WithMany()
+                        .HasForeignKey("StudentId");
+
+                    b.Navigation("Sessions");
+
+                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgCourse", b =>

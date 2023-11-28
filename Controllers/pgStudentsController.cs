@@ -295,7 +295,60 @@ namespace EDSU_SYSTEM.Controllers
             return RedirectToAction(nameof(Eclearance));
 
         }
+        public async Task<IActionResult> History()
+        {
 
+            var sessions = (from c in _context.Sessions select c);
+            return View(await sessions.ToListAsync());
+        }
+        [Authorize(Roles = "pgStudent")]
+        public async Task<IActionResult> Preview(string? id)
+        {
+            try
+            {
+                var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+                var userId = loggedInUser.PgStudent;
+                var student = (from s in _context.PostGraduateStudents where s.Id == userId select s)
+                    .Include(c => c.Departments).Include(c => c.Levels).Include(c => c.Sessions).FirstOrDefault();
+                ViewBag.name = student.Fullname;
+                ViewBag.email = student.SchoolEmailAddress;
+                ViewBag.mat = student.MatNumber;
+                ViewBag.dept = student.Departments.Name;
+                //ViewBag.programme = student.Programs.NameOfProgram;
+                ViewBag.session = student.Sessions.Name;
+                ViewBag.level = student.Levels.Name;
+                var clearance = (from s in _context.PgClearances where s.StudentId == userId && s.Sessions.Name == id select s).Include(i => i.Sessions).ToList();
+
+                var clearedStatus = _context.PgClearances
+                 .Where(x => x.StudentId == userId)
+                 .Include(x => x.Sessions)
+                 .ToList();
+
+                if (clearedStatus != null)
+                {
+                    if (clearedStatus.Any(item => item.Status != MainStatus.Approved))
+                    {
+                        ViewBag.status = "Pending";
+                    }
+                    else
+                    {
+                        ViewBag.status = " ";
+                    }
+                }
+                else
+                {
+                    ViewBag.status = "Pending";
+                }
+                return View(clearance);
+            }
+            catch (Exception e)
+            {
+                TempData["err"] = e.Message;
+                return RedirectToAction("badreq", "error");
+                throw;
+            }
+
+        }
         private bool PgStudentExists(int? id)
         {
           return _context.PostGraduateStudents.Any(e => e.Id == id);
