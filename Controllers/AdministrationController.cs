@@ -197,6 +197,18 @@ namespace EDSU_SYSTEM.Controllers
             ViewBag.Roles = new SelectList(roleManager.Roles, "Name", "Name");
             return View();
         }
+        public IActionResult PG()
+        {
+            ViewBag.Users = new SelectList(userManager.Users.Where(x => x.PgStudent != null), "Id", "UserName");
+            ViewBag.Roles = new SelectList(roleManager.Roles, "Name", "Name");
+            return View();
+        }
+        public IActionResult CP()
+        {
+            ViewBag.Users = new SelectList(userManager.Users.Where(x => x.ConversionStudent != null), "Id", "UserName");
+            ViewBag.Roles = new SelectList(roleManager.Roles, "Name", "Name");
+            return View();
+        }
         [HttpPost]
         public async Task<IActionResult> AddUserToRole(string userId, string roleName)
         {

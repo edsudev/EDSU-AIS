@@ -7,23 +7,76 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
+using Microsoft.AspNetCore.Identity;
+using static EDSU_SYSTEM.Models.Enum;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EDSU_SYSTEM.Controllers
 {
     public class pgStudentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public pgStudentsController(ApplicationDbContext context)
+        public pgStudentsController(UserManager<ApplicationUser> userManager, UserManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment hostingEnvironment, ApplicationDbContext context)
         {
+            _hostingEnvironment = hostingEnvironment;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
             _context = context;
         }
 
         // GET: pgStudents
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.PostGraduateStudents;
-            return View(await applicationDbContext.ToListAsync());
+            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var userId = loggedInUser.PgStudent;
+            var student = (from c in _context.PostGraduateStudents where c.Id == userId select c).Include(i => i.Departments).FirstOrDefault();
+            var pgwallet = (from c in _context.PgMainWallets where c.WalletId == student.StudentId select c).FirstOrDefault();
+            ViewBag.Name = student.Fullname;
+            ViewBag.Department = student.Departments.Name;
+            var approvedCourses = (from c in _context.PgCourseRegs
+                                   where c.StudentId == userId &&
+                            c.Status == MainStatus.Approved &&
+                            c.SessionId == student.CurrentSession
+                                   select c).Include(c => c.Courses).ToList();
+            //var timetable = (from c in _context.TimeTables
+            //                 where c.DepartmetId == student.Department && c.LevelId ==
+            //                 student.Level
+            //                 select c).Include(c => c.Courses).ThenInclude(s => s.Courses).ToList();
+
+            //After getting the courses from coursereg and Scores from Results table, we sorted them using the course code before serializing them
+            //so that the courses can align with the courses since they are coming from the same table.
+            var grades = (from g in _context.Results where g.StudentId == student.MatNumber select g).ToList();
+            var sortedCourses = approvedCourses.OrderBy(s => s.Courses.Code);
+            var sortedGrades = grades.OrderBy(c => c.CourseId);
+
+            var CourseCode = (from c in sortedCourses select c.Courses.Code).ToList();
+            var TestScores = (from v in sortedGrades select v.CA).ToList();
+
+
+            var json = JsonSerializer.Serialize(CourseCode);
+            var json2 = JsonSerializer.Serialize(TestScores);
+
+
+            ViewBag.courses = json;
+            ViewBag.grade = json2;
+
+            var model = new PGStudentDashboardVM
+            {
+                MainWallet = pgwallet,
+                Courses = approvedCourses,
+                //TimeTables = timetable
+            };
+
+            return View(model);
+
         }
         public async Task<IActionResult> Allstudents()
         {
@@ -217,10 +270,478 @@ namespace EDSU_SYSTEM.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        public IActionResult Eclearance()
+        {
+            ViewBag.success = TempData["success"];
+            ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Name");
+            return View();
+        }
+
+        // POST: busaryClearances/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // [Authorize(Roles = "student")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Eclearance(PgClearance offlinePayment)
+        {
+            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var user = loggedInUser.PgStudent;
+            offlinePayment.StudentId = user;
+            offlinePayment.CreatedAt = DateTime.Now;
+            _context.Add(offlinePayment);
+            await _context.SaveChangesAsync();
+            TempData["success"] = "Record added successfully.";
+            return RedirectToAction(nameof(Eclearance));
+
+        }
 
         private bool PgStudentExists(int? id)
         {
           return _context.PostGraduateStudents.Any(e => e.Id == id);
         }
+
+        ///////////////////////////////////////////////////
+        /////// WALLET SECTION
+        //////////////////////////////////////////////////
+        [Authorize(Roles = "pgStudent, superAdmin")]
+        public async Task<IActionResult> Debts()
+        {
+            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var user = loggedInUser.PgStudent;
+
+            var student = (from s in _context.PostGraduateStudents where s.Id == user select s).FirstOrDefault();
+            var wallet = (from s in _context.PgSubWallets where s.WalletId == student.StudentId select s).Include(c => c.Sessions).ToList();
+
+            ViewBag.utme = student.UTMENumber;
+            if (wallet == null)
+            {
+                return RedirectToAction("pagenotfound", "error");
+            }
+
+            return View(wallet);
+
+        }
+        [Authorize(Roles = "pgStudent, superAdmin")]
+        //Initiating Acceptance payment
+        public async Task<IActionResult> Acceptance(string id, PgOrder payment, Student student)
+        {
+            var wallet = await _context.PgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.AcceptanceFee + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Acceptance";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.PgOrders
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        public async Task<IActionResult> Tuition(string id, PgOrder payment, Student student)
+        {
+            var wallet = await _context.PgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.Tuition + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Tuition";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.PgOrders
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        [Authorize(Roles = "pgStudent, superAdmin")]
+        //Initiating Tuition 60 Percent payment
+        public async Task<IActionResult> Tuition60(string id, PgOrder payment, Student student)
+        {
+            var wallet = await _context.PgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.SixtyPercent + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Tuition(60%)";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.PgOrders
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        [Authorize(Roles = "pgStudent, superAdmin")]
+        //Initiating Tuition 40 Percent payment
+        public async Task<IActionResult> Tuition40(string id, PgOrder payment, Student student)
+        {
+            var wallet = await _context.PgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.FortyPercent + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Tuition(40%)";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.PgOrders
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        [Authorize(Roles = "pgStudent, superAdmin")]
+        //Initiating LMS payment
+        public async Task<IActionResult> LMS(string id, PgOrder payment, Student student)
+        {
+            var wallet = await _context.PgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.LMS + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "LMS";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.PgOrders
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        [Authorize(Roles = "pgStudent, superAdmin")]
+        //Initiating SRC payment
+        public async Task<IActionResult> SRC(string id, PgOrder payment, Student student)
+        {
+            var wallet = await _context.PgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.SRC + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "SRC";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.PgOrders
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        [Authorize(Roles = "pgStudent, superAdmin")]
+        //Initiating EDHIS payment
+        public async Task<IActionResult> EDHIS(string id, PgOrder payment, Student student)
+        {
+            var wallet = await _context.PgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.EDHIS + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "EDHIS";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.PgOrders
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        [Authorize(Roles = "pgStudent, superAdmin")]
+        //Proceed to payment Gateway
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveEmail(string? Ref)
+        {
+            try
+            {
+                //var order = (from x in _context.Payments where x.Ref == Ref select x.Wallets.WalletId).FirstOrDefault();
+
+                var PaymentToUpdate = await _context.PgOrders
+               .FirstOrDefaultAsync(c => c.Ref == Ref);
+                var orderid = Ref;
+                if (await TryUpdateModelAsync<PgOrder>(PaymentToUpdate, "", c => c.Email))
+                {
+
+                    try
+                    {
+                        PaymentToUpdate.Mode = "Paystack";
+                        await _context.SaveChangesAsync();
+
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                            "Try again, and if the problem persists, " +
+                            "see your system administrator.");
+                    }
+                    return RedirectToAction("checkout", "pgstudents", new { orderid });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+
+            }
+            return View();
+
+        }
+        public async Task<IActionResult> Checkout(string? orderid)
+        {
+            var paymentToGet = await _context.PgOrders
+                .FirstOrDefaultAsync(x => x.Ref == orderid);
+            if (orderid == null || _context.Payments == null)
+            {
+                return NotFound();
+            }
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            return View(paymentToGet);
+        }
+        public async Task<IActionResult> UpdatePayment(string data, BursaryClearance bursaryClearance, BursaryClearanceFresher bcf)
+        {
+
+            var walletId = TempData["walletId"];
+            var payments = _context.PgOrders.FirstOrDefault(c => c.Ref == data);
+            
+            payments.Status = "Approved";
+            switch (payments.Type)
+            {
+                case "Tuition":
+                    if (payments.Status == "Approved")
+                    {
+                        var wallet = _context.PgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newDebit = wallet.Debit - wallet.Tuition;
+                        wallet.Debit = newDebit;
+
+                        var bulkwallet = _context.PgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.Tuition;
+                        bulkwallet.BulkDebitBalanace = newBulkDebit;
+
+                        wallet.Tuition = 0;
+
+                        wallet.SixtyPercent = 0;
+                        wallet.FortyPercent = 0;
+                        _context.SaveChanges();
+                    }
+                    break;
+                case "Tuition(60%)":
+                    if (payments.Status == "Approved")
+                    {
+                        var wallet = _context.PgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newDebit = wallet.Debit - wallet.SixtyPercent;
+                        wallet.Debit = newDebit;
+                        var bulkwallet = _context.PgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.SixtyPercent;
+                        bulkwallet.BulkDebitBalanace = newBulkDebit;
+
+                        wallet.SixtyPercent = 0;
+                        wallet.Tuition = 0;
+                        _context.SaveChanges();
+                    }
+                    break;
+                case "Tuition(40%)":
+                    if (payments.Status == "Approved")
+                    {
+                        var wallet = _context.PgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newDebit = wallet.Debit - wallet.FortyPercent;
+                        wallet.Debit = newDebit;
+
+                        var bulkwallet = _context.PgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.FortyPercent;
+                        bulkwallet.BulkDebitBalanace = newBulkDebit;
+
+                        wallet.FortyPercent = 0;
+                        _context.SaveChanges();
+                    }
+                    break;
+                case "EDHIS":
+                    if (payments.Status == "Approved")
+                    {
+                        var wallet = _context.PgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newDebit = wallet.Debit - wallet.EDHIS;
+                        wallet.Debit = newDebit;
+                        var bulkwallet = _context.PgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.EDHIS;
+                        bulkwallet.BulkDebitBalanace = newBulkDebit;
+
+                        wallet.EDHIS = 0;
+                        _context.SaveChanges();
+                    }
+                    break;
+                case "LMS":
+                    if (payments.Status == "Approved")
+                    {
+                        var wallet = _context.PgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newDebit = wallet.Debit - wallet.LMS;
+                        wallet.Debit = newDebit;
+
+                        var bulkwallet = _context.PgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.LMS;
+                        bulkwallet.BulkDebitBalanace = newBulkDebit;
+
+                        wallet.LMS = 0;
+                        _context.SaveChanges();
+                    }
+                    break;
+                case "SRC":
+                    if (payments.Status == "Approved")
+                    {
+                        var wallet = _context.PgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newDebit = wallet.Debit - wallet.SRC;
+                        wallet.Debit = newDebit;
+
+                        var bulkwallet = _context.PgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.SRC;
+                        bulkwallet.BulkDebitBalanace = newBulkDebit;
+
+                        wallet.SRC = 0;
+                        _context.SaveChanges();
+                    }
+                    break;
+                case "Acceptance":
+                    if (payments.Status == "Approved")
+                    {
+                        var wallet = _context.PgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newDebit = wallet.Debit - wallet.AcceptanceFee;
+                        wallet.Debit = newDebit;
+
+                        var bulkwallet = _context.PgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newBulkDebit = bulkwallet.BulkDebitBalanace - wallet.AcceptanceFee;
+                        bulkwallet.BulkDebitBalanace = newBulkDebit;
+
+                        wallet.AcceptanceFee = 0;
+                        _context.SaveChanges();
+                    }
+                    break;
+                case "Tuition Custom":
+                    if (payments.Status == "Approved")
+                    {
+                        decimal amount = (decimal)(payments.Amount - 300);
+                        var wallet = _context.PgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newDebit = wallet.Debit - amount;
+                        wallet.Debit = newDebit;
+
+                        var bulkwallet = _context.PgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
+                        var newBulkDebit = bulkwallet.BulkDebitBalanace - amount;
+                        bulkwallet.BulkDebitBalanace = newBulkDebit;
+
+                        wallet.Tuition = 0;
+                        wallet.SixtyPercent -= amount;
+                        _context.SaveChanges();
+                    }
+
+                    break;
+
+            }
+           
+            return RedirectToAction("summary", "pgstudents");
+        }
+        public IActionResult Summary()
+        {
+            return View();
+
+        }
+
     }
 }

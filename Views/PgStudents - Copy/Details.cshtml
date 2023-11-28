@@ -1,0 +1,160 @@
+﻿@model EDSU_SYSTEM.Models.PgStudent
+
+@{
+    ViewData["Title"] = "";
+}
+
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container" id="container">
+    <partial name="_StaffDashboardPartial" />
+
+    <!--  BEGIN CONTENT AREA  -->
+    <div id="content" class="main-content">
+        <div class="layout-px-spacing">
+            <div class="row layout-top-spacing">
+                <div class="col-xl-10 col-lg-10 col-md-10 col-10 mx-auto layout-spacing">
+                    <div class="widget-content-area br-4 p-3">
+                        <div class="widget-one p-3">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">Name:</span> @Model.Fullname
+                                </div>
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">Mat No:</span> @Model.MatNumber
+                                </div>
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">UTME:</span> @Model.UTMENumber
+                                </div>
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">Department:</span> @if (Model.Departments != null)
+                                    {
+                                        @Model.Departments.Name
+                                    }
+                                    else
+                                    {
+                                        @("N/A")
+                                    }
+                                </div>
+                            </div><br /><hr />
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">Sex:</span> @Model.Sex
+                                </div>
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">DOB:</span> @Model.DOB
+                                </div>
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">Phone:</span> @Model.Phone
+                                </div>
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">Alt. Phone:</span> @Model.AltPhoneNumber
+                                </div>
+                            </div><br /><hr/>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">Nationality:</span> @if (Model.Nationalities != null)
+                                        {
+                                            @Model.Nationalities.Name
+                                        }
+                                        else
+                                        {
+                                            @("N/A")
+                                        }
+                                </div>
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">State:</span> @if (Model.States != null)
+                                        {
+                                            @Model.States.Name
+                                        }
+                                        else
+                                        {
+                                            @("N/A")
+                                        }
+                                </div>
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">LGA:</span> @if (Model.LGAs != null)
+                                    {
+                                        @Model.LGAs.Name
+                                    }
+                                    else
+                                    {
+                                        @("N/A")
+                                    }
+                                </div>
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">Religion:</span> @Model.Religion
+                                </div>
+                            </div><br /><hr />
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <span style="font-weight:bold">Contact Address:</span> @Model.ContactAddress
+                                </div>
+                                <div class="col-md-4">
+                                    <span style="font-weight:bold">Home Address:</span> @Model.PermanentHomeAddress
+                                </div>
+                                <div class="col-md-4">
+                                    <span style="font-weight:bold">Place Of Birth:</span> @Model.PlaceOfBirth
+                                </div>
+                                
+                            </div><br /><hr />
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">Parent Name:</span> @Model.ParentName
+                                </div>
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">Parent Email:</span> @Model.ParentEmail
+                                </div>
+                                <div class="col-md-3">
+                                    <span style="font-weight:bold">Parent Phone:</span> @Model.Phone
+                                </div>
+                                <div class="col-md-3">
+                                   <span style="font-weight:bold">Parent Alt. Phone:</span> @Model.ParentAltPhone
+                                </div>
+                            </div><br /><hr />
+
+                            
+                            <div class="row">
+                               
+                                <div class="col-md-2">
+                                    <a class="btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Print ID card" data-url="@Url.Action($"Reject/{Model.SchoolEmailAddress}")">
+                                        ID Card
+                                    </a>
+                                </div>
+                                @if (Model.StudentStatus == 1)
+                                {
+                                    <div class="col-md-2">
+                                        <a class="btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Graduate Student" data-url="@Url.Action($"Graduate/{Model.SchoolEmailAddress}")">
+                                            Graduate
+                                        </a>
+                                    </div>
+                                }else
+                                {
+                                    <div class="col-md-2">
+                                        <a class="btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Return to Student" data-url="@Url.Action($"Return/{Model.SchoolEmailAddress}")">
+                                            Return
+                                        </a>
+                                    </div>
+                                }
+                                
+                                
+                                <div class="col-md-2">
+                                    <a class="btn btn-outline-primary bs-tooltip" data-toggle="ajax-modal" data-placement="top" data-original-title="Rusticate Student" data-url="@Url.Action($"Delete/{Model.SchoolEmailAddress}")">
+                                        Rusticate
+                                    </a>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <a class="btn btn-outline-primary" asp-action="index">
+                                        Back to list
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!--  END CONTENT AREA  -->
+</div>

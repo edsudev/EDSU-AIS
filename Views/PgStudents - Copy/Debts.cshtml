@@ -1,0 +1,222 @@
+﻿@model IEnumerable<EDSU_SYSTEM.Models.PgSubWallet>
+
+@{
+    ViewData["Title"] = "Debts - ";
+}
+<div class="main-container" id="container">
+<partial name="_PgStudentDashboardPartial" />
+
+<!--  BEGIN CONTENT AREA  -->
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+        <div class="row layout-top-spacing">
+
+             <div class="col-xl-10 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="widget widget-chart-one">
+                        <a asp-action="index" asp-controller="student_affairs" class="btn btn-secondary">Submit an appeal</a>
+                        <div class="widget-content widget-content-area br-6">
+                        <table id="example" class="table" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Payment Type
+                                    </th>
+                                    <th>
+                                        Amount
+                                    </th>
+                                    <th>
+                                        Session
+                                    </th>
+                                    <th>Actions</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    @if (item.AcceptanceFee != 0)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <label>Acceptance Fee</label>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.AcceptanceFee</h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.Sessions.Name</h6>
+                                            </td>
+
+                                            <td>
+                                                <a asp-action="acceptance" asp-controller="wallets" asp-route-id="@item.WalletId" class="btn btn-primary">Proceed</a>
+                                            </td>
+
+                                        </tr>
+                                    }
+
+                                    @if (item.Tuition != 0 && item.Tuition > item.FortyPercent)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <label>Tuition (100%)</label>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.Tuition</h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.Sessions.Name</h6>
+                                            </td>
+                                            <td>
+                                                <a asp-action="tuition" asp-controller="wallets" asp-route-id="@item.WalletId" class="btn btn-primary">Proceed</a>
+                                            </td>
+
+                                        </tr>
+                                    }
+                                    @if (item.SixtyPercent != 0)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <label>Tuition (60%)</label>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.SixtyPercent</h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.Sessions.Name</h6>
+                                            </td>
+                                            <td>
+                                                <a asp-action="tuition60" asp-controller="wallets" asp-route-id="@item.WalletId" class="btn btn-primary">Proceed</a>
+                                            </td>
+
+                                        </tr>
+                                    }
+                                    @if (item.FortyPercent != 0 && item.SixtyPercent == 0)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <label>Tuition (40%)</label>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.FortyPercent</h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.Sessions.Name</h6>
+                                            </td>
+                                            <td>
+                                                <a asp-action="tuition40" asp-controller="wallets" asp-route-id="@item.WalletId" class="btn btn-primary">Proceed</a>
+                                            </td>
+
+                                        </tr>
+                                    }
+
+                                    @if (item.LMS != 0)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <label>Learning Management System</label>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.LMS</h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.Sessions.Name</h6>
+                                            </td>
+                                            <td>
+                                                <a asp-action="lms" asp-controller="wallets" asp-route-id="@item.WalletId" class="btn btn-primary">Proceed</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (item.EDHIS != 0)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <label>Edo State Health Insurance Scheme</label>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.EDHIS</h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.Sessions.Name</h6>
+                                            </td>
+                                            <td>
+                                                    <a asp-action="edhis" asp-controller="wallets" asp-route-id="@item.WalletId" class="btn btn-primary">Proceed</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (item.SRC != 0)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <label>Student Rep. Council</label>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.SRC</h6>
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.Sessions.Name</h6>
+                                            </td>
+                                            <td>
+                                                    <a asp-action="src" asp-controller="wallets" asp-route-id="@item.WalletId" class="btn btn-primary">Proceed</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                        <tr>
+                                            <td>
+                                                <label>Tuition Custom Payment</label>
+                                            </td>
+                                            <form asp-action="Custom" method="post">
+                                            <td>
+                                                <input name="amount" class="form-control" />
+                                                <input asp-for="@item.WalletId" name="id" hidden class="form-control" />
+                                            </td>
+                                            <td>
+                                                <h6 class="">@item.Sessions.Name</h6>
+                                            </td>
+                                            <td>
+                                                <input type="submit" class="btn btn-primary" value="Proceed" />
+                                            </td>
+                                            </form>
+                                        </tr>
+                                   
+                                        <tr>
+                                            <td>
+                                                <label>Other(s)</label>
+                                            </td>
+                                            <td>Pick other payment in the next page</td>
+                                            <td>👉</td>
+                                            <td>
+                                                <a asp-action="others" asp-controller="wallets" asp-route-id="@item.WalletId" class="btn btn-primary">Proceed</a>
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label>Hostel Application</label>
+                                            </td>
+                                            
+                                            <td>Select hostel type to continue</td>
+                                            <td>👉</td>
+                                            <td>
+                                                <a asp-action="choice" asp-controller="hostels" asp-route-utme="@item.WalletId" class="btn btn-primary">Proceed</a>
+                                            </td>
+                                        
+                                        </tr>
+                                }
+
+                                    
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+           
+    </div>
+    
+</div>
+<!--  END CONTENT AREA  -->
+    </div>
+<!-- END MAIN CONTAINER -->

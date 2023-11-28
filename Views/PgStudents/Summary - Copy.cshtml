@@ -1,0 +1,158 @@
+﻿@*
+@model IEnumerable<EDSU_SYSTEM.Models.Payment>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payments Overview</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="jumbotron">
+            <h1 class="display-4">Payments Overview</h1>
+            <p class="lead">View all your successful transactions here.</p
+            <p class="lead text-danger">Note: This printout does not give you access to any of the university facilities.<br/> Kindly proceed to the bursary unit for your clearance card</p>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        Personal Information
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@ViewBag.Name</h5>
+                        <p class="card-text">
+                            UTME Number: @ViewBag.UTME<br>
+                            Department: @ViewBag.Department<br>
+                            Wallet ID: @ViewBag.WalletId<br>
+                            Session: @ViewBag.Session
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-header">
+                        Total Debt 
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title text-light">N @ViewBag.debit</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <h2>Payment History</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Payment Description</th>
+                        <th>Amount</th>
+                        <th>Ref</th>
+                        <th>Session</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                      @foreach (var item in Model.Where(payment => payment.OtherFeesDesc == null))
+                       {
+                        <tr>
+                            <td>@item.Type</td>
+                            <td>@item.Amount</td>
+                            <td>@item.Ref</td>
+                            <td>@item.Sessions.Name</td>
+                            <td>@item.PaymentDate</td>
+                        </tr>
+                     }
+                     @foreach (var item in Model.Where(payment => payment.OtherFeesDesc != null))
+                       {
+                        <tr>
+                            <td>@item.OtherFees.Name</td>
+                            <td>@item.Amount</td>
+                            <td>@item.Ref</td>
+                            <td>@item.Sessions.Name</td>
+                            <td>@item.PaymentDate</td>
+                        </tr>
+                     }
+                   
+                </tbody>
+            </table>
+            <a asp-action="index" asp-controller="students" class="btn btn-primary">Back Home</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+*@
+@{
+    ViewData["Title"] = "Success - ";
+}
+
+<!--  BEGIN NAVBAR  -->
+<div class="header-container fixed-top">
+    <header class="header navbar navbar-expand-sm">
+
+        <ul class="navbar-item theme-brand flex-row  text-center">
+            <li class="nav-item theme-logo">
+                <a asp-action="index" asp-controller="home">
+
+                    <img src="~/logo.png" class="navbar-logo" alt="logo" />
+                </a>
+            </li>
+            <li class="nav-item theme-text">
+                <a asp-action="index" asp-controller="home"> EDO STATE UNIVERSITY UZAIRUE  </a>
+            </li>
+        </ul>
+
+    </header>
+</div>
+<!--  END NAVBAR  -->
+<!--  BEGIN NAVBAR  -->
+<div class="sub-header-container">
+    <header class="header navbar navbar-expand-sm">
+        <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></a>
+
+        <ul class="navbar-nav flex-row">
+            <li>
+                <div class="page-header">
+
+                    <nav class="breadcrumb-one" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0);">Dashboard</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><span>Payment Summary</span></li>
+                        </ol>
+                    </nav>
+
+                </div>
+            </li>
+        </ul>
+    </header>
+</div>
+
+<!--  END SIDEBAR  -->
+<!--  BEGIN CONTENT AREA  -->
+<div id="content" class="main-content">
+    <div class="layout-px-spacing">
+        <div class="row" id="printableContent">
+            <div class="col-md-6 mx-auto my-auto text-center">
+                <span class="display-4"></span>
+                <div class="col-xl-10 col-lg-10 col-sm-10 mx-auto alert alert-secondary border-0" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close" data-dismiss="alert"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                    <p>Payment was successful. Check your email for a copy of your recipt</p>
+                </div>
+                <p class="mt-4"><a href="/pgstudents" class="btn btn-primary">Go Back to the University Website</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

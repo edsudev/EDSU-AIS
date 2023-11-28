@@ -4071,6 +4071,56 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.ToTable("PgMainWallets");
                 });
 
+            modelBuilder.Entity("EDSU_SYSTEM.Models.PgOrder", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Mode")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("OtherFeesDesc")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PaymentDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ReceiptNo")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Ref")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("SessionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("WalletId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OtherFeesDesc");
+
+                    b.HasIndex("SessionId");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("PgOrders");
+                });
+
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgProgram", b =>
                 {
                     b.Property<int?>("Id")
@@ -7083,6 +7133,27 @@ namespace EDSU_SYSTEM.Data.Migrations
                     b.Navigation("Sessions");
 
                     b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("EDSU_SYSTEM.Models.PgOrder", b =>
+                {
+                    b.HasOne("EDSU_SYSTEM.Models.OtherFees", "OtherFees")
+                        .WithMany()
+                        .HasForeignKey("OtherFeesDesc");
+
+                    b.HasOne("EDSU_SYSTEM.Models.Session", "Sessions")
+                        .WithMany()
+                        .HasForeignKey("SessionId");
+
+                    b.HasOne("EDSU_SYSTEM.Models.PgSubWallet", "Wallets")
+                        .WithMany()
+                        .HasForeignKey("WalletId");
+
+                    b.Navigation("OtherFees");
+
+                    b.Navigation("Sessions");
+
+                    b.Navigation("Wallets");
                 });
 
             modelBuilder.Entity("EDSU_SYSTEM.Models.PgProgram", b =>

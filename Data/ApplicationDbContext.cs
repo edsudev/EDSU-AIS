@@ -146,6 +146,7 @@ namespace EDSU_SYSTEM.Data
         public DbSet<EDSU_SYSTEM.Models.EuslP>? EuslPs { get; set; }
         public DbSet<EDSU_SYSTEM.Models.StudentManuals>? StudentManuals { get; set; }
         public DbSet<EDSU_SYSTEM.Models.AssetFinance>? AssetFinances { get; set; }
+        public DbSet<EDSU_SYSTEM.Models.PgOrder>? PgOrders { get; set; }
 
 
     }
