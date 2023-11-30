@@ -1025,9 +1025,9 @@ namespace EDSU_SYSTEM.Controllers
         }
         public async Task<IActionResult> Wallet(string id)
         {
-            Console.Write(id);
+           
             //var applicant = await _context.UgApplicants.Where(x => x.UTMENumber == id).FirstOrDefaultAsync();
-            var wallet = await _context.UgMainWallets.Where(x => x.WalletId == id).FirstOrDefaultAsync();
+            var wallet = await _context.UgSubWallets.Where(x => x.WalletId == id).FirstOrDefaultAsync();
             
             ViewBag.utme =id;
             //var model = new AdmissionWalletVM

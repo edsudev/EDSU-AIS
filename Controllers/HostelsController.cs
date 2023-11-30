@@ -451,7 +451,7 @@ namespace EDSU_SYSTEM.Controllers
         {
             ViewData["hostel"] = new SelectList(_context.Hostels, "Id", "Name");
             ViewData["room"] = new SelectList(_context.HostelRoomDetails, "Id", "RoomNo");
-            ViewData["wallet"] = new SelectList(_context.UgMainWallets, "Id", "Name");
+            ViewData["wallet"] = new SelectList(_context.UgSubWallets, "Id", "Name");
             return View();
         }
         [Authorize(Roles = "busaryAdmin, superAdmin")]
@@ -473,8 +473,6 @@ namespace EDSU_SYSTEM.Controllers
 
             await _context.SaveChangesAsync();
 
-            
-           
             return RedirectToAction(nameof(Allocations));
         }
         // POST: Hostels/Create

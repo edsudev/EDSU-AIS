@@ -1101,5 +1101,379 @@ namespace EDSU_SMS.Controllers
         {
             return _context.PgApplicants.Any(e => e.id == id);
         }
+        public async Task<IActionResult> CreateMainWalletPG(PgSubWallet subWallet, PgMainWallet ugmain)
+        {
+            var students = (from s in _context.PgApplicants select s).ToList();
+
+            foreach (var st in students)
+            {
+               // var walletExist = (from a in _context.UgMainWallets where st.Email == a.WalletId select a).FirstOrDefault();
+                //if (walletExist == null)
+                //{
+                    try
+                    {
+                        var newUgMain = new PgMainWallet();
+                        
+                        newUgMain.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
+                        newUgMain.WalletId = st.UserId;
+                       
+                        newUgMain.BulkDebitBalanace = 0;
+                        newUgMain.CreditBalance = 0;
+                        newUgMain.Status = true;
+                       
+                        newUgMain.DateCreated = DateTime.Now;
+                        _context.PgMainWallets.Add(newUgMain);
+                        await _context.SaveChangesAsync();
+
+                        // Create a new instance of UgSubWallet for each student
+                        var newSubWallet = new PgSubWallet();
+                        var fee = (from tu in _context.Fees where tu.DepartmentId == st.AdmittedInto select tu).FirstOrDefault();
+                        if (fee == null)
+                        {
+                            fee = new Fee { Level1 = 0 };
+                        }
+                        newSubWallet.Tuition = fee.Pgd;
+                        newSubWallet.Level = st.LevelAdmittedTo;
+                        newSubWallet.WalletId = st.UserId;
+                        newSubWallet.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
+                        newSubWallet.RegNo = st.Email;
+                        newSubWallet.CreditBalance = 0;
+                        newSubWallet.Status = true;
+                        newSubWallet.DateCreated = DateTime.Now;
+
+                        newSubWallet.FortyPercent = newSubWallet.Tuition * 40 / 100;
+                        newSubWallet.SixtyPercent = newSubWallet.Tuition * 60 / 100;
+                        newSubWallet.LMS = 50000;
+                        newSubWallet.AcceptanceFee = 100000;
+                        newSubWallet.SessionId = 9;
+
+
+                        var f = newSubWallet.Tuition  + newSubWallet.LMS
+                                             + newSubWallet.EDHIS + newSubWallet.SRC + newSubWallet.AcceptanceFee;
+                       
+                        newSubWallet.Debit = f;
+                        newSubWallet.Department = st.AdmittedInto;
+
+                        _context.PgSubWallets.Add(newSubWallet);
+                        await _context.SaveChangesAsync();
+
+                        var main = (from m in _context.PgMainWallets where m.WalletId == newSubWallet.WalletId select m).FirstOrDefault();
+                        main.BulkDebitBalanace = newSubWallet.Debit;
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (Exception)
+                    {
+                        // Handle exceptions appropriately
+                        throw;
+                    }
+              //  }
+
+            }
+
+            return View();
+        }
+
+        //////////////////////////////////////////////////////////////
+        ////////////////////TRANSACTION MODULES//////////////////////
+        public async Task<IActionResult> Pay()
+        {
+            return View();
+        }
+         public async Task<IActionResult> Debts(string id)
+         {
+            var wallet = (from s in _context.PgSubWallets where s.WalletId == id select s).Include(c => c.Sessions).ToList();
+            ViewBag.utme = id;
+            if (!wallet.Any())
+            {
+                return RedirectToAction("pagenotfound", "error");
+            }
+            return View(wallet);
+
+         }
+            //Initiating Acceptance payment
+        public async Task<IActionResult> Acceptance(string id, PgOrder payment)
+        {
+            var wallet = await _context.PgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.AcceptanceFee + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-PG-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Acceptance";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.PgOrders
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+         //[Authorize(Roles = "student, superAdmin")]
+        //Initiating Tuition payment
+        public async Task<IActionResult> Tuition(string id, PgOrder payment)
+        {
+            var wallet = await _context.PgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.Tuition + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-PG-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Tuition";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.PgOrders
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        //Initiating Tuition 60 Percent payment
+        public async Task<IActionResult> Tuition60(string id, PgOrder payment)
+        {
+            var wallet = await _context.PgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.SixtyPercent + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-PG-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Tuition(60%)";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.PgOrders
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        //Initiating Tuition 40 Percent payment
+        public async Task<IActionResult> Tuition40(string id, PgOrder payment)
+        {
+            var wallet = await _context.PgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.FortyPercent + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-PG-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Tuition(40%)";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.PgOrders
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+
+        //Initiating LMS payment
+        public async Task<IActionResult> LMS(string id, PgOrder payment)
+        {
+            var wallet = await _context.PgSubWallets
+                 .FirstOrDefaultAsync(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = (double)wallet.LMS + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-PG-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "LMS";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = await _context.PgOrders
+                .FindAsync(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveEmail(string? Ref)
+        {
+            try
+            {
+                //var order = (from x in _context.Payments where x.Ref == Ref select x.Wallets.WalletId).FirstOrDefault();
+
+                var PaymentToUpdate = _context.PgOrders
+               .FirstOrDefault(c => c.Ref == Ref);
+                var orderid = Ref;
+                if (await TryUpdateModelAsync<PgOrder>(PaymentToUpdate, "", c => c.Email))
+                {
+
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                            "Try again, and if the problem persists, " +
+                            "see your system administrator.");
+                    }
+                    return RedirectToAction("checkout", "pgapplicants", new { orderid });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+
+            }
+            return View();
+
+        }
+        public async Task<IActionResult> Checkout(string? orderid)
+        {
+            var paymentToGet = await _context.PgOrders
+                .FirstOrDefaultAsync(x => x.Ref == orderid);
+            if (orderid == null || _context.PgOrders == null)
+            {
+                return NotFound();
+            }
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            return View(paymentToGet);
+        }
+        public async Task<IActionResult> Others(string id, PgOrder payment)
+        {
+            //Using Viewbag to display list of other fees and session from their respective tables table.
+            ViewData["otherFees"] = new SelectList(_context.OtherFees, "Id", "Name");
+
+            var wallet = await _context.PgSubWallets
+                .FirstOrDefaultAsync(m => m.WalletId == id);
+            Random r = new();
+            //Payment is created just before it returns the view
+
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-PG-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint and the post method to update record
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["WalletId"] = wallet.Id;
+
+            return View(payment);
+        }
+        //Initiating Other Payments
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Others(string Ref)
+        {
+            try
+            {
+                var PaymentToUpdate = await _context.PgOrders.FirstOrDefaultAsync(x => x.Ref == Ref);
+                //var OtherRef = Ref;
+
+                if (await TryUpdateModelAsync<PgOrder>(PaymentToUpdate, "", c => c.Email, c => c.OtherFeesDesc))
+                {
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+                        var othersText = (from o in _context.OtherFees where o.Id == PaymentToUpdate.OtherFeesDesc select o.Amount).Sum();
+                        PaymentToUpdate.Amount = (double?)othersText;
+                        await _context.SaveChangesAsync();
+
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                            "Try again, and if the problem persists, " +
+                            "see your system administrator.");
+                    }
+                    return RedirectToAction("otherscheckout", "pgapplicants", new { Ref });
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+
+            }
+            return View();
+
+        }
+        public async Task<IActionResult> OthersCheckout(string Ref)
+        {
+            var paymentToUpdate = _context.PgOrders.Where(i => i.Ref == Ref).FirstOrDefault();
+            if (Ref == null || _context.PgOrders == null)
+            {
+                return NotFound();
+            }
+            if (paymentToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            return View(paymentToUpdate);
+        }
+
     }
 }

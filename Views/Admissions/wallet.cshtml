@@ -1,4 +1,4 @@
-﻿@model EDSU_SYSTEM.Models.UgMainWallet
+﻿@model EDSU_SYSTEM.Models.UgSubWallet
 
 @{
     ViewData["Title"] = "My Wallet";
@@ -62,7 +62,7 @@
                                     </div>
                                     <div class="inv-balance-info">
                                         <p class="inv-balance text-success">N @Model.CreditBalance</p>
-                                        <p class="text-danger inv-balance">N @Model.BulkDebitBalanace</p>
+                                        <p class="text-danger inv-balance">N @Model.Debit</p>
                                     </div>
                                 </div>
                                 <a asp-action="debts" asp-route-id="@ViewBag.utme">

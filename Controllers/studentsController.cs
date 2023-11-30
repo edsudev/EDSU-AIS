@@ -561,7 +561,7 @@ namespace EDSU_SYSTEM.Controllers
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             var userId = loggedInUser.StudentsId;
             var student = (from c in _context.Students where c.Id == userId select c).Include(i => i.Departments).FirstOrDefault();
-            var wallet = (from c in _context.UgMainWallets where c.UTME == student.UTMENumber select c).FirstOrDefault();
+            var wallet = (from c in _context.UgSubWallets where c.WalletId == student.UTMENumber select c).FirstOrDefault();
             ViewBag.Name = student.Fullname;
             ViewBag.Department = student.Departments.Name;
             var approvedCourses = (from c in _context.CourseRegistrations
@@ -592,7 +592,7 @@ namespace EDSU_SYSTEM.Controllers
 
             var model = new StudentDashboardVM
             {
-                MainWallet = wallet,
+                SubWallet = wallet,
                 Courses = approvedCourses,
                 TimeTables = timetable
             };

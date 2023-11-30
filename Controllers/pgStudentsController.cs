@@ -31,6 +31,90 @@ namespace EDSU_SYSTEM.Controllers
             _roleManager = roleManager;
             _context = context;
         }
+        public async Task<IActionResult> StudentsRole()
+        {
+            try
+            {
+                var id = "32a6763e-6855-433f-9254-eb0fa5b57a50";
+                var users = _userManager.Users.Where(x => x.Type == 3).ToList();
+                var role = await _roleManager.FindByIdAsync(id);
+                foreach (var item in users)
+                {
+                    await _userManager.AddToRoleAsync(item, role.Name);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return View();
+        }
+        public async Task<IActionResult> PopulateWallet(PgSubWallet subWallet, PgMainWallet pgmain)
+        {
+            var students = (from s in _context.PostGraduateStudents select s).ToList();
+
+            foreach (var st in students)
+            {
+                try
+                {
+                    var newPgMain = new PgMainWallet();
+
+                    //ugmain.Id = int.Parse(p);
+                    newPgMain.Name = st.Fullname;
+                    newPgMain.WalletId = st.StudentId;
+                    newPgMain.BulkDebitBalanace = 0;
+                    newPgMain.CreditBalance = 0;
+                    newPgMain.Status = true;
+                    newPgMain.DateCreated = DateTime.Now;
+                    _context.PgMainWallets.Add(newPgMain);
+                    await _context.SaveChangesAsync();
+
+                    var tuition = (from tu in _context.Fees where tu.DepartmentId == st.Department select tu).FirstOrDefault();
+                    if (tuition == null)
+                    {
+                        tuition = new Fee { Level1 = 0 };
+                    }
+                    Random r = new();
+                    // string a = st.Id.ToString() + r.Next(10000);
+
+                    // Create a new instance of UgSubWallet for each student
+                    var newSubWallet = new PgSubWallet();
+                    newSubWallet.WalletId = st.Email;
+                    newSubWallet.Name = st.Fullname;
+                    newSubWallet.RegNo = st.StudentId;
+                    newSubWallet.CreditBalance = 0;
+                    newSubWallet.Status = true;
+                    newSubWallet.DateCreated = DateTime.Now;
+                    newSubWallet.Tuition = 300000;
+                    newSubWallet.FortyPercent = newSubWallet.Tuition * 40 / 100;
+                    newSubWallet.SixtyPercent = newSubWallet.Tuition * 60 / 100;
+                    newSubWallet.LMS = 50000;
+                    //newSubWallet.AcceptanceFee = 100000;
+                    //newSubWallet.SRC = 2000;
+                   //newSubWallet.EDHIS = 25000;
+                    newSubWallet.SessionId = 9;
+                    newSubWallet.Debit = newSubWallet.Tuition + newSubWallet.LMS
+                                        + newSubWallet.EDHIS + newSubWallet.SRC + newSubWallet.AcceptanceFee;
+                    newSubWallet.Level = st.Level;
+                    newSubWallet.Department = st.Department;
+
+                    _context.PgSubWallets.Add(newSubWallet);
+                    await _context.SaveChangesAsync();
+
+                    var main = (from m in _context.PgMainWallets where m.WalletId == newSubWallet.WalletId select m).FirstOrDefault();
+                    main.BulkDebitBalanace = newSubWallet.Debit;
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+                    // Handle exceptions appropriately
+                    throw;
+                }
+            }
+
+            return View();
+        }
 
         // GET: pgStudents
         public async Task<IActionResult> Index()
