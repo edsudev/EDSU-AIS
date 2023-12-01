@@ -34,7 +34,11 @@ namespace EDSU_SYSTEM.Controllers
             var paymentKey = Environment.GetEnvironmentVariable("RAVE_TEST_KEY");
             return Json(paymentKey);
         }
-       
+        public IActionResult Payments()
+        {
+            var payments = (from s in _context.Payments select s).ToList();
+            return View (payments);
+        }
         // GET: wallets
         [Authorize(Roles = "student, superAdmin")]
         public async Task<IActionResult> Index()

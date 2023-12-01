@@ -359,7 +359,7 @@ namespace EDSU_SYSTEM.Controllers
        //[Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> CreateMainWalletUGA1(UgSubWallet subWallet, UgMainWallet ugmain)
         {
-            var students = (from s in _context.UgApplicants where s.ApplicantionId == "24" select s).ToList();
+            var students = (from s in _context.UgApplicants where s.ApplicantionId == "90" select s).ToList();
 
             foreach (var st in students)
             {
@@ -369,7 +369,7 @@ namespace EDSU_SYSTEM.Controllers
                     try
                     {
                         var newUgMain = new UgMainWallet();
-                        newUgMain.ApplicantId = 24;
+                        newUgMain.ApplicantId = 12;
                         //ugmain.Id = int.Parse(p);
                         newUgMain.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
                         newUgMain.WalletId = st.UTMENumber;
