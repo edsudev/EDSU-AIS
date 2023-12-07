@@ -1,7 +1,9 @@
 ﻿using EDSU_SYSTEM.Data;
 using EDSU_SYSTEM.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Text;
@@ -12,6 +14,7 @@ namespace EDSU_SYSTEM.Controllers
     public class Canvas : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         const int perPage = 100; // Number of courses per page
         const int UserperPage = 100; // Number of users per page
@@ -20,9 +23,11 @@ namespace EDSU_SYSTEM.Controllers
         bool hasMore = true;
         bool hasMoreUser = true;
         private readonly HttpClient client;
-        public Canvas(ApplicationDbContext context)
+        public Canvas(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
+
             client = new HttpClient
             {
                 BaseAddress = new Uri(Environment.GetEnvironmentVariable("CANVAS_BASE_URL"))
@@ -81,6 +86,11 @@ namespace EDSU_SYSTEM.Controllers
                     break;
                 }
             }
+            //foreach (var course in allUsers)
+            //{
+
+            //    Console.WriteLine($"{course.Id} {course.Email} ({course.Name})");
+            //}
             return allUsers;
         }
         public async Task<List<CanvasCourse>> GetAllCourses()
@@ -122,35 +132,35 @@ namespace EDSU_SYSTEM.Controllers
 
             //Console.WriteLine($"Retrieved {allCourses.Count} courses:");
 
-            foreach (var course in allCourses)
-            {
+            //foreach (var course in allCourses)
+            //{
                 
-                Console.WriteLine($"{course.Id} {course.Sis_course_id} ({course.Name})");
-            }
+            //    Console.WriteLine($"{course.Id} {course.Sis_course_id} ({course.Name})");
+            //}
             return allCourses;
         }
         public async Task EnrollStudent(string id)
         {
-            var users = await GetAllUsers();
+            var canvasUsers = await GetAllUsers();
             var canvasCourses = await GetAllCourses();
             
             var currentSession = _context.Sessions.FirstOrDefault(x => x.IsActive == true);
             var courses = (from s in _context.CourseRegistrations where s.Students.SchoolEmailAddress == id && s.SessionId == currentSession.Id && s.Status == Models.Enum.MainStatus.Approved select s.Courses.Code).ToList();
-            var student = (from x in users where x.Email == id select x.Email).FirstOrDefault();
-            Console.WriteLine("This is the student ID: " + student);
-
+            var student = (from x in canvasUsers where x.Email == id select x.Email).FirstOrDefault();
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("CANVAS_BASE_URL"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("CANVAS_TOKEN"));
 
-                foreach (var item in courses)
+                foreach (var courseCode in courses)
                 {
-                   
-                    var course_id = (from s in canvasCourses where s.Sis_course_id == item select s.Id).FirstOrDefault();
-                    Console.WriteLine("This is the course ID: " + course_id);
+                    var courseId = (from canvasCourse in canvasCourses
+                                    where canvasCourse.Sis_course_id == courseCode
+                                    select canvasCourse.Id).FirstOrDefault();
 
-                    var enrollment = new
+                    var userId = (from user in canvasUsers where user.Email == id select user.Id).FirstOrDefault();
+
+                    string apiUrl = $"https://edouniversity.instructure.com/api/v1/courses/{courseId}/enrollments";
+                    var enrollmentData = new
                     {
                         enrollment = new
                         {
@@ -160,14 +170,18 @@ namespace EDSU_SYSTEM.Controllers
                         }
                     };
 
-                    var json = JsonConvert.SerializeObject(enrollment);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+                    string jsonData = JsonConvert.SerializeObject(enrollmentData);
+                    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-                    var response = await client.PostAsync($"/api/v1/courses/{course_id}/enrollments", content);
-
-                    if (!response.IsSuccessStatusCode)
+                    HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+                    Console.WriteLine(content);
+                    if (response.IsSuccessStatusCode)
                     {
-                        throw new Exception($"Failed to enroll user in course: {response.StatusCode}");
+                        Console.WriteLine("User enrolled successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to enroll user. Status code: {response.StatusCode}");
                     }
                 }
             }
@@ -213,61 +227,56 @@ namespace EDSU_SYSTEM.Controllers
         //        }
         //    }
         //}
-        public async Task EnrollStaff(string id)
+        public async Task EnrollStaff()
         {
-            //var users = await GetAllUsers();
-            //var canvasCourses = await GetAllCourses();
+
+            var canvasUsers = await GetAllUsers();
+            var canvasCourses = await GetAllCourses();
+
 
             var currentSession = _context.Sessions.FirstOrDefault(x => x.IsActive == true);
-            var courses = (from allocation in _context.CourseAllocations
-                           where allocation.Staff.SchoolEmail == id &&
-                                 allocation.Courses.SessionId == currentSession.Id
-                           select allocation.Courses.Code).ToList();
-            //var staffId = (from user in users where user.Email == id select user.Id).FirstOrDefault();
 
-            if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CANVAS_BASE_URL")) ||
-                string.IsNullOrEmpty(Environment.GetEnvironmentVariable("CANVAS_TOKEN")))
-            {
-                throw new Exception("Canvas base URL or token is missing.");
-            }
+            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var staff = loggedInUser.StaffId;
+            var courses = (from s in _context.CourseAllocations where s.LecturerId == staff && s.Courses.Semesters.IsActive == true select s).Include(x => x.Courses).ThenInclude(s => s.Semesters).Include(n => n.Staff).Include(x => x.Courses).ThenInclude(x => x.Levels).Include(x => x.Courses).ThenInclude(x => x.Departments).ToList();
+            var staffEmail = (from s in _context.Staffs where s.Id == staff select s.SchoolEmail).FirstOrDefault();
 
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri(Environment.GetEnvironmentVariable("CANVAS_BASE_URL"));
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("CANVAS_TOKEN"));
 
                 foreach (var courseCode in courses)
                 {
-                    //var courseId = (from canvasCourse in canvasCourses
-                    //                where canvasCourse.Sis_course_id == courseCode
-                    //                select canvasCourse.Id).FirstOrDefault();
+                    var courseId = (from canvasCourse in canvasCourses
+                                    where canvasCourse.Sis_course_id == courseCode.Courses.Code
+                                    select canvasCourse.Id).FirstOrDefault();
 
-                    var enrollment = new
+                    var userId = (from user in canvasUsers where user.Email == staffEmail select user.Id).FirstOrDefault();
+
+                    string apiUrl = $"https://edouniversity.instructure.com/api/v1/courses/{courseId}/enrollments";
+                var enrollmentData = new
+                {
+                    enrollment = new
                     {
-
-                        enrollment = new
-                        {
-                            user_id = "2086",
-                            type = "StudentEnrollment",
-                            enrollment_state = "active"
-                            //user_id = 1574,
-                            //type = "TeacherEnrollment",
-                            //enrollment_state = "active"
-                        }
-                    };
-
-                    var json = JsonConvert.SerializeObject(enrollment);
-                    var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                    var response = await client.PostAsync($"/api/v1/courses/616/enrollments", content);
-                    Console.Write("this is response"+response);
-                    if (!response.IsSuccessStatusCode)
-                    {
-
-                        // Log the details for debugging
-                        //Console.WriteLine($"Failed to enroll user {staffId} in course {courseId}: {response.StatusCode}");
-                        // You can choose to continue the loop or break here based on your requirements.
+                        user_id = userId,
+                        type = "TeacherEnrollment",
+                        enrollment_state = "active"
                     }
+                };
+
+                string jsonData = JsonConvert.SerializeObject(enrollmentData);
+                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+                Console.WriteLine(content);
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("User enrolled successfully.");
+                }
+                else
+                {
+                    Console.WriteLine($"Failed to enroll user. Status code: {response.StatusCode}");
+                }
                 }
             }
         }

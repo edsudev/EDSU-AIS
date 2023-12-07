@@ -55,11 +55,12 @@
 
                 <div class="col-xl-4 col-md-4 col-12 mx-auto layout-spacing">
                     <div class="widget widget-chart-one">
-                        <h4>Kindly enter the email address you used to apply to enable you make payments.</h4>
+                        <h4>Kindly enter payment ID to enable you make payments.</h4>
+                        <p>To get your payment Id, check your admission dashboard or contact ICT</p>
 
-                        <form asp-action="Debts" method="post">
+                       <form asp-action="Debts" method="post">
                             <div class="form-group">
-                                <label class="control-label"> Email address</label>
+                                <label class="control-label">Payment ID:</label>
                                 <input name="id" class="form-control" />
                                 <span  class="text-danger"></span>
                             </div>

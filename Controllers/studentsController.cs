@@ -130,11 +130,12 @@ namespace EDSU_SYSTEM.Controllers
 
         [Authorize(Roles = "superAdmin")]
         //Set wallet fees for students
-        public async Task<IActionResult> Setwallet(string? id, UgSubWallet subWallet, UgMainWallet ugmain)
+        public async Task<IActionResult> Setwallet(string? id)
         {
             var student = (from st in _context.Students where st.SchoolEmailAddress == id select st).FirstOrDefault();
             var hasMainWallet = (from main in _context.UgMainWallets where main.WalletId == student.UTMENumber select main.WalletId).FirstOrDefault();
-            if(hasMainWallet == null)
+            var ugmain = new UgMainWallet();
+            if (hasMainWallet == null)
             {
                 ugmain.UTME = student.UTMENumber;
                 ugmain.WalletId = student.UTMENumber;

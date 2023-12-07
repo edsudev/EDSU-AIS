@@ -309,5 +309,40 @@ namespace EDSU_SYSTEM.Controllers
         {
           return (_context.EuslAssests?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+        public async Task<IActionResult> DeleteItem(int? id)
+        {
+            if (id == null || _context.StudentManuals == null)
+            {
+                return NotFound();
+            }
+
+            var assetFinance = await _context.StudentManuals
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (assetFinance == null)
+            {
+                return NotFound();
+            }
+
+            return View(assetFinance);
+        }
+
+        // POST: Eusl/Delete/5
+        [HttpPost, ActionName("DeleteItem")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed2(int id)
+        {
+            if (_context.StudentManuals == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.AssetFinances'  is null.");
+            }
+            var assetFinance = await _context.StudentManuals.FindAsync(id);
+            if (assetFinance != null)
+            {
+                _context.StudentManuals.Remove(assetFinance);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Studentitems));
+        }
     }
 }
