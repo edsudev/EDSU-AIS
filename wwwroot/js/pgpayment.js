@@ -30,8 +30,8 @@ function pgPayWithPaystack(e) {
                             url: '/pgstudents/updatepayment',
                             data: { data: data },
                             success: function () {
-                                window.location = "https://localhost:2222/pgstudents/summary";
-                               //window.location = "https://edouniversity.edu.ng/pgstudents/summary"
+                               // window.location = "https://localhost:2222/pgstudents/summary";
+                               window.location = "https://edouniversity.edu.ng/pgstudents/summary"
                                 alert('Transaction Successful');
                             },
                             error: function () {
