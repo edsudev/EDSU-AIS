@@ -31,6 +31,34 @@ namespace EDSU_SYSTEM.Controllers
             _roleManager = roleManager;
             _context = context;
         }
+        public async Task<IActionResult> MigrateStudent(string email)
+        {
+            try
+            {
+                var student = (from s in _context.PostGraduateStudents where s.SchoolEmailAddress == email select s).FirstOrDefault();
+
+                var user = new ApplicationUser
+                {
+                    Email = student.SchoolEmailAddress,
+                    UserName = student.SchoolEmailAddress,
+                    StudentsId = student.Id,
+                    PhoneNumber = student.Phone,
+                    PhoneNumberConfirmed = true,
+                    Type = 3,
+                    EmailConfirmed = true
+                };
+                var r = await _userManager.CreateAsync(user, student.Phone);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
         public async Task<IActionResult> StudentsRole()
         {
             try
@@ -62,7 +90,7 @@ namespace EDSU_SYSTEM.Controllers
 
                     //ugmain.Id = int.Parse(p);
                     newPgMain.Name = st.Fullname;
-                    newPgMain.WalletId = st.StudentId;
+                    newPgMain.WalletId = st.Phone;
                     newPgMain.BulkDebitBalanace = 0;
                     newPgMain.CreditBalance = 0;
                     newPgMain.Status = true;
@@ -80,9 +108,9 @@ namespace EDSU_SYSTEM.Controllers
 
                     // Create a new instance of UgSubWallet for each student
                     var newSubWallet = new PgSubWallet();
-                    newSubWallet.WalletId = st.Email;
+                    newSubWallet.WalletId = st.Phone;
                     newSubWallet.Name = st.Fullname;
-                    newSubWallet.RegNo = st.StudentId;
+                    newSubWallet.RegNo = st.Phone;
                     newSubWallet.CreditBalance = 0;
                     newSubWallet.Status = true;
                     newSubWallet.DateCreated = DateTime.Now;

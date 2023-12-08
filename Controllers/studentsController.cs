@@ -45,7 +45,7 @@ namespace EDSU_SYSTEM.Controllers
 
                 }
                 var id = "c35a60d0-0ff8-46f3-afbc-9ba7eced4c5b";
-                var users = _userManager.Users.Where(x => x.Type == 2).ToList();
+                var users = _userManager.Users.Where(x => x.Type == 1).ToList();
                 var role = await _roleManager.FindByIdAsync(id);
                 foreach (var item in users)
                 {

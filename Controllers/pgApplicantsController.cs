@@ -40,7 +40,7 @@ namespace EDSU_SMS.Controllers
 
                     //ugmain.Id = int.Parse(p);
                     newPgMain.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
-                    newPgMain.WalletId = "EDSU-PG-23-"+st.id;
+                    newPgMain.WalletId = st.PhoneNumber;
                     newPgMain.BulkDebitBalanace = 0;
                     newPgMain.CreditBalance = 0;
                     newPgMain.Status = true;
@@ -51,9 +51,9 @@ namespace EDSU_SMS.Controllers
 
                     // Create a new instance of UgSubWallet for each student
                     var newSubWallet = new PgSubWallet();
-                    newSubWallet.WalletId = "EDSU-PG-23-" + st.id;
+                    newSubWallet.WalletId = st.PhoneNumber;
                     newSubWallet.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
-                    newSubWallet.RegNo = "EDSU-PG-23-" + st.id;
+                    newSubWallet.RegNo = st.PhoneNumber;
                     newSubWallet.CreditBalance = 0;
                     newSubWallet.Status = true;
                     newSubWallet.DateCreated = DateTime.Now;
@@ -1171,7 +1171,7 @@ namespace EDSU_SMS.Controllers
                         var newUgMain = new PgMainWallet();
                         
                         newUgMain.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
-                        newUgMain.WalletId = st.UserId;
+                        newUgMain.WalletId = st.PhoneNumber;
                        
                         newUgMain.BulkDebitBalanace = 0;
                         newUgMain.CreditBalance = 0;
@@ -1190,9 +1190,9 @@ namespace EDSU_SMS.Controllers
                         }
                         newSubWallet.Tuition = fee.Pgd;
                         newSubWallet.Level = st.LevelAdmittedTo;
-                        newSubWallet.WalletId = st.UserId;
+                        newSubWallet.WalletId = st.PhoneNumber;
                         newSubWallet.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
-                        newSubWallet.RegNo = st.Email;
+                        newSubWallet.RegNo = st.PhoneNumber;
                         newSubWallet.CreditBalance = 0;
                         newSubWallet.Status = true;
                         newSubWallet.DateCreated = DateTime.Now;
