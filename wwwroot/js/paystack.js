@@ -27,11 +27,11 @@ function payWithPaystack(e) {
                         // Make an AJAX call to your server with the reference to verify the transaction
                         $.ajax({
                             type: 'POST',
-                            url: '/wallets/UpdatePayment',
+                            url: '/pgstudents/UpdatePayment',
                             data: { data: data },
                             success: function () {
                               //  window.location = "https://localhost:2222/wallets/summary";
-                               window.location = "https://edouniversity.edu.ng/wallets/summary"
+                               window.location = "https://edouniversity.edu.ng/pgstudents/summary"
                                 alert('Transaction Successful');
                             },
                             error: function () {
