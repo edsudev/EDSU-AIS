@@ -36,7 +36,7 @@ namespace EDSU_SYSTEM.Controllers
         }
         public IActionResult Payments()
         {
-            var payments = (from s in _context.Payments select s).ToList();
+            var payments = (from s in _context.Payments select s).Include(x => x.Wallets).ToList();
             return View (payments);
         }
         // GET: wallets

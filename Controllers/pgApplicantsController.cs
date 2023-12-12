@@ -28,51 +28,57 @@ namespace EDSU_SMS.Controllers
             this.roleManager = roleManager;
             this.userManager = userManager;
         }
-        public async Task<IActionResult> PopulateWallet(PgSubWallet subWallet, PgMainWallet pgmain)
+        public async Task<IActionResult> PopulateWallet()
         {
             var students = (from s in _context.PgApplicants select s).ToList();
-
+            
             foreach (var st in students)
             {
                 try
                 {
-                    var newPgMain = new PgMainWallet();
+                    var name = st.Surname + " " + st.FirstName + " " + st.OtherName;
+                    var existingMainWallet = _context.PgMainWallets.FirstOrDefault(m => m.Name == name);
 
-                    //ugmain.Id = int.Parse(p);
-                    newPgMain.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
-                    newPgMain.WalletId = st.PhoneNumber;
-                    newPgMain.BulkDebitBalanace = 0;
-                    newPgMain.CreditBalance = 0;
-                    newPgMain.Status = true;
-                    newPgMain.DateCreated = DateTime.Now;
-                    _context.PgMainWallets.Add(newPgMain);
-                    await _context.SaveChangesAsync();
-                    Random r = new();
+                    if (existingMainWallet == null)
+                    {
+                        var newPgMain = new PgMainWallet();
 
-                    // Create a new instance of UgSubWallet for each student
-                    var newSubWallet = new PgSubWallet();
-                    newSubWallet.WalletId = st.PhoneNumber;
-                    newSubWallet.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
-                    newSubWallet.RegNo = st.PhoneNumber;
-                    newSubWallet.CreditBalance = 0;
-                    newSubWallet.Status = true;
-                    newSubWallet.DateCreated = DateTime.Now;
-                    newSubWallet.Tuition = 300000;
-                    newSubWallet.AcceptanceFee = 100000;
-                    newSubWallet.FortyPercent = newSubWallet.Tuition * 40 / 100;
-                    newSubWallet.SixtyPercent = newSubWallet.Tuition * 60 / 100;
-                    newSubWallet.LMS = 50000;
-                    newSubWallet.SessionId = 9;
-                    newSubWallet.Debit = newSubWallet.Tuition + newSubWallet.LMS + newSubWallet.AcceptanceFee;
-                    newSubWallet.Level = 8;
-                    newSubWallet.Department = st.AdmittedInto;
+                        newPgMain.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
+                        newPgMain.WalletId = st.PhoneNumber;
+                        newPgMain.BulkDebitBalanace = 0;
+                        newPgMain.CreditBalance = 0;
+                        newPgMain.Status = true;
+                        newPgMain.DateCreated = DateTime.Now;
 
-                    _context.PgSubWallets.Add(newSubWallet);
-                    await _context.SaveChangesAsync();
+                        _context.PgMainWallets.Add(newPgMain);
+                        await _context.SaveChangesAsync();
 
-                    var main = (from m in _context.PgMainWallets where m.WalletId == newSubWallet.WalletId select m).FirstOrDefault();
-                    main.BulkDebitBalanace = newSubWallet.Debit;
-                    await _context.SaveChangesAsync();
+                        Random r = new();
+
+                        var newSubWallet = new PgSubWallet();
+                        newSubWallet.WalletId = st.PhoneNumber;
+                        newSubWallet.Name = st.Surname + " " + st.FirstName + " " + st.OtherName;
+                        newSubWallet.RegNo = st.PhoneNumber;
+                        newSubWallet.CreditBalance = 0;
+                        newSubWallet.Status = true;
+                        newSubWallet.DateCreated = DateTime.Now;
+                        newSubWallet.Tuition = 300000;
+                        newSubWallet.AcceptanceFee = 100000;
+                        newSubWallet.FortyPercent = newSubWallet.Tuition * 40 / 100;
+                        newSubWallet.SixtyPercent = newSubWallet.Tuition * 60 / 100;
+                        newSubWallet.LMS = 50000;
+                        newSubWallet.SessionId = 9;
+                        newSubWallet.Debit = newSubWallet.Tuition + newSubWallet.LMS + newSubWallet.AcceptanceFee;
+                        newSubWallet.Level = 8;
+                        newSubWallet.Department = st.AdmittedInto;
+
+                        _context.PgSubWallets.Add(newSubWallet);
+                        await _context.SaveChangesAsync();
+
+                        var main = (from m in _context.PgMainWallets where m.WalletId == newSubWallet.WalletId select m).FirstOrDefault();
+                        main.BulkDebitBalanace = newSubWallet.Debit;
+                        await _context.SaveChangesAsync();
+                    }
                 }
                 catch (Exception)
                 {
