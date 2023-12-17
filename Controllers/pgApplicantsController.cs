@@ -1536,6 +1536,45 @@ namespace EDSU_SMS.Controllers
 
             return View(paymentToUpdate);
         }
+        public async Task<IActionResult> Custom(string id, double amount, PgOrder payment)
+        {
 
+            var wallet = _context.PgSubWallets
+                 .FirstOrDefault(m => m.WalletId == id);
+            if (amount <= (double)wallet.SixtyPercent)
+            {
+                Random r = new();
+                //Payment is created just before it returns the view
+                ViewBag.Name = wallet.Name;
+                payment.SessionId = wallet.SessionId;
+                payment.WalletId = wallet.Id;
+                payment.Amount = amount + 300;
+                payment.Status = "Pending";
+                payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+                payment.PaymentDate = DateTime.Now;
+                payment.Type = "Tuition Custom";
+                _context.PgOrders.Add(payment);
+                await _context.SaveChangesAsync();
+
+                //Get the payment to return
+                var paymentToGet = _context.PgOrders
+                    .Find(payment.Id);
+                if (paymentToGet == null)
+                {
+                    return NotFound();
+                }
+                //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+                TempData["PaymentId"] = payment.Wallets.WalletId;
+                TempData["walletId"] = id;
+                return View(paymentToGet);
+            }
+            else
+            {
+                TempData["err"] = "You cannot make custom payment above 60%.";
+                return RedirectToAction("badreq", "error");
+
+            }
+
+        }
     }
 }

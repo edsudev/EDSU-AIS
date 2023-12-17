@@ -80,6 +80,7 @@ namespace EDSU_SYSTEM.Controllers
         [Authorize(Roles = "levelAdviser")]
         public async Task<IActionResult> Approved()
         {
+            ViewBag.success = TempData["success"];
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             var id = loggedInUser.StaffId;
             var staff = (from c in _context.Staffs where c.Id == id select c.DepartmentId).FirstOrDefault();
@@ -159,6 +160,7 @@ namespace EDSU_SYSTEM.Controllers
         }
         public IActionResult Approvedreg(int id)
         {
+            ViewBag.StudentId = id;
             var students = (from c in _context.CourseRegistrations where c.StudentId == id && c.Status == MainStatus.Approved select c).Include(c => c.Courses).ThenInclude(i => i.Semesters).Include(c => c.Students).ToList();
             return View(students);
         }
