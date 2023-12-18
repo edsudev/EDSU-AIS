@@ -18,10 +18,7 @@ namespace EDSU_SYSTEM.Controllers
 
         const int perPage = 100; // Number of courses per page
         const int UserperPage = 100; // Number of users per page
-        int currentPage = 1; // Start with the first page
-        int UsercurrentPage = 1; // Start with the first page
-        bool hasMore = true;
-        bool hasMoreUser = true;
+        
         private readonly HttpClient client;
         public Canvas(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
@@ -117,99 +114,135 @@ namespace EDSU_SYSTEM.Controllers
         }
         public async Task<IActionResult> EnrollStudent(int id)
         {
-
-            var currentSession = _context.Sessions.FirstOrDefault(x => x.IsActive == true);
-            var studentEmail = (from s in _context.Students where s.Id == id select s.SchoolEmailAddress).FirstOrDefault();
-
-            var courses = (from s in _context.CourseRegistrations where s.StudentId == id && s.Courses.Semesters.IsActive == true select s).Include(x => x.Courses).ThenInclude(s => s.Semesters).Include(n => n.Students).Include(x => x.Courses).ThenInclude(x => x.Levels).Include(x => x.Courses).ThenInclude(x => x.Departments).ToList();
-            
-            using (var client = new HttpClient())
+            try
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("CANVAS_TOKEN"));
+                var currentSession = _context.Sessions.FirstOrDefault(x => x.IsActive == true);
+                var studentEmail = (from s in _context.Students where s.Id == id select s.SchoolEmailAddress).FirstOrDefault();
 
-                foreach (var courseCode in courses)
+                var courses = (from s in _context.CourseRegistrations where s.StudentId == id && s.Courses.Semesters.IsActive == true select s).Include(x => x.Courses).ThenInclude(s => s.Semesters).Include(n => n.Students).Include(x => x.Courses).ThenInclude(x => x.Levels).Include(x => x.Courses).ThenInclude(x => x.Departments).ToList();
+
+                using (var client = new HttpClient())
                 {
-                    var canvasCourses = await GetCourse(courseCode.Courses.Code);
-                    var courseId = canvasCourses.id;
-                    var user = await GetUser(studentEmail);
-                    var userId = user.id;
-                    string apiUrl = $"https://edouniversity.instructure.com/api/v1/courses/{courseId}/enrollments";
-                    var enrollmentData = new
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("CANVAS_TOKEN"));
+
+                    foreach (var courseCode in courses)
                     {
-                        enrollment = new
+                        try
                         {
-                            user_id = userId,
-                            type = "StudentEnrollment",
-                            enrollment_state = "active"
+                            var canvasCourses = await GetCourse(courseCode.Courses.Code);
+                            var courseId = canvasCourses.id;
+                            var user = await GetUser(studentEmail);
+                            var userId = user.id;
+                            string apiUrl = $"https://edouniversity.instructure.com/api/v1/courses/{courseId}/enrollments";
+                            var enrollmentData = new
+                            {
+                                enrollment = new
+                                {
+                                    user_id = userId,
+                                    type = "StudentEnrollment",
+                                    enrollment_state = "active"
+                                }
+                            };
+
+                            string jsonData = JsonConvert.SerializeObject(enrollmentData);
+                            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+                            Console.WriteLine(content);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                TempData["success"] = $"{user.name} has been enrolled to LMS";
+                            }
+                            else
+                            {
+                                TempData["err"] = $"Failed to enroll user. Status code: {response.StatusCode}";
+                                Console.WriteLine($"Failed to enroll user. Status code: {response.StatusCode}");
+                            }
                         }
-                    };
-
-                    string jsonData = JsonConvert.SerializeObject(enrollmentData);
-                    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-                    Console.WriteLine(content);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        TempData["success"] = $"{user.name} has been enrolled to LMS";
+                        catch (Exception ex)
+                        {
+                            TempData["err"] = $"An error occurred: {ex.Message}";
+                            Console.WriteLine($"An error occurred: {ex.Message}");
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine($"Failed to enroll user. Status code: {response.StatusCode}");
-                    }
+
+                    return RedirectToAction("approved", "courseregistrations");
                 }
+            }
+            catch (Exception ex)
+            {
+                TempData["err"] = $"An error occurred: {ex.Message}";
                 return RedirectToAction("approved", "courseregistrations");
             }
         }
         public async Task<IActionResult> EnrollCourses()
         {
-            var currentSession = _context.Sessions.FirstOrDefault(x => x.IsActive == true);
-
-            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
-            var staff = loggedInUser.StaffId;
-            var courses = (from s in _context.CourseAllocations where s.LecturerId == staff && s.Courses.Semesters.IsActive == true select s).Include(x => x.Courses).ThenInclude(s => s.Semesters).Include(n => n.Staff).Include(x => x.Courses).ThenInclude(x => x.Levels).Include(x => x.Courses).ThenInclude(x => x.Departments).ToList();
-            var staffEmail = (from s in _context.Staffs where s.Id == staff select s.SchoolEmail).FirstOrDefault();
-
-            using (var client = new HttpClient())
+            try
             {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("CANVAS_TOKEN"));
+                var currentSession = _context.Sessions.FirstOrDefault(x => x.IsActive == true);
 
-                foreach (var courseCode in courses)
+                var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+                var staff = loggedInUser.StaffId;
+                var courses = (from s in _context.CourseAllocations where s.LecturerId == staff && s.Courses.Semesters.IsActive == true select s).Include(x => x.Courses).ThenInclude(s => s.Semesters).Include(n => n.Staff).Include(x => x.Courses).ThenInclude(x => x.Levels).Include(x => x.Courses).ThenInclude(x => x.Departments).ToList();
+                var staffEmail = (from s in _context.Staffs where s.Id == staff select s.SchoolEmail).FirstOrDefault();
+
+                using (var client = new HttpClient())
                 {
-                    var canvasCourses = await GetCourse(courseCode.Courses.Code);
-                    var courseId = canvasCourses.id;
-                    var user = await GetUser(staffEmail);
-                    var userId = user.id;
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("CANVAS_TOKEN"));
 
-                   string apiUrl = $"https://edouniversity.instructure.com/api/v1/courses/{courseId}/enrollments";
-                    var enrollmentData = new
+                    foreach (var courseCode in courses)
                     {
-                        enrollment = new
+                        try
                         {
-                            user_id = userId,
-                            type = "TeacherEnrollment",
-                            enrollment_state = "active"
+                            var canvasCourses = await GetCourse(courseCode.Courses.Code);
+                            var courseId = canvasCourses.id;
+                            var user = await GetUser(staffEmail);
+                            var userId = user.id;
+
+                            string apiUrl = $"https://edouniversity.instructure.com/api/v1/courses/{courseId}/enrollments";
+                            var enrollmentData = new
+                            {
+                                enrollment = new
+                                {
+                                    user_id = userId,
+                                    type = "TeacherEnrollment",
+                                    enrollment_state = "active"
+                                }
+                            };
+
+                            string jsonData = JsonConvert.SerializeObject(enrollmentData);
+                            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                            HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+                            Console.WriteLine(content);
+
+                            if (response.IsSuccessStatusCode)
+                            {
+                                TempData["success"] = "Courses enrolled successfully. Kindly log on to Canvas LMS to publish courses. Have fun!🎉";
+                            }
+                            else
+                            {
+                                TempData["err"] = $"Failed to enroll user. Status code: {response.StatusCode}";
+                            }
                         }
-                    };
-
-                    string jsonData = JsonConvert.SerializeObject(enrollmentData);
-                    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-                    HttpResponseMessage response = await client.PostAsync(apiUrl, content);
-                    Console.WriteLine(content);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        TempData["success"] = "Courses enrolled successfully. Kindly log on to Canvas LMS to publish courses. Have fun!🎉";
+                        catch (Exception ex)
+                        {
+                            TempData["err"] = $"An error occurred: {ex.Message}";
+                            
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine($"Failed to enroll user. Status code: {response.StatusCode}");
-                    }
-                    
+
+                    return RedirectToAction("mycourses", "courses");
                 }
+            }
+            catch (Exception ex)
+            {
+                TempData["err"] = $"An error occurred: {ex.Message}";
                 return RedirectToAction("mycourses", "courses");
             }
         }
+
 
     }
     public class CanvasUser

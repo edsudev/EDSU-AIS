@@ -36,6 +36,7 @@ namespace EDSU_SYSTEM.Controllers
         public async Task<IActionResult> MyCourses()
         {
             ViewBag.success = TempData["success"];
+            ViewBag.err = TempData["err"];
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             var staff = loggedInUser.StaffId;
             var courses = (from s in _context.CourseAllocations where s.LecturerId == staff && s.Courses.Semesters.IsActive == true select s).Include(x => x.Courses).ThenInclude(s => s.Semesters).Include(n => n.Staff).Include(x=>x.Courses).ThenInclude(x => x.Levels).Include(x => x.Courses).ThenInclude(x => x.Departments).ToList();

@@ -81,6 +81,7 @@ namespace EDSU_SYSTEM.Controllers
         public async Task<IActionResult> Approved()
         {
             ViewBag.success = TempData["success"];
+            ViewBag.err = TempData["err"];
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             var id = loggedInUser.StaffId;
             var staff = (from c in _context.Staffs where c.Id == id select c.DepartmentId).FirstOrDefault();
