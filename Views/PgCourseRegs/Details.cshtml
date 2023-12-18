@@ -1,4 +1,4 @@
-﻿@model EDSU_SYSTEM.Models.PgCourseReg
+﻿@model EDSU_SYSTEM.Models.CourseRegistration
 
 @{
     ViewData["Title"] = "Details";
@@ -7,15 +7,9 @@
 <h1>Details</h1>
 
 <div>
-    <h4>PgCourseReg</h4>
+    <h4>CourseRegistration</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CourseRegId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CourseRegId)
-        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Courses)
         </dt>
@@ -33,12 +27,6 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Comment)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Sessions)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Sessions.Id)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Status)

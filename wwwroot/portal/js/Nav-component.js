@@ -128,7 +128,7 @@ class Navigatione extends HTMLElement {
                 </li>
                 <li class="nav-item">
                     <div class="dropdown nav-link ">
-                        <a class="dropdown-toggle" href="https://edsuth.edouniversity.edu.ng"role="button">
+                        <a class="dropdown-toggle" href="https://edsuth.org.ng"role="button">
                             EDSUTH
                         </a>
                     </div>
@@ -277,7 +277,7 @@ class Navigatione extends HTMLElement {
                 </li>
 <li class="nav-item">
                     <div class="dropdown nav-link">
-                        <a class="dropdown-toggle" href="https://edsuth.edouniversity.edu.ng" >
+                        <a class="dropdown-toggle" href="https://edsuth.org.ng/" >
                             EDSUTH
                         </a>
                     </div>
