@@ -178,8 +178,8 @@ namespace EDSU_SYSTEM.Controllers
         }
         public async Task<IActionResult> EnrollCourses()
         {
-            try
-            {
+            //try
+            //{
                 var currentSession = _context.Sessions.FirstOrDefault(x => x.IsActive == true);
 
                 var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
@@ -193,8 +193,8 @@ namespace EDSU_SYSTEM.Controllers
 
                     foreach (var courseCode in courses)
                     {
-                        try
-                        {
+                        //try
+                        //{
                             var canvasCourses = await GetCourse(courseCode.Courses.Code);
                             var courseId = canvasCourses.id;
                             var user = await GetUser(staffEmail);
@@ -225,22 +225,22 @@ namespace EDSU_SYSTEM.Controllers
                             {
                                 TempData["err"] = $"Failed to enroll user. Status code: {response.StatusCode}";
                             }
-                        }
-                        catch (Exception ex)
-                        {
-                            TempData["err"] = $"An error occurred: {ex.Message}";
+                       // }
+                        //catch (Exception ex)
+                        //{
+                        //    TempData["err"] = $"An error occurred: {ex.Message}";
                             
-                        }
+                        //}
                     }
 
                     return RedirectToAction("mycourses", "courses");
                 }
-            }
-            catch (Exception ex)
-            {
-                TempData["err"] = $"An error occurred: {ex.Message}";
-                return RedirectToAction("mycourses", "courses");
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    TempData["err"] = $"An error occurred: {ex.Message}";
+            //    return RedirectToAction("mycourses", "courses");
+            //}
         }
 
 
