@@ -761,7 +761,7 @@ namespace EDSU_SYSTEM.Controllers
             //var userId = loggedInUser.StaffId;
 
            // var applicants = await _context.UgApplicants.ToListAsync();
-            var applicants = (from s in _context.UgApplicants select s).ToList();
+            var applicants = (from s in _context.UgApplicants where s.ApplicantionId == "3-Jan" select s).ToList();
             foreach (var item in applicants)
             {
                 try
