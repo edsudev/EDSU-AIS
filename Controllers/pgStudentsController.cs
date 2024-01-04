@@ -891,7 +891,7 @@ namespace EDSU_SYSTEM.Controllers
                         var newBulkDebit = bulkwallet.BulkDebitBalanace - amount;
                         bulkwallet.BulkDebitBalanace = newBulkDebit;
 
-                        wallet.Tuition = 0;
+                        wallet.Tuition  -= amount;
                         wallet.SixtyPercent -= amount;
                         _context.SaveChanges();
                     }

@@ -1541,8 +1541,7 @@ namespace EDSU_SMS.Controllers
 
             var wallet = _context.PgSubWallets
                  .FirstOrDefault(m => m.WalletId == id);
-            if (amount <= (double)wallet.SixtyPercent)
-            {
+            
                 Random r = new();
                 //Payment is created just before it returns the view
                 ViewBag.Name = wallet.Name;
@@ -1567,14 +1566,6 @@ namespace EDSU_SMS.Controllers
                 TempData["PaymentId"] = payment.Wallets.WalletId;
                 TempData["walletId"] = id;
                 return View(paymentToGet);
-            }
-            else
-            {
-                TempData["err"] = "You cannot make custom payment above 60%.";
-                return RedirectToAction("badreq", "error");
-
-            }
-
         }
     }
 }
