@@ -935,22 +935,22 @@ namespace EDSU_SYSTEM.Controllers
                             _context.SaveChanges();
                         }
                         break;
-                    case "Tuition Custom":
-                        if (payments.Status == "Approved")
-                        {
-                            decimal amount = (decimal)(payments.Amount - 300);
-                            var wallet = _context.UgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
-                            var newDebit = wallet.Debit - amount;
-                            wallet.Debit = newDebit;
+                    //case "Outstanding":
+                    //    if (payments.Status == "Approved")
+                    //    {
+                    //        decimal amount = (decimal)(payments.Amount - 300);
+                    //        var wallet = _context.UgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
+                    //        var newDebit = wallet.Debit - amount;
+                    //        wallet.Debit = newDebit;
 
-                            var bulkwallet = _context.UgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
-                            var newBulkDebit = bulkwallet.BulkDebitBalanace - amount;
-                            bulkwallet.BulkDebitBalanace = newBulkDebit;
+                    //        var bulkwallet = _context.UgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
+                    //        var newBulkDebit = bulkwallet.BulkDebitBalanace - amount;
+                    //        bulkwallet.BulkDebitBalanace = newBulkDebit;
 
-                            wallet.Tuition = 0;
-                            wallet.SixtyPercent -= amount;
-                            _context.SaveChanges();
-                        }
+                    //        wallet.Tuition = 0;
+                    //        wallet.SixtyPercent -= amount;
+                    //        _context.SaveChanges();
+                    //    }
                     
                         break;
                     
@@ -1029,44 +1029,37 @@ namespace EDSU_SYSTEM.Controllers
         ///////////////////////////////////////
         /// [Authorize(Roles = "student, superAdmin")]
         //Initiating Custom payment
-        public async Task<IActionResult> Custom(string id, double amount, Payment payment)
+        public async Task<IActionResult> Outstanding(string id, double amount, Payment payment)
         {
            
             var wallet = _context.UgSubWallets
                  .FirstOrDefault(m => m.WalletId == id);
-            if(amount <= (double)wallet.SixtyPercent)
-            {
-                Random r = new();
-                //Payment is created just before it returns the view
-                ViewBag.Name = wallet.Name;
-                payment.SessionId = wallet.SessionId;
-                payment.WalletId = wallet.Id;
-                payment.Amount = amount + 300;
-                payment.Status = "Pending";
-                payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
-                payment.PaymentDate = DateTime.Now;
-                payment.Type = "Tuition Custom";
-                _context.Payments.Add(payment);
-                await _context.SaveChangesAsync();
+            
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = amount + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Outstanding";
+            _context.Payments.Add(payment);
+            await _context.SaveChangesAsync();
 
-                //Get the payment to return
-                var paymentToGet = _context.Payments
-                    .Find(payment.Id);
-                if (paymentToGet == null)
-                {
-                    return NotFound();
-                }
-                //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
-                TempData["PaymentId"] = payment.Wallets.WalletId;
-                TempData["walletId"] = id;
-                return View(paymentToGet);
-            }
-            else
+            //Get the payment to return
+            var paymentToGet = _context.Payments
+                .Find(payment.Id);
+            if (paymentToGet == null)
             {
-                TempData["err"] = "You cannot make custom payment above 60%.";
-                return RedirectToAction("badreq","error");
-                
+                return NotFound();
             }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+          
             
         }
     }

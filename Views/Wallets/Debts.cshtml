@@ -181,9 +181,9 @@
                                     }
                                         <tr>
                                             <td>
-                                                <label>Tuition Custom Payment</label>
+                                                <label>Outstanding</label>
                                             </td>
-                                            <form asp-action="Custom" method="post">
+                                            <form asp-action="Outstanding" method="post">
                                             <td>
                                                 <input name="amount" class="form-control" />
                                                 <input asp-for="@item.WalletId" name="id" hidden class="form-control" />
@@ -221,8 +221,6 @@
                                         
                                         </tr>
                                 }
-
-                                    
 
                             </tbody>
                         </table>

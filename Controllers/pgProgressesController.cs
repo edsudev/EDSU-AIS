@@ -95,6 +95,7 @@ namespace EDSU_SYSTEM.Controllers
                 await _context.SaveChangesAsync();
             ViewData["Supervisor"] = new SelectList(_context.PgStudentsSupervisors, "Id", "Name", pgProgress.SupervisorId);
             return RedirectToAction(nameof(Index));
+          
         }
 
 

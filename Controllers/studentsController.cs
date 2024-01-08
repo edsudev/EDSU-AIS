@@ -870,7 +870,7 @@ namespace EDSU_SYSTEM.Controllers
             ViewData["StateOfOriginId"] = new SelectList(_context.States, "Id", "Id", student.StateOfOriginId);
             return View(student);
         }
-        [Authorize(Roles = "superAdmin")]
+        [Authorize(Roles = "superAdmin, student")]
         // GET: students/Edit/5
         public IActionResult Edit(int? id)
         {

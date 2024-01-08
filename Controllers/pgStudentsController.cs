@@ -149,11 +149,12 @@ namespace EDSU_SYSTEM.Controllers
         {
             var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             var userId = loggedInUser.PgStudent;
-            var student = (from c in _context.PostGraduateStudents where c.Id == userId select c).Include(i => i.Departments).FirstOrDefault();
+            var student = (from c in _context.PostGraduateStudents where c.Id == userId select c).FirstOrDefault();
             var pgwallet = (from c in _context.PgMainWallets where c.WalletId == student.StudentId select c).FirstOrDefault();
             ViewBag.Name = student.Fullname;
-            ViewBag.Department = student.Departments.Name;
-            var approvedCourses = (from c in _context.PgCourseRegs
+            var dpt = (from c in _context.PgPrograms where c.Id == student.Department select c).Include(s => s.Departments).FirstOrDefault(); ;
+            ViewBag.Department = dpt.NameOfProgram + " " + dpt.Departments.Name;
+           var approvedCourses = (from c in _context.PgCourseRegs
                                    where c.StudentId == userId &&
                             c.Status == MainStatus.Approved &&
                             c.SessionId == student.CurrentSession
