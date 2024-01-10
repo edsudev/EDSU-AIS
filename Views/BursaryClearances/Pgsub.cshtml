@@ -1,0 +1,101 @@
+﻿@model EDSU_SYSTEM.Models.PgSubWallet
+@using static EDSU_SYSTEM.Models.Enum
+@{
+    ViewData["Title"] = "Wallet - ";
+}
+<div class="main-container" id="container">
+    <partial name="_StaffDashboardPartial" />
+    <!--  BEGIN CONTENT AREA  -->
+    <div id="content" class="main-content">
+        <div class="layout-px-spacing">
+            <div class="row layout-spacing">
+                <!-- Content -->
+                <div class="col-xl-10 col-lg-10 col-md-10 col-sm-12 mx-auto layout-top-spacing">
+                    <h3>Student Sub wallet</h3>
+                    <div class="widget-content widget-content-area br-6 p-3">
+                        <form asp-action="PgSubPost">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input type="hidden" name="id" asp-for="WalletId" />
+                            <div class="form-group">
+                                <label asp-for="Name" class="control-label"></label>
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="WalletId" class="control-label"></label>
+                                <input asp-for="WalletId" class="form-control" />
+                                <span asp-validation-for="WalletId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="CreditBalance" class="control-label"></label>
+                                <input asp-for="CreditBalance" class="form-control" />
+                                <span asp-validation-for="CreditBalance" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Debit" class="control-label"></label>
+                                <input asp-for="Debit" disabled class="form-control" />
+                                <span asp-validation-for="Debit" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Tuition" class="control-label"></label>
+                                <input asp-for="Tuition" class="form-control" />
+                                <span asp-validation-for="Tuition" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="FortyPercent" class="control-label"></label>
+                                <input asp-for="FortyPercent" disabled class="form-control" />
+                                <span asp-validation-for="FortyPercent" class="text-danger"></span>
+                            </div><div class="form-group">
+                                <label asp-for="SixtyPercent" class="control-label"></label>
+                                <input asp-for="SixtyPercent" disabled class="form-control" />
+                                <span asp-validation-for="SixtyPercent" class="text-danger"></span>
+                            </div><div class="form-group">
+                                <label asp-for="LMS" class="control-label"></label>
+                                <input asp-for="LMS" class="form-control" />
+                                <span asp-validation-for="LMS" class="text-danger"></span>
+                            </div><div class="form-group">
+                                <label asp-for="AcceptanceFee" class="control-label"></label>
+                                <input asp-for="AcceptanceFee" class="form-control" />
+                                <span asp-validation-for="AcceptanceFee" class="text-danger"></span>
+                            </div><div class="form-group">
+                                <label asp-for="SRC" class="control-label"></label>
+                                <input asp-for="SRC" class="form-control" />
+                                <span asp-validation-for="SRC" class="text-danger"></span>
+                            </div><div class="form-group">
+                                <label asp-for="EDHIS" class="control-label"></label>
+                                <input asp-for="EDHIS" class="form-control" />
+                                <span asp-validation-for="EDHIS" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="SessionId" class="control-label">Session</label>
+                                <select asp-for="SessionId" class="form-control" asp-items="ViewBag.SessionId"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Level" class="control-label"></label>
+                                <select asp-for="Level" class="form-control" asp-items="ViewBag.LevelId"></select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Department" class="control-label"></label>
+                                <select asp-for="Department" class="form-control" asp-items="ViewBag.DepartmentId"></select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="submit" value="Submit" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                    <div>
+                        <a asp-action="mainwallets">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  END CONTENT AREA  -->
+</div>
+<!-- END MAIN CONTAINER -->
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

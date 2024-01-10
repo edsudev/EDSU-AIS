@@ -31,7 +31,7 @@ function payWithPaystack(e) {
                             data: { data: data },
                             success: function () {
                               //  window.location = "https://localhost:2222/wallets/summary";
-                               window.location = "https://edouniversity.edu.ng/pgstudents/summary"
+                                window.location = "https://edouniversity.edu.ng/wallets/summary"
                                 alert('Transaction Successful');
                             },
                             error: function () {

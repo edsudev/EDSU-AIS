@@ -472,7 +472,81 @@ namespace EDSU_SYSTEM.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        /// <summary>
+        /// ///////////////////////
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// 
+        [Authorize(Roles = "bursaryAdmin, superAdmin")]
+        public async Task<IActionResult> Pgmainwallets()
+        {
+            try
+            {
+                var mainwallets = _context.PgMainWallets.ToList();
+                return View(mainwallets);
+            }
+            catch (Exception e)
+            {
+                ViewBag.err = e.Message;
+                throw;
+            }
 
+        }
+        [Authorize(Roles = "bursaryAdmin, superAdmin")]
+        public async Task<IActionResult> PgSub(string id)
+        {
+            var subwallets = _context.PgSubWallets.Where(x => x.WalletId == id).FirstOrDefault();
+            ViewData["SessionId"] = new SelectList(_context.Sessions, "Id", "Name");
+            ViewData["LevelId"] = new SelectList(_context.Levels, "Id", "Name");
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
+            return View(subwallets);
+        }
+        [Authorize(Roles = "bursaryAdmin, superAdmin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PgSubPost(string? id)
+        {
+            try
+            {
+                var record = await _context.PgSubWallets
+               .FirstOrDefaultAsync(c => c.WalletId == id);
+
+                if (await TryUpdateModelAsync<PgSubWallet>(record, "", c => c.Name, c => c.WalletId, c => c.CreditBalance,
+                    c => c.Tuition, c => c.FortyPercent, c => c.SixtyPercent, c => c.LMS,
+                    c => c.AcceptanceFee, c => c.SRC, c => c.EDHIS, c => c.SessionId, c => c.Level, c => c.Department))
+                {
+                    record.SixtyPercent = record.Tuition * 60 / 100;
+                    record.FortyPercent = record.Tuition * 40 / 100;
+
+                    record.Tuition -= record.CreditBalance;
+                    record.Debit = record.Tuition + record.AcceptanceFee + record.SRC + record.LMS + record.EDHIS;
+
+                    var mainw = _context.PgMainWallets.Where(x => x.WalletId == id).FirstOrDefault();
+                    mainw.BulkDebitBalanace = record.Debit;
+                    try
+                    {
+                        await _context.SaveChangesAsync();
+
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. " +
+                            "Try again, and if the problem persists, " +
+                            "see your system administrator.");
+                    }
+                    return RedirectToAction("pgmainwallets", "bursaryclearances");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+
+            }
+            return View();
+
+        }
         private bool BusaryClearanceExists(int? id)
         {
           return _context.BursaryClearances.Any(e => e.Id == id);

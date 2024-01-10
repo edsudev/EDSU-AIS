@@ -953,38 +953,57 @@ namespace EDSU_SYSTEM.Controllers
         [Authorize(Roles = "student, superAdmin")]
         public async Task<IActionResult> Upload(IFormFile passport, int id)
         {
-            var student = await _context.Students.FindAsync(id);
-            if (passport != null && passport.Length > 0)
+            try
             {
-                var uploadDir = @"files/applicantUploads/passports";
-                var fileName = Path.GetFileNameWithoutExtension(passport.FileName);
-                var extension = Path.GetExtension(passport.FileName);
-                var webRootPath = _hostingEnvironment.WebRootPath;
-                fileName = student.UTMENumber + extension;
-
-                //fileName = fileName + extension;
-                var path = Path.Combine(webRootPath, uploadDir, fileName);
-                using (FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write))
+                var student = await _context.Students.FindAsync(id);
+                if (student == null)
                 {
-                    passport.CopyTo(fs);
-                    student.Picture = fileName;
-
+                    return NotFound(); // Handle the case when the student is not found
                 }
-               
-                try
-                {
-                   // await TryUpdateModelAsync<Student>(student);
-                    _context.Update(student);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
 
-                    return RedirectToAction("badreq", "error");
+                if (passport != null && passport.Length > 0)
+                {
+                    var uploadDir = @"files/applicantUploads/passports";
+                    var fileName = $"{student.UTMENumber}{Path.GetExtension(passport.FileName)}";
+                    var webRootPath = _hostingEnvironment.WebRootPath;
+                    var path = Path.Combine(webRootPath, uploadDir, fileName);
+
+                    using (FileStream fs = new FileStream(path, FileMode.Append, FileAccess.Write))
+                    {
+                        await passport.CopyToAsync(fs);
+                        student.Picture = fileName;
+                    }
+
+                    using (var transaction = _context.Database.BeginTransaction())
+                    {
+                        try
+                        {
+                            _context.Update(student);
+                            await _context.SaveChangesAsync();
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            // Log the exception
+                            TempData["err"] = 
+                            $"Error updating database: {ex.Message}";
+                            return RedirectToAction("badreq", "error");
+                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                // Log the exception
+                TempData["err"] =
+                            $"Error updating database: {ex.Message}";
+                return RedirectToAction("badreq", "error");
+            }
+
             return RedirectToAction(nameof(Profile));
         }
+
         [Authorize(Roles = "superAdmin")]
         // GET: students/Delete/5
         public async Task<IActionResult> Delete(int? id)

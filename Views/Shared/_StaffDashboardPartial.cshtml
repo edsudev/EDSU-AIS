@@ -424,16 +424,21 @@
                         <li>
                             <a href="#app3" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"> PG <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right"><polyline points="9 18 15 12 9 6"></polyline></svg> </a>
                             <ul class="collapse list-unstyled sub-submenu" id="app3" data-parent="#appp">
-                               <li>
+                                <li>
                                     <a asp-controller="bursaryclearances" asp-action="freshers"> Freshers Clearance </a>
                                 </li>
                                 <li>
-                                    <a asp-controller="bursaryclearances" asp-action="students"> Students Clearance </a>
+                                    <a asp-controller="bursaryclearances" asp-action="index"> Students Clearance </a>
                                 </li>
                                 <li>
-                                    <a asp-controller="bursaryclearances" asp-action="mainwallets"> Main Wallets </a>
+                                    <a asp-controller="bursaryclearances" asp-action="offlineclearance"> Offline Payments </a>
                                 </li>
-                                
+                                <li>
+                                    <a asp-controller="bursaryclearances" asp-action="pgmainwallets"> Main Wallets </a>
+                                </li>
+                                <li>
+                                    <a asp-controller="wallets" asp-action="pgpayments"> All Payments </a>
+                                </li>
                             </ul>
                         </li>
                         <li>
