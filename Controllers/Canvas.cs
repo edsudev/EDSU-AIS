@@ -178,8 +178,8 @@ namespace EDSU_SYSTEM.Controllers
         }
         public async Task<IActionResult> EnrollCourses()
         {
-            //try
-            //{
+            try
+            {
                 var currentSession = _context.Sessions.FirstOrDefault(x => x.IsActive == true);
 
                 var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
@@ -235,12 +235,12 @@ namespace EDSU_SYSTEM.Controllers
 
                     return RedirectToAction("mycourses", "courses");
                 }
-            //}
-            //catch (Exception ex)
-            //{
-            //    TempData["err"] = $"An error occurred: {ex.Message}";
-            //    return RedirectToAction("mycourses", "courses");
-            //}
+            }
+            catch (Exception ex)
+            {
+                TempData["err"] = $"An error occurred: {ex.Message}";
+                return RedirectToAction("badreq", "error");
+            }
         }
 
 

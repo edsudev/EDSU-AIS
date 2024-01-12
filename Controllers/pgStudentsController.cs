@@ -750,6 +750,37 @@ namespace EDSU_SYSTEM.Controllers
             return View();
 
         }
+        public async Task<IActionResult> Outstanding(string id, double amount, PgOrder payment)
+        {
+
+            var wallet = _context.PgSubWallets
+                 .FirstOrDefault(m => m.WalletId == id);
+
+            Random r = new();
+            //Payment is created just before it returns the view
+            ViewBag.Name = wallet.Name;
+            payment.SessionId = wallet.SessionId;
+            payment.WalletId = wallet.Id;
+            payment.Amount = amount + 300;
+            payment.Status = "Pending";
+            payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
+            payment.PaymentDate = DateTime.Now;
+            payment.Type = "Outstanding";
+            _context.PgOrders.Add(payment);
+            await _context.SaveChangesAsync();
+
+            //Get the payment to return
+            var paymentToGet = _context.PgOrders
+                .Find(payment.Id);
+            if (paymentToGet == null)
+            {
+                return NotFound();
+            }
+            //When the payment row is created, it stores the id in a tempdata then pass it to the verify endpoint
+            TempData["PaymentId"] = payment.Wallets.WalletId;
+            TempData["walletId"] = id;
+            return View(paymentToGet);
+        }
         public async Task<IActionResult> Checkout(string? orderid)
         {
             var paymentToGet = await _context.PgOrders
@@ -880,24 +911,8 @@ namespace EDSU_SYSTEM.Controllers
                         _context.SaveChanges();
                     }
                     break;
-                case "Tuition Custom":
-                    if (payments.Status == "Approved")
-                    {
-                        decimal amount = (decimal)(payments.Amount - 300);
-                        var wallet = _context.PgSubWallets.FirstOrDefault(i => i.WalletId == walletId);
-                        var newDebit = wallet.Debit - amount;
-                        wallet.Debit = newDebit;
+                
 
-                        var bulkwallet = _context.PgMainWallets.FirstOrDefault(i => i.WalletId == walletId);
-                        var newBulkDebit = bulkwallet.BulkDebitBalanace - amount;
-                        bulkwallet.BulkDebitBalanace = newBulkDebit;
-
-                        wallet.Tuition  -= amount;
-                        wallet.SixtyPercent -= amount;
-                        _context.SaveChanges();
-                    }
-
-                    break;
 
             }
            

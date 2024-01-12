@@ -56,7 +56,7 @@
                 </div>
 
             }else{
-                <div class="container">
+                @*<div class="container">
                     <h2>Hostel Information</h2>
                     <p>Scroll down to pick hostel</p>
                     <table class="table">
@@ -153,25 +153,128 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>*@
+
+
+                <div class="container mt-5">
+                    <div class="row">
+
+                        <!-- Hostel Upgrade Card -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Hostel Upgrade</h5>
+                                    <p class="card-text">Explore the option to upgrade your hostel accommodation.</p>
+                                    <a href="#" class="btn btn-primary" onclick="showForm('upgrade')">Learn More</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hostel Application Card -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Hostel Application</h5>
+                                    <p class="card-text">Submit your hostel application for the upcoming term.</p>
+                                    <a href="#" class="btn btn-primary" onclick="showForm('application')">Apply Now</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hostel Swap Card -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Hostel Swap</h5>
+                                    <p class="card-text">Consider swapping your current hostel with another available option.</p>
+                                    <a href="#" class="btn btn-primary" onclick="showForm('swap')">Explore Swapping</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Form Sections -->
+                    <div class="row mt-4">
+                        <div class="col-md-5" id="upgradeForm" style="display: none;">
+                            <!-- Hostel Upgrade Form -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Hostel Upgrade Form</h5>
+                                    <form method="post" asp-action="upgrade" asp-route-selected-option-id="selectedOptionId">
+                                        <label for="">What category do you intend to upgrade to?:</label>
+                                        <select class="form-control basic" name="hostel">
+                                            <option value="40000" id=12>Regular UB to Regular DB (FEMALE)</option>
+                                            <option value="50000" id="13">Regular DB to PREMIUM SB (FEMALE)</option>
+                                            <option value="50000" id="14">PREMIUM SB to PREMIUM VILLA SB (FEMALE)</option>
+                                            <option value="40000" id="8">Regular UB to Regular DB (MALE)</option>
+                                            <option value="50000" id="6">Regular DB to PREMIUM SB (MALE)</option>
+                                            <option value="50000" id="10">PREMIUM SB to PREMIUM VILLA SB (MALE)</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12" id="applicationForm" style="display: none;">
+                            <!-- Hostel Application Form -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Hostel Application Form</h5>
+                                    <form>
+                                        <label for="applicationDetails">Application Details:</label>
+                                        <textarea id="applicationDetails" name="applicationDetails" class="form-control" required></textarea>
+                                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12" id="swapForm" style="display: none;">
+                            <!-- Hostel Swap Form -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Hostel Swap Form</h5>
+                                    <form>
+                                        <label for="swapPreference">Swap Preference:</label>
+                                        <input type="text" id="swapPreference" name="swapPreference" class="form-control" required>
+                                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-10 mx-auto layout-top-spacing">
+                <script>
+                    function showForm(option) {
+                        // Hide all forms
+                        document.getElementById('upgradeForm').style.display = 'none';
+                        document.getElementById('applicationForm').style.display = 'none';
+                        document.getElementById('swapForm').style.display = 'none';
+
+                        // Show the selected form
+                        document.getElementById(option + 'Form').style.display = 'block';
+                    }
+                </script>
+                @*<div class="col-xl-4 col-lg-4 col-md-4 col-sm-10 mx-auto layout-top-spacing">
                    
-                <h2>What category of hostel are you interested in? 🤨</h2>
-                <div class="widget-content widget-content-area br-6 p-3">
-                    <form asp-action="Choice" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <input hidden name="utme" value="@ViewBag.utme"/>
-                        <div class="form-group">
-                            <label asp-for="Id" class="control-label">Hostel Type</label>
-                            <select asp-for="Id" name="hostel" class="form-control basic" asp-items="ViewBag.HostelId"></select>
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Submit" class="btn btn-primary" />
-                        </div>
-                    </form>
-                </div>
-            </div>
+                    <h2>What category of hostel are you interested in? 🤨</h2>
+                    <div class="widget-content widget-content-area br-6 p-3">
+                        <form asp-action="Choice" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <input hidden name="utme" value="@ViewBag.utme"/>
+                            <div class="form-group">
+                                <label asp-for="Id" class="control-label">Hostel Type</label>
+                                <select asp-for="Id" name="hostel" class="form-control basic" asp-items="ViewBag.HostelId"></select>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Submit" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>*@
             }
             <!-- Content -->
             
