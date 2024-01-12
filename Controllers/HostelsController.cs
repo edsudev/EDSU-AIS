@@ -614,7 +614,7 @@ namespace EDSU_SYSTEM.Controllers
             //    ViewBag.ErrorMessage = "It Appears you have already been allocated a room. For further complaints, contact the ICT";
             //    return View();
             //}
-            ViewData["HostelId"] = new SelectList(_context.Hostels.Where(x =>x.Id != 5), "Id", "Name");
+            ViewData["HostelId"] = new SelectList(_context.Hostels.Where(x =>x.NoOfRooms == 1), "Id", "Name");
             var student = (from s in _context.UgSubWallets where s.WalletId == utme select s).FirstOrDefault();
             if (student != null)
             {
@@ -829,8 +829,6 @@ namespace EDSU_SYSTEM.Controllers
                     if (availableHostel.BedspacesCount > 0)
                     {
                         var availableRooms = _context.HostelRoomDetails.Where(rm=> rm.HostelId == payment.HostelType && rm.BedSpacesCount > 0).ToList();
-
-
 
                         var random = new Random();
                         var shuffledRooms = availableRooms.OrderBy(x => random.Next()).ToList();

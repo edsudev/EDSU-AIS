@@ -200,8 +200,8 @@
                             <!-- Hostel Upgrade Form -->
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Hostel Upgrade Form</h5>
-                                    <form method="post" asp-action="upgrade" asp-route-selected-option-id="selectedOptionId">
+                                    <h5 class="card-title">Coming Soon</h5>
+                                    @*<form method="post" asp-action="upgrade" asp-route-selected-option-id="selectedOptionId">
                                         <label for="">What category do you intend to upgrade to?:</label>
                                         <select class="form-control basic" name="hostel">
                                             <option value="40000" id=12>Regular UB to Regular DB (FEMALE)</option>
@@ -212,7 +212,7 @@
                                             <option value="50000" id="10">PREMIUM SB to PREMIUM VILLA SB (MALE)</option>
                                         </select>
                                         <button type="submit" class="btn btn-primary mt-3">Submit</button>
-                                    </form>
+                                    </form>*@
                                 </div>
                             </div>
                         </div>
@@ -221,12 +221,20 @@
                             <!-- Hostel Application Form -->
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Hostel Application Form</h5>
-                                    <form>
-                                        <label for="applicationDetails">Application Details:</label>
-                                        <textarea id="applicationDetails" name="applicationDetails" class="form-control" required></textarea>
-                                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
-                                    </form>
+                                    <h2>What category of hostel are you interested in? 🤨</h2>
+                                    <div class="widget-content widget-content-area br-6 p-3">
+                                        <form asp-action="Choice" method="post">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <input hidden name="utme" value="@ViewBag.utme" />
+                                            <div class="form-group">
+                                                <label asp-for="Id" class="control-label">Hostel Type</label>
+                                                <select asp-for="Id" name="hostel" class="form-control basic" asp-items="ViewBag.HostelId"></select>
+                                            </div>
+                                            <div class="form-group">
+                                                <input type="submit" value="Submit" class="btn btn-primary" />
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -235,12 +243,12 @@
                             <!-- Hostel Swap Form -->
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Hostel Swap Form</h5>
-                                    <form>
+                                    <h5 class="card-title">Coming Soon</h5>
+                                    @*<form>
                                         <label for="swapPreference">Swap Preference:</label>
                                         <input type="text" id="swapPreference" name="swapPreference" class="form-control" required>
                                         <button type="submit" class="btn btn-primary mt-3">Submit</button>
-                                    </form>
+                                    </form>*@
                                 </div>
                             </div>
                         </div>
