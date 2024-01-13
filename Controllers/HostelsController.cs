@@ -157,7 +157,7 @@ namespace EDSU_SYSTEM.Controllers
             }
             var wallet = (from sf in _context.UgMainWallets where sf.WalletId == utme select sf.Id).FirstOrDefault();
             
-            ViewData["HostelId"] = new SelectList(_context.Hostels.Where(x => x.Id != 5), "Id", "Name");
+            ViewData["HostelId"] = new SelectList(_context.Hostels.Where(x => x.NoOfRooms == 1), "Id", "Name");
             var student = (from s in _context.UgSubWallets where s.WalletId == utme select s).FirstOrDefault();
             if (student != null)
             {
