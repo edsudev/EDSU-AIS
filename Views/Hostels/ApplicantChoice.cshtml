@@ -57,134 +57,7 @@
 
             }else{
                 <div class="container">
-                    @* <h2>Hostel Information</h2>
-                    <p>Scroll down to pick hostel</p>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Hall Name</th>
-                                <th>Category</th>
-                                <th>Gender</th>
-                                <th>Bed Spaces</th>
-                                <th>Type Code</th>
-                                <th>Price Range (N)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1 Hajia Aishetu Oshiomhole Hall</td>
-                                <td>Premium</td>
-                                <td>Female Only</td>
-                                <td>Single Bed</td>
-                                <td>H1-SBP-FM</td>
-                                <td>200,000</td>
-                            </tr>
-                            <tr>
-                                <td>2 Dr. Aderemi Makanjuola Hall</td>
-                                <td>Premium</td>
-                                <td>Male Only</td>
-                                <td>Single Bed</td>
-                                <td>H2-SBP-ML</td>
-                                <td>200,000</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Regular</td>
-                                <td>Male Only</td>
-                                <td>Double Bunks Up</td>
-                                <td>H2-UBR-ML</td>
-                                <td>110,000</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Regular</td>
-                                <td>Male Only</td>
-                                <td>Double Bunks Down</td>
-                                <td>H2-DBR-ML</td>
-                                <td>150,000</td>
-                            </tr>
-                            <tr>
-                                <td>3 Professor T.O.K Audu Hall</td>
-                                <td>Premium</td>
-                                <td>Male Only</td>
-                                <td>Single Beds</td>
-                                <td>H3-SBP-ML</td>
-                                <td>200,000</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Premium Villa</td>
-                                <td>Male Only</td>
-                                <td>Single Beds</td>
-                                <td>H3-SBV-ML</td>
-                                <td>250,000</td>
-                            </tr>
-                            <tr>
-                                @*<td>Senator Franca Afegbua Hall</td>
-                                <td>Regular</td>
-                                <td>Female Only</td>
-                                <td>Double Bunks Up</td>
-                                <td>H5-UBR-FM</td>
-                                <td>110,000</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Regular</td>
-                                <td>Female Only</td>
-                                <td>Double Bunks Down</td>
-                                <td>H5-DBR-FM</td>
-                                <td>150,000</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Premium</td>
-                                <td>Female Only</td>
-                                <td>Single Beds</td>
-                                <td>H5-SBP-FM</td>
-                                <td>200,000</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Premium Villa</td>
-                                <td>Female Only</td>
-                                <td>Single Beds</td>
-                                <td>H5-SBV-FM</td>
-                                <td>250,000</td>
-                            </tr>
-                            <tr>
-                                @*<td>Senator Franca Afegbua Hall</td>
-                                <td>Regular</td>
-                                <td>Male Only</td>
-                                <td>Double Bunks Up</td>
-                                <td>H6-UBR-ML</td>
-                                <td>110,000</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Regular</td>
-                                <td>Male Only</td>
-                                <td>Double Bunks Down</td>
-                                <td>H6-DBR-ML</td>
-                                <td>150,000</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Premium</td>
-                                <td>Male Only</td>
-                                <td>Single Beds</td>
-                                <td>H6-SBP-ML</td>
-                                <td>200,000</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>Premium Villa</td>
-                                <td>Male Only</td>
-                                <td>Single Beds</td>
-                                <td>H6-SBV-ML</td>
-                                <td>250,000</td>
-                            </tr>
-                        </tbody>
-                    </table>*@
+                    
                 </div>
 
                  <div class="container mt-5">
@@ -231,19 +104,22 @@
                             <!-- Hostel Upgrade Form -->
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Coming Soon</h5>
-                                    @*<form method="post" asp-action="upgrade" asp-route-selected-option-id="selectedOptionId">
-                                        <label for="">What category do you intend to upgrade to?:</label>
-                                        <select class="form-control basic" name="hostel">
-                                            <option value="40000" id=12>Regular UB to Regular DB (FEMALE)</option>
-                                            <option value="50000" id="13">Regular DB to PREMIUM SB (FEMALE)</option>
-                                            <option value="50000" id="14">PREMIUM SB to PREMIUM VILLA SB (FEMALE)</option>
-                                            <option value="40000" id="8">Regular UB to Regular DB (MALE)</option>
-                                            <option value="50000" id="6">Regular DB to PREMIUM SB (MALE)</option>
-                                            <option value="50000" id="10">PREMIUM SB to PREMIUM VILLA SB (MALE)</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
-                                    </form>*@
+                                    <h5 class="card-title">Pick upgrade category accordingly</h5>
+                                    <form asp-action="upgrade" method="post">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <input hidden name="utme" value="@ViewBag.utme" />
+                                        <div class="form-group">
+                                            <label asp-for="Id" class="control-label">From:</label>
+                                            <select asp-for="Id" name="f" class="form-control basic" asp-items="ViewBag.HostelId"></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Id" class="control-label">To:</label>
+                                            <select asp-for="Id" name="to" class="form-control basic" asp-items="ViewBag.HostelId"></select>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="submit" value="Submit" class="btn btn-primary" />
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>

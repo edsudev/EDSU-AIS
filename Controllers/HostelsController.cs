@@ -673,33 +673,32 @@ namespace EDSU_SYSTEM.Controllers
             }
 
         }
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upgrade(int hostel,int selectedOptionId, string utme)
+        public async Task<IActionResult> Upgrade(int f,int to, string utme)
         {
             try
             {
                 // utme = (string)TempData["utme"];
-                var student = (from st in _context.Students where st.UTMENumber == utme select st).FirstOrDefault();
-                Console.Write("hostelid", hostel);
+             //   var student = (from st in _context.Students where st.UTMENumber == utme select st).FirstOrDefault();
+                
                 //Checks if this hostel exists
-                var hostelIsAvailable = (from s in _context.Hostels where s.Id == selectedOptionId select s).FirstOrDefault();
-                if (hostelIsAvailable == null)
-                {
-                    TempData["err"] = "Hostel does not exist. Kindly make another choice.";
-                    return Redirect(Request.Headers["Referer"].ToString());
-                }
+                var hostelIsAvailable = (from s in _context.Hostels where s.Id == to select s).FirstOrDefault();
+                var hostelFrom = (from s in _context.Hostels where s.Id == f select s).FirstOrDefault();
+
+                var amount = hostelIsAvailable.Amount - hostelFrom.Amount;
                 //checks if there's a room in this hostel
                 if (hostelIsAvailable.BedspacesCount <= 0)
                 {
-                    TempData["err"] = "Upgrade option for this category has be exhausted. Kindly make another choice.";
+                    TempData["err"] = "Upgrade option for this category has been exhausted. Kindly make another choice.";
                     return Redirect(Request.Headers["Referer"].ToString());
                 }
                 else if (hostelIsAvailable.BedspacesCount > 0)
                 {
                     TempData["hostelType"] = hostelIsAvailable.Id;
-                    TempData["hostelName"] = hostelIsAvailable.Name;
-                    TempData["hostelAmount"] = hostelIsAvailable.Amount;
+                    TempData["hostelName"] = "From" + hostelFrom.Name + " to" + hostelIsAvailable.Name;
+                    TempData["hostelAmount"] = amount;
                 }
                 //var utme = hostelIsAvailable.Id;
                 return RedirectToAction("hostelorder", "hostels", new { utme });
@@ -740,6 +739,7 @@ namespace EDSU_SYSTEM.Controllers
                 payment.Status = "Pending";
                 payment.Ref = "EDSU-" + r.Next(10000000) + DateTime.Now.Millisecond;
                 payment.PaymentDate = DateTime.Now;
+                payment.ReceiptNo = (string)TempData["hostelName"];
                 _context.HostelPayments.Add(payment);
                 await _context.SaveChangesAsync();
 

@@ -360,7 +360,7 @@ namespace EDSU_SYSTEM.Controllers
        //[Authorize(Roles = "superAdmin")]
         public async Task<IActionResult> CreateMainWalletUGA1(UgSubWallet subWallet, UgMainWallet ugmain)
         {
-            var students = (from s in _context.UgApplicants select s).ToList();
+            var students = (from s in _context.UgApplicants where s.ApplicantionId == "2" select s).ToList();
 
             foreach (var st in students)
             {
