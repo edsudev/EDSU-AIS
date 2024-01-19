@@ -292,48 +292,81 @@ namespace EDSU_SYSTEM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Staff staff)
         {
-            var staffs = await _context.Staffs.FindAsync(id);
+            // Check if the provided ID matches the student ID
+            if (id != staff.Id)
+            {
+                return NotFound();
+            }
             try
             {
-                if (await TryUpdateModelAsync<Staff>(staffs, "", 
-                    c => c.Surname, c => c.FirstName, c => c.MiddleName, c => c.DOB, c => c.Sex,
-                    c => c.Religion, c => c.MaritalStatus, c => c.Bio,c => c.Phone, c => c.Email, 
-                    c => c.SchoolEmail,c => c.ContactAddress, c => c.NationalityId, c => c.StateId, 
-                    c => c.LGAId,c => c.Type, c => c.FacultyId, c => c.DepartmentId, 
-                    c => c.HighestQualification, c => c.FieldOfStudy, c => c.AreaOfSpecialization,
-                    c => c.WorkedInHigherInstuition, c => c.CurrentPlaceOfWork, 
-                    c => c.PositionAtCurrentPlaceOfWork, c => c.YearsOfExperience, c => c.ORCID,
-                    c => c.ResearcherId, c => c.GoogleScholar, c => c.ResearchGate, c => c.Academia, c => c.LinkedIn,
-                    c => c.Mendeley, c => c.Scopus))
-                   
-                    {
-                    try
-                    {
-                        await _context.SaveChangesAsync();
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!StaffExists(staff.Id))
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
-                    return RedirectToAction("profile", "staffs");
-                }
+                // Retrieve the student from the database
+                var staffToUpdate = await _context.Staffs
+                    .FirstOrDefaultAsync(c => c.Id == id);
+
+                staffToUpdate.Surname = staff.Surname;
+                staffToUpdate.FirstName = staff.FirstName;
+                staffToUpdate.MiddleName = staff.MiddleName;
+                staffToUpdate.DOB = staff.DOB;
+                staffToUpdate.Sex = staff.Sex;
+                staffToUpdate.Religion = staff.Religion;
+                staffToUpdate.MaritalStatus = staff.MaritalStatus;
+                staffToUpdate.Bio = staff.Bio;
+                staffToUpdate.Phone = staff.Phone;
+                staffToUpdate.Email = staff.Email;
+                staffToUpdate.SchoolEmail = staff.SchoolEmail;
+                staffToUpdate.ContactAddress = staff.ContactAddress;
+                staffToUpdate.NationalityId = staff.NationalityId;
+                staffToUpdate.StateId = staff.StateId;
+                staffToUpdate.LGAId = staff.LGAId;
+                staffToUpdate.Type = staff.Type;
+                staffToUpdate.FacultyId = staff.FacultyId;
+                staffToUpdate.DepartmentId = staff.DepartmentId;
+                staffToUpdate.HighestQualification = staff.HighestQualification;
+                staffToUpdate.FieldOfStudy = staff.FieldOfStudy;
+                staffToUpdate.AreaOfSpecialization = staff.AreaOfSpecialization;
+                staffToUpdate.WorkedInHigherInstuition = staff.WorkedInHigherInstuition;
+                staffToUpdate.CurrentPlaceOfWork = staff.CurrentPlaceOfWork;
+                staffToUpdate.PositionAtCurrentPlaceOfWork = staff.PositionAtCurrentPlaceOfWork;
+                staffToUpdate.YearsOfExperience = staff.YearsOfExperience;
+                staffToUpdate.ORCID = staff.ORCID;
+                staffToUpdate.ResearcherId = staff.ResearcherId;
+                staffToUpdate.GoogleScholar = staff.GoogleScholar;
+                staffToUpdate.ResearchGate = staff.ResearchGate;
+                staffToUpdate.Academia = staff.Academia;
+                staffToUpdate.LinkedIn = staff.LinkedIn;
+                staffToUpdate.Mendeley = staff.Mendeley;
+                staffToUpdate.Scopus = staff.Scopus;
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Profile));
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // Log concurrency exception and add error to ModelState
+                // _logger.LogError("Concurrency error while updating student with ID {StudentId}", id);
+                ModelState.AddModelError("", "Unable to save changes due to a concurrency conflict. Please refresh and try again.");
             }
             catch (Exception ex)
             {
-               
-                ex.ToString();
-                return RedirectToAction("badreq", "error");
+                // Log other exceptions
+                // _logger.LogError(ex, "An error occurred while updating the student with ID {StudentId}", id);
+                ModelState.AddModelError("", "An unexpected error occurred. Please try again or contact your system administrator.");
             }
-            return RedirectToAction("profile", "staffs");
 
+            // Populate ViewData for dropdowns
+            //ViewData["Department"] = new SelectList(_context.Departments, "Id", "Id", student.Department);
+            //ViewData["Faculty"] = new SelectList(_context.Faculties, "Id", "Id", student.Faculty);
+            //ViewData["LGAId"] = new SelectList(_context.Lgas, "Id", "Id", student.LGAId);
+            //ViewData["Level"] = new SelectList(_context.Levels, "Id", "Id", student.Level);
+            //ViewData["NationalityId"] = new SelectList(_context.Countries, "Id", "Id", student.NationalityId);
+            //ViewData["CurrentSession"] = new SelectList(_context.Sessions, "Id", "Id", student.CurrentSession);
+            //ViewData["StateOfOriginId"] = new SelectList(_context.States, "Id", "Id", student.StateOfOriginId);
+
+            // Return to the "profile" action
+            return RedirectToAction("profile");
         }
+
         [Authorize(Roles = "staff, superAdmin")]
         public async Task<IActionResult> Upload(IFormFile passport, int id)
         {

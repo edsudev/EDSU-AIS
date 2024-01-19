@@ -901,9 +901,6 @@ namespace EDSU_SYSTEM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Student student)
         {
-            // Log the ID for debugging purposes
-            Console.Write("This is the id " + id);
-
             // Check if the provided ID matches the student ID
             if (id != student.Id)
             {
@@ -925,7 +922,7 @@ namespace EDSU_SYSTEM.Controllers
                     c => c.SchoolEmailAddress, c => c.UTMENumber, c => c.MatNumber, c => c.Faculty, c => c.Level,
                     c => c.ModeOfAdmission, c => c.YearOfAdmission, c => c.Department, c => c.CurrentSession, c => c.IsStillAStudent,
                     c => c.ProgrameId, c => c.StudentStatus))
-                {
+                    {
                     // Set additional properties and save changes
                     studentToUpdate.Cleared = true;
 
