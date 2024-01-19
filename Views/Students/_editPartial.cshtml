@@ -19,21 +19,22 @@
                     <button type="submit" class="btn btn-primary">Upload</button>
                 </form>
                 <form asp-action="Edit">
+                    <input asp-for="Id" hidden />
                     <h4>PERSONAL INFORMATION:</h4>
                     <div class="form-row">
                         <div class="col-md-6">
                             <label asp-for="Fullname" class="control-label"></label>
-                            <input asp-for="Fullname" class="form-control" />
+                            <input asp-for="Fullname" class="form-control" disabled />
                             <span asp-validation-for="Fullname" class="text-danger"></span>
                         </div>
                         <div class="col-md-3">
                             <label asp-for="DOB" class="control-label"></label>
-                            <input asp-for="DOB" class="form-control" />
+                            <input asp-for="DOB" class="form-control" disabled/>
                             <span asp-validation-for="DOB" class="text-danger"></span>
                         </div>
                         <div class="col-md-3">
                             <label asp-for="Sex" class="control-label"></label>
-                            <input asp-for="Sex" class="form-control" />
+                            <input asp-for="Sex" class="form-control" disabled />
                             <span asp-validation-for="Sex" class="text-danger"></span>
                         </div>
                         <div class="col-md-3">
@@ -123,7 +124,7 @@
                         </div>
                         <div class="col-md-4">
                             <label asp-for="ParentPhone" class="control-label">Parent/Guardian Phone</label>
-                            <input asp-for="ParentPhone" class="form-control" />
+                            <input asp-for="ParentPhone" class="form-control" disabled />
                             <span asp-validation-for="ParentPhone" class="text-danger"></span>
                         </div>
                     </div>
@@ -135,7 +136,7 @@
                         </div>
                         <div class="col-md-4">
                             <label asp-for="ParentEmail" class="control-label">Parent/Guardian Email</label>
-                            <input asp-for="ParentEmail" class="form-control" />
+                            <input asp-for="ParentEmail" class="form-control" disabled />
                             <span asp-validation-for="ParentEmail" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
@@ -148,17 +149,17 @@
                     <div class="form-row">
                         <div class="col-md-4">
                             <label asp-for="SchoolEmailAddress" class="control-label">EDSU E-mail</label>
-                            <input asp-for="SchoolEmailAddress" class="form-control" />
+                            <input asp-for="SchoolEmailAddress" class="form-control" disabled />
                             <span asp-validation-for="SchoolEmailAddress" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
                             <label asp-for="UTMENumber" class="control-label">UTME No.</label>
-                            <input asp-for="UTMENumber" class="form-control" />
+                            <input asp-for="UTMENumber" class="form-control" disabled/>
                             <span asp-validation-for="UTMENumber" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
                             <label asp-for="MatNumber" class="control-label">Matriculation No.</label>
-                            <input asp-for="MatNumber" class="form-control" />
+                            <input asp-for="MatNumber" class="form-control" disabled />
                             <span asp-validation-for="MatNumber" class="text-danger"></span>
                         </div>
                     </div>
@@ -173,23 +174,19 @@
                             <select asp-for="Level" class="form-control basic" asp-items="ViewBag.Level"></select>
                             <span asp-validation-for="Level" class="text-danger"></span>
                         </div>
-                        <div class="col-md-4">
-                            <label asp-for="ModeOfAdmission" class="control-label">Mode of Admission</label>
-                            <input asp-for="ModeOfAdmission" class="form-control" />
-                            <span asp-validation-for="ModeOfAdmission" class="text-danger"></span>
+<div class="col-md-4">
+                            <label asp-for="Department" class="control-label"></label>
+                            <select asp-for="Department" class="form-control basic" asp-items="ViewBag.Department"></select>
+                            <span asp-validation-for="Department" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="form-row">
+                    @*<div class="form-row">
                         <div class="col-md-4">
                             <label asp-for="YearOfAdmission" class="control-label">Year of Admission</label>
                             <select asp-for="YearOfAdmission" class="form-control basic" asp-items="ViewBag.YearOfAdmission"></select>
                             <span asp-validation-for="YearOfAdmission" class="text-danger"></span>
                         </div>
-                        <div class="col-md-4">
-                            <label asp-for="Department" class="control-label"></label>
-                            <select asp-for="Department" class="form-control basic" asp-items="ViewBag.Department"></select>
-                            <span asp-validation-for="Department" class="text-danger"></span>
-                        </div>
+                        
                         <div class="col-md-4">
                             <label asp-for="CurrentSession" class="control-label"></label>
                             <select asp-for="CurrentSession" class="form-control basic" asp-items="ViewBag.CurrentSession"></select>
@@ -211,7 +208,7 @@
                             <span asp-validation-for="StudentStatus" class="text-danger"></span>
                         </div>
                     </div>
-                    @* <div class="form-group">
+                     <div class="form-group">
                     <label asp-for="ClearedBy" class="control-label">Cleared By:</label>
                     <input asp-for="ClearedBy" class="form-control" hidden/>
                     <h6>@Model.Staffs.Name</h6> on <h6>@Model.CreatedAt</h6>

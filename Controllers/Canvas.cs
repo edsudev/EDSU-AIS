@@ -242,7 +242,79 @@ namespace EDSU_SYSTEM.Controllers
                 return RedirectToAction("badreq", "error");
             }
         }
+        public async Task<IActionResult> EnrollAllStudent()
+        {
+            try
+            {
+                var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+                var id = loggedInUser.StaffId;
+                var staff = (from c in _context.Staffs where c.Id == id select c.DepartmentId).FirstOrDefault();
 
+                var students = (from s in _context.CourseRegistrations where s.Students.Department == staff && s.Courses.Semesters.IsActive == true select s).Include(x => x.Courses).ThenInclude(s => s.Semesters).Include(n => n.Students).Include(x => x.Courses).ThenInclude(x => x.Levels).Include(x => x.Courses).ThenInclude(x => x.Departments).ToList();
+
+                var currentSession = _context.Sessions.FirstOrDefault(x => x.IsActive == true);
+                foreach (var item in students)
+                {
+                    var studentEmail = (from s in _context.Students where s.Id == item.StudentId select s.SchoolEmailAddress).FirstOrDefault();
+                    var courses = (from s in _context.CourseRegistrations where s.StudentId == item.StudentId && s.Courses.Semesters.IsActive == true select s).Include(x => x.Courses).ThenInclude(s => s.Semesters).Include(n => n.Students).Include(x => x.Courses).ThenInclude(x => x.Levels).Include(x => x.Courses).ThenInclude(x => x.Departments).ToList();
+
+                    using (var client = new HttpClient())
+                    {
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("CANVAS_TOKEN"));
+
+                        foreach (var courseCode in courses)
+                        {
+                            try
+                            {
+                                var canvasCourses = await GetCourse(courseCode.Courses.Code);
+                                var courseId = canvasCourses.id;
+                                var user = await GetUser(studentEmail);
+                                var userId = user.id;
+                                string apiUrl = $"https://edouniversity.instructure.com/api/v1/courses/{courseId}/enrollments";
+                                var enrollmentData = new
+                                {
+                                    enrollment = new
+                                    {
+                                        user_id = userId,
+                                        type = "StudentEnrollment",
+                                        enrollment_state = "active"
+                                    }
+                                };
+
+                                string jsonData = JsonConvert.SerializeObject(enrollmentData);
+                                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                                HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+                                Console.WriteLine(content);
+
+                                if (response.IsSuccessStatusCode)
+                                {
+                                    TempData["success"] = $"{user.name} has been enrolled to LMS";
+                                }
+                                else
+                                {
+                                    TempData["err"] = $"Failed to enroll user. Status code: {response.StatusCode}";
+                                    Console.WriteLine($"Failed to enroll user. Status code: {response.StatusCode}");
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                TempData["err"] = $"An error occurred: {ex.Message}";
+                                Console.WriteLine($"An error occurred: {ex.Message}");
+                            }
+                        }
+                    }
+                }
+
+                // Move the return statement outside the loop
+                return RedirectToAction("approved", "courseregistrations");
+            }
+            catch (Exception ex)
+            {
+                TempData["err"] = $"An error occurred: {ex.Message}";
+                return RedirectToAction("approved", "courseregistrations");
+            }
+        }
 
     }
     public class CanvasUser

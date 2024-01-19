@@ -901,55 +901,69 @@ namespace EDSU_SYSTEM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Student student)
         {
-            
+            // Log the ID for debugging purposes
+            Console.Write("This is the id " + id);
+
+            // Check if the provided ID matches the student ID
             if (id != student.Id)
             {
                 return NotFound();
             }
+
             try
             {
+                // Retrieve the student from the database
                 var studentToUpdate = await _context.Students
-                .FirstOrDefaultAsync(c => c.Id == id);
+                    .FirstOrDefaultAsync(c => c.Id == id);
 
-                if (await TryUpdateModelAsync<Student>(student, "", 
-                    c => c.Fullname, c => c.DOB, c => c.Sex, c => c.Religion, c => c.Phone, 
-                    c => c.AltPhoneNumber, c => c.Email, c => c.NationalityId, c => c.StateOfOriginId, c => c.LGAId, 
-                    c => c.PlaceOfBirth, c => c.ContactAddress,c => c.PermanentHomeAddress, c => c.MaritalStatus, c => c.ParentName,
-                    c => c.ParentOccupation, c => c.ParentPhone, c => c.ParentAltPhone,c => c.ParentEmail, c => c.ParentAddress,
-                    c => c.SchoolEmailAddress, c => c.UTMENumber, c => c.MatNumber, c => c.Faculty, c => c.Level, 
+                // Update the model with the specified properties
+                if (await TryUpdateModelAsync(studentToUpdate, "",
+                    c => c.Fullname, c => c.DOB, c => c.Sex, c => c.Religion, c => c.Phone,
+                    c => c.AltPhoneNumber, c => c.Email, c => c.NationalityId, c => c.StateOfOriginId, c => c.LGAId,
+                    c => c.PlaceOfBirth, c => c.ContactAddress, c => c.PermanentHomeAddress, c => c.MaritalStatus, c => c.ParentName,
+                    c => c.ParentOccupation, c => c.ParentPhone, c => c.ParentAltPhone, c => c.ParentEmail, c => c.ParentAddress,
+                    c => c.SchoolEmailAddress, c => c.UTMENumber, c => c.MatNumber, c => c.Faculty, c => c.Level,
                     c => c.ModeOfAdmission, c => c.YearOfAdmission, c => c.Department, c => c.CurrentSession, c => c.IsStillAStudent,
-                    c => c.ProgrameId, c => c.StudentStatus
-                    ))
+                    c => c.ProgrameId, c => c.StudentStatus))
                 {
-                    try
-                    {
-                        student.Cleared = true;
-                        await _context.SaveChangesAsync();
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
+                    // Set additional properties and save changes
+                    studentToUpdate.Cleared = true;
 
-                        ModelState.AddModelError("", "Unable to save changes. " +
-                            "Try again, and if the problem persists, " +
-                            "see your system administrator.");
-                    }
+                    await _context.SaveChangesAsync();
+
                     return RedirectToAction(nameof(Profile));
                 }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid model data. Please check your inputs.");
+                }
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                // Log concurrency exception and add error to ModelState
+               // _logger.LogError("Concurrency error while updating student with ID {StudentId}", id);
+                ModelState.AddModelError("", "Unable to save changes due to a concurrency conflict. Please refresh and try again.");
             }
             catch (Exception ex)
             {
-                ex.ToString();
-
+                // Log other exceptions
+               // _logger.LogError(ex, "An error occurred while updating the student with ID {StudentId}", id);
+                ModelState.AddModelError("", "An unexpected error occurred. Please try again or contact your system administrator.");
             }
-             ViewData["Department"] = new SelectList(_context.Departments, "Id", "Id", student.Department);
+
+            // Populate ViewData for dropdowns
+            ViewData["Department"] = new SelectList(_context.Departments, "Id", "Id", student.Department);
             ViewData["Faculty"] = new SelectList(_context.Faculties, "Id", "Id", student.Faculty);
             ViewData["LGAId"] = new SelectList(_context.Lgas, "Id", "Id", student.LGAId);
             ViewData["Level"] = new SelectList(_context.Levels, "Id", "Id", student.Level);
             ViewData["NationalityId"] = new SelectList(_context.Countries, "Id", "Id", student.NationalityId);
             ViewData["CurrentSession"] = new SelectList(_context.Sessions, "Id", "Id", student.CurrentSession);
             ViewData["StateOfOriginId"] = new SelectList(_context.States, "Id", "Id", student.StateOfOriginId);
+
+            // Return to the "profile" action
             return RedirectToAction("profile");
         }
+
         [Authorize(Roles = "student, superAdmin")]
         public async Task<IActionResult> Upload(IFormFile passport, int id)
         {

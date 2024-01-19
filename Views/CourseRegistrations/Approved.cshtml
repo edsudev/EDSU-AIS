@@ -26,6 +26,9 @@
                             <strong>@ViewBag.err</strong>
                         </div>
                     }
+                    <a asp-action="enrollallstudent" asp-controller="canvas" asp-route-id="@ViewBag.StudentId" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="" data-original-title="Enroll to LMS">
+                        Enrol all students to LMS
+                    </a>
                     <div class="widget-content widget-content-area br-6">
                         <table id="html5-extension" class="table table-hover" style="width:100%">
                             <thead>
